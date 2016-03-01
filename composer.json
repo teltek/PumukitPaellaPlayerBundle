@@ -1,0 +1,32 @@
+{
+    "name": "teltek/pmk2-paella-player-bundle",
+    "type": "symfony-bundle",
+    "description": "Paella Player Bundle",
+    "keywords": [
+        "theming",
+        "symfony2",
+        "bundle",
+        "pumukit",
+        "teltek",
+        "paella"
+    ],
+    "homepage": "https://github.com/teltek/PuMuKIT2-paella-player-bundle",
+    "license": "Copyright",
+    "authors": [
+        {
+            "name": "Teltek Team",
+            "homepage": "http://teltek.es"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~2.0",
+        "twig/twig": "~1.5",
+        "pumukit/pumukit2": "2.2.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pumukit\\PaellaPlayerBundle\\": ""
+        }
+    }
+}
