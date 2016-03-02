@@ -118,10 +118,13 @@ class PaellaRepositoryController extends Controller
      * Returns a frameList formatted to be added to the paella
      */
     private function getOpencastFrameList($mmobj) {
-        $opencastClient = $this->get('pumukit_opencast.client');
         $images = array();
-        //Only works if the video is an opencast video
-        if($opencastId = $mmobj->getProperty('opencast')) {
+
+        $allBundles = $this->container->getParameter('kernel.bundles');
+        $opencastExists = array_key_exists('OpencastBundle', $allBundles);
+        //Only works if the video is an opencast video and we have opencast bundle installed
+        if($opencastExists && $opencastId = $mmobj->getProperty('opencast')) {
+            $opencastClient = $this->get('pumukit_opencast.client');
             $mediaPackage = $opencastClient->getMediaPackage($opencastId);
             //If it doesn't have attachments as opencast should, we return an empty result
             if(!isset($mediaPackage['attachments']['attachment']))
