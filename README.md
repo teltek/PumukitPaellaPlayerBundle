@@ -23,35 +23,16 @@ $ composer require teltek/pmk2-paella-player-bundle dev-master
 ### Step 2: Uninstall the default JW Player Bundle
 
 The JWPlayerBundle needs to be uninstalled in order for the Paella Player to work propertly:
-- First open the app/AppKernel.php file
-  - Find the line
-```php<?php
-new Pumukit\PaellaPlayerBundle\PumukitPaellaPlayerBundle(),
-```
-  - Comment this line adding '//' in front of it:
-```php<?php
-// new Pumukit\PaellaPlayerBundle\PumukitPaellaPlayerBundle(),
-```
 
-- Then go to the app/config/routing.yml file
-  - Find the lines
-```yaml
-pumukit_jw_player:
-      resource: "@PumukitJWPlayerBundle/Controller/"
-      type:     annotation
-      prefix:   /
+Uninstall the bundle by executing the following line command. This command updates the Kernel to remove the bundle (app/AppKernel.php) and unloads the boundle routes from (app/config/routing.yml).
+
+```bash
+$ php app/console pumukit:install:bundle --uninstall Pumukit/JWPlayerBundle/PumukitJWPlayerBundle
 ```
-  - Comment them by adding '#' in front:
-   ```yaml
-# pumukit_jw_player:
-#   resource: "@PumukitJWPlayerBundle/Controller/"
-#   type:     annotation
-#   prefix:   /
- ```
 
 ### Step 3: Install the Bundle
 
-Install the bundle by executing the following line command. This command updates the Kernel to enable the bundle (app/AppKernel.php) and loads the routing (app/config/routing.yml) to add the bundle routes\
+After uninstalling the default JWPlayer, install the bundle by executing the same command as before, without the --uninstall option and with the PaellaPlayerBundle namespace this time.
 .
 
 ```bash
