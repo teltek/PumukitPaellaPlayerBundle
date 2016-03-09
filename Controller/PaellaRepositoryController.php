@@ -28,7 +28,8 @@ class PaellaRepositoryController extends Controller
         $data = array();
         $data['streams'] = array();
 
-        $tracks = $this->getMmobjTracks($mmobj);
+        $trackId = $request->query->get('track_id');
+        $tracks = $this->getMmobjTracks($mmobj, $trackId);
         if(isset($tracks['display'])) {
             $track = $tracks['display'];
             $src = $this->getAbsoluteUrl($request, $track->getUrl());
@@ -80,7 +81,7 @@ class PaellaRepositoryController extends Controller
     /**
      * Returns an array (can be empty) of tracks for the mmobj
      */
-    private function getMmobjTracks(MultimediaObject $mmobj)
+    private function getMmobjTracks(MultimediaObject $mmobj, $trackId)
     {
         $tracks = array();
         if($mmobj->getProperty('opencast')) {
@@ -106,7 +107,14 @@ class PaellaRepositoryController extends Controller
             }
         }
         else {
-            $track = $mmobj->getFilteredTrackWithTags(array('display'));
+            if($trackId) {
+                $track = $mmobj->getTrackById($trackId);
+                if(!$track->containsTag('display'))
+                    $track = null;
+            }
+            else {
+                $track = $mmobj->getFilteredTrackWithTags(array('display'));
+            }
             if($track)
                 $tracks['display'] = $track;
         }

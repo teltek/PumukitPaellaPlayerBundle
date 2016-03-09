@@ -27,10 +27,15 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
         return parseInt(match[1]) * 3600 + parseInt(match[2]) * 60 + parseInt(match[3]);
     },
     
-    loadVideo:function(videoId,onSuccess) {
+    loadVideo:function(videoId, onSuccess) {
         if (videoId) {
             that = this;
-            $.get('/paellarepository/' + videoId)
+            videoId = videoId
+            var repo_url = '/paellarepository/' + videoId
+            var trackId = paella.utils.parameters.get('track_id')
+            if(trackId)
+                repo_url += '?track_id=' + trackId
+            $.get(repo_url)
                 .done(function(data){
                     var This = that;
                     if (data.streams) {
