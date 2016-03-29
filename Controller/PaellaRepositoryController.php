@@ -23,7 +23,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
     public function magicIndexAction(MultimediaObject $mmobj, Request $request)
     {
         $serializer = $this->get('serializer');
-        $data = $this->getPaellaMmobjData($mmobj);
+        $data = $this->getPaellaMmobjData($mmobj, $request);
         $response = $serializer->serialize($data, $request->getRequestFormat());
         return new Response($response);
     }
@@ -35,7 +35,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
     public function indexAction(MultimediaObject $mmobj, Request $request)
     {
         $serializer = $this->get('serializer');
-        $data = $this->getPaellaMmobjData($mmobj);
+        $data = $this->getPaellaMmobjData($mmobj, $request);
         $response = $serializer->serialize($data, $request->getRequestFormat());
         return new Response($response);
     }
@@ -48,7 +48,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
      *
      * This structure can be later serialized and returned as a json file for the paella player to use.
      */
-    private function getPaellaMmobjData(MultimediaObject $mmobj)
+    private function getPaellaMmobjData(MultimediaObject $mmobj, Request $request)
     {
         $picService = $this->get('pumukitschema.pic');
         $pic = $picService->getFirstUrlPic($mmobj, true, false);
