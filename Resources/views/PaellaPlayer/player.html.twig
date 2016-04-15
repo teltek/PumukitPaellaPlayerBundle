@@ -19,6 +19,12 @@
          paella.events.trigger(paella.events.play);
      }, 300);
      {% endif %}
+     {% if multimediaObject.getProperty('opencastinvert') %}
+     setTimeout(function(){
+         paella.events.trigger(paella.events.setProfile, {profileName: "professor_slide"});
+     }, 300);
+     {% endif %}
+
  });
  loadPaella('playerContainer', '{{multimediaObject.id}}');
 </script>
