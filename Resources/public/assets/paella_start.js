@@ -18,19 +18,25 @@ var MyAccessControl = Class.create(paella.AccessControl,{
         onSuccess(this.permissions);
     }
 });
-
+Class("paella.MyInitDelegate", paella.InitDelegate, {
+    getId: function() {
+        var id = base.parameters.get("id")
+        if(!id)
+            id = window.location.pathname.match(/\/(\w+)$/)[1];
+        return  id || "noid"
+    }
+});
 var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
     ref2IntRe:/.*;time=T(\d*?):(\d*?):(\d*?):(\d*?)F1000/i,
-    
+
     ref2Int:function(ref) {
         var match = this.ref2IntRe.exec(ref);
         return parseInt(match[1]) * 3600 + parseInt(match[2]) * 60 + parseInt(match[3]);
     },
-    
+
     loadVideo:function(videoId, onSuccess) {
         if (videoId) {
             that = this;
-            videoId = videoId
             var repo_url = '/paellarepository/' + videoId
             var trackId = paella.utils.parameters.get('track_id')
             var secret = paella.utils.parameters.get('secret')
@@ -113,14 +119,14 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
 });
 
 function loadPaella(containerId, videoId) {
-    var initDelegate = new paella.InitDelegate({accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
+    var initDelegate = new paella.MyInitDelegate({accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
     initPaellaEngage(containerId,initDelegate);
 }
 
 paella.dataDelegates.UserDataDelegate = Class.create(paella.DataDelegate,{
     initialize:function() {
     },
-    
+
     read:function(context, params, onSuccess) {
         var value = {
             userName:"userName",
@@ -128,8 +134,8 @@ paella.dataDelegates.UserDataDelegate = Class.create(paella.DataDelegate,{
             lastname: "Lastname",
             avatar:"plugins/silhouette32.png"
         };
-        
+
         if (typeof(onSuccess)=='function') { onSuccess(value,true); }
     }
-    
+
 });
