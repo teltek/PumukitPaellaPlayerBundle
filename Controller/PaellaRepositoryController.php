@@ -56,7 +56,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
 
         $trackId = $request->query->get('track_id');
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
-        $isMobile = true;
+        $isMobile = $this->isMobile($request);
         if($isMobile) {
             if($tracks['sbs']) {
                 $dataStream = $this->buildDataStream($tracks['sbs'], $request);
@@ -211,5 +211,20 @@ class PaellaRepositoryController extends Controller implements WebTVController
             ),
         );
         return $dataStream;
+    }
+
+    /**
+     * Returns whether the request comes from a 'mobile device'
+     *
+     *
+     */
+    private function isMobile(Request $request)
+    {
+        $userAgent = $request->headers->get('user-agent');
+        $mobileDetectorService = $this->get('mobile_detect.mobile_detector');
+        $userAgentParserService = $this->get('pumukit_web_tv.useragent_parser');
+        $isMobileDevice = ($mobileDetectorService->isMobile($userAgent) || $mobileDetectorService->isTablet($userAgent));
+        $isOldBrowser = $userAgentParserService->isOldBrowser($userAgent);
+        return $isMobileDevice || $isOldBrowser;
     }
 }
