@@ -41,6 +41,11 @@
             "userInfo": "UserDataDelegate"
         }
     },
+    "folders": {
+        "profiles": "config/profiles",
+        "resources": "resources",
+        "skins": "resources/style"
+    },
     "plugins": {
         "enablePluginsByDefault": false,
         "//**** Instructions: Disable any individual plugin by setting its enable property to false": {
@@ -161,6 +166,9 @@
             "es.upv.paella.zoomPlugin": {
                 "enabled": false
             },
+            "es.upv.paella.windowTitlePlugin": {
+                "enabled": true
+            },
             "es.upv.paella.captions.DFXPParserPlugin": {
                 "enabled": true
             },
@@ -196,7 +204,7 @@
         }
     },
     "standalone": {
-        "reposiroty": "../repository/"
+        "repository": "../repository/"
     },
     "skin": {
         "default": "dark",
