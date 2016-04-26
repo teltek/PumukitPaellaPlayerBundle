@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class PaellaRepositoryController extends Controller implements WebTVController
 {
     /**
-     * @Route("/secret/paellarepository/{secret}.{_format}", defaults={"_format":"json", "show_hide":true}, requirements={"_format": "json|xml"})
+     * @Route("/secret/paellarepository/{secret}.{_format}", defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      * @Method("GET")
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig")
      */
@@ -30,7 +30,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
     }
 
     /**
-     * @Route("/paellarepository/{id}.{_format}", defaults={"_format"="json"}, requirements={"_format": "json|xml"})
+     * @Route("/paellarepository/{id}.{_format}", defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
      * @Method("GET")
      */
     public function indexAction(MultimediaObject $mmobj, Request $request)
