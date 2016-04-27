@@ -14,7 +14,7 @@
 </style>
 <script>
  $(document).bind(paella.events.loadComplete,function(event,params) {
-     {% if autostart %}
+     {% if autostart is defined and autostart == 'true' %}
      setTimeout(function(){
          paella.player.play();
      }, 300);

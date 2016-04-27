@@ -45,7 +45,7 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
-        return array('autostart' => $request->query->get('autostart', 'true'),
+        return array('autostart' => $request->query->get('autostart', 'false'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'multimediaObject' => $multimediaObject,
                      'tracks' => $tracks);
