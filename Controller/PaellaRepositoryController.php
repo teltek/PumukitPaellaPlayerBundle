@@ -202,14 +202,17 @@ class PaellaRepositoryController extends Controller implements WebTVController
                 'mp4' => array(
                     array(
                         'src' => $src,
-                        'mimetype' => $mimeType,
-                        'res' => array(
-                            'w' => 0,
-                            'h' => 0)
+                        'mimetype' => $mimeType
                     )
                 )
             ),
         );
+
+        // If pumukit doesn't know the resolution, paella can guess it.
+        if ($track->getWidth() && $track->getHeight()) {
+            $dataStream['sources']['mp4'][0]['res'] = array('w' => $track->getWidth(), 'h' => $track->getHeight());
+        }
+
         return $dataStream;
     }
 
