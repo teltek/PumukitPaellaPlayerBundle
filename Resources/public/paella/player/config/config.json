@@ -41,6 +41,11 @@
             "userInfo": "UserDataDelegate"
         }
     },
+    "folders": {
+        "profiles": "config/profiles",
+        "resources": "resources",
+        "skins": "resources/style"
+    },
     "plugins": {
         "enablePluginsByDefault": false,
         "//**** Instructions: Disable any individual plugin by setting its enable property to false": {
@@ -60,8 +65,8 @@
                 "seconds": 30
             },
             "es.upv.paella.captionsPlugin": {
-                "enabled": true,
-                "searchOnCaptions": true
+                "enabled": false,
+                "searchOnCaptions": false
             },
             "es.upv.paella.extendedTabAdapterPlugin": {
                 "enabled": false

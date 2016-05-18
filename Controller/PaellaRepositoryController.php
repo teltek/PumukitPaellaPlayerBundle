@@ -3,6 +3,7 @@
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Pumukit\SchemaBundle\Document\MultimediaObject;
+use Pumukit\SchemaBundle\Document\Track;
 use Pumukit\VideoEditorBundle\Document\Annotation;
 use Pumukit\WebTVBundle\Controller\WebTVController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class PaellaRepositoryController extends Controller implements WebTVController
 {
     /**
-     * @Route("/secret/paellarepository/{secret}.{_format}", defaults={"_format":"json", "show_hide":true}, requirements={"_format": "json|xml"})
+     * @Route("/secret/paellarepository/{secret}.{_format}", defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      * @Method("GET")
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig")
      */
@@ -29,7 +30,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
     }
 
     /**
-     * @Route("/paellarepository/{id}.{_format}", defaults={"_format"="json"}, requirements={"_format": "json|xml"})
+     * @Route("/paellarepository/{id}.{_format}", defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
      * @Method("GET")
      */
     public function indexAction(MultimediaObject $mmobj, Request $request)
@@ -50,38 +51,41 @@ class PaellaRepositoryController extends Controller implements WebTVController
      */
     private function getPaellaMmobjData(MultimediaObject $mmobj, Request $request)
     {
-        $picService = $this->get('pumukitschema.pic');
-        $pic = $picService->getFirstUrlPic($mmobj, true, false);
-
         $data = array();
         $data['streams'] = array();
 
         $trackId = $request->query->get('track_id');
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
-        if(isset($tracks['display'])) {
-            $track = $tracks['display'];
-            $src = $this->getAbsoluteUrl($request, $track->getUrl());
-            $mimeType = $track->getMimetype();
-            $dataStream = array('sources' => array('mp4' => array(array('src' => $src,
-                                                                        'mimetype' => $mimeType,
-                                                                        'res' => array('w' => 0, 'h' => 0)))),
-                                'preview' => $pic);
+        $isMobile = $this->isMobile($request);
+        if($isMobile) {
+            if($tracks['sbs']) {
+                $dataStream = $this->buildDataStream($tracks['sbs'], $request);
+            }
+            else if($tracks['display']) {
+                $picService = $this->get('pumukitschema.pic');
+                $pic = $picService->getFirstUrlPic($mmobj, true, false);
+                $dataStream = $this->buildDataStream($tracks['display'], $request);
+            }
             $data['streams'][] = $dataStream;
         }
-        if(isset($tracks['presentation'])) {
-            $track = $tracks['presentation'];
-            $src = $this->getAbsoluteUrl($request, $track->getUrl());
-            $mimeType = $track->getMimetype();
-            $dataStream = array('sources' => array('mp4' => array(array('src' => $src,
-                                                                        'mimetype' => $mimeType,
-                                                                        'res' => array('w' => 0, 'h' => 0)))),
-            );
-            $data['streams'][] = $dataStream;
+        else {
+            if($tracks['display']) {
+                $dataStream = $this->buildDataStream($tracks['display'], $request);
+                $picService = $this->get('pumukitschema.pic');
+                $pic = $picService->getFirstUrlPic($mmobj, true, false);
+                $dataStream['preview'] = $pic;
+                $data['streams'][] = $dataStream;
+            }
+            if($tracks['presentation']) {
+                $dataStream = $this->buildDataStream($tracks['presentation'], $request);
+                $data['streams'][] = $dataStream;
+            }
         }
-
-        $data['metadata'] = array('title' => $mmobj->getTitle(),
-                                  'description' => $mmobj->getDescription(),
-                                  'duration' => 0);
+        $data['metadata'] = array(
+            'title' => $mmobj->getTitle(),
+            'description' => $mmobj->getDescription(),
+            'duration' => 0
+        );
 
         $frameList = $this->getOpencastFrameList($mmobj);
         if($frameList)
@@ -109,11 +113,15 @@ class PaellaRepositoryController extends Controller implements WebTVController
      */
     private function getMmobjTracks(MultimediaObject $mmobj, $trackId)
     {
-        $tracks = array();
+        $tracks = array(
+            'display' => false,
+            'presentation' => false,
+            'sbs' => false,
+        );
         if($mmobj->getProperty('opencast')) {
             $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
             $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
-
+            $sbsTrack =  $mmobj->getFilteredTrackWithTags(array('sbs'));
             foreach($presenterTracks as $track) {
                 if($track->getVcodec() == 'h264') {
                     $tracks['display'] = $track;
@@ -126,11 +134,8 @@ class PaellaRepositoryController extends Controller implements WebTVController
                     break;
                 }
             }
-            if(count($tracks) <= 0) {
-                $track =  $mmobj->getFilteredTrackWithTags(array('sbs'));
-                if($track)
-                    $tracks['sbs'] = $track;
-            }
+            if($sbsTrack && $sbsTrack->getVcodec() == 'h264')
+                $tracks['sbs'] = $sbsTrack;
         }
         else {
             if($trackId) {
@@ -183,5 +188,43 @@ class PaellaRepositoryController extends Controller implements WebTVController
             }
         }
         return $images;
+    }
+
+    /**
+     * Returns a data array with the required paella structure for a 'data stream'.
+     */
+    private function buildDataStream(Track $track, Request $request)
+    {
+        $src = $this->getAbsoluteUrl($request, $track->getUrl());
+        $mimeType = $track->getMimetype();
+        $dataStream = array(
+            'sources' => array(
+                'mp4' => array(
+                    array(
+                        'src' => $src,
+                        'mimetype' => $mimeType,
+                        'res' => array(
+                            'w' => 0,
+                            'h' => 0)
+                    )
+                )
+            ),
+        );
+        return $dataStream;
+    }
+
+    /**
+     * Returns whether the request comes from a 'mobile device'
+     *
+     *
+     */
+    private function isMobile(Request $request)
+    {
+        $userAgent = $request->headers->get('user-agent');
+        $mobileDetectorService = $this->get('mobile_detect.mobile_detector');
+        $userAgentParserService = $this->get('pumukit_web_tv.useragent_parser');
+        $isMobileDevice = ($mobileDetectorService->isMobile($userAgent) || $mobileDetectorService->isTablet($userAgent));
+        $isOldBrowser = $userAgentParserService->isOldBrowser($userAgent);
+        return $isMobileDevice || $isOldBrowser;
     }
 }
