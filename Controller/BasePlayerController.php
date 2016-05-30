@@ -18,7 +18,7 @@ use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerContro
 class BasePlayerController extends BasePlayerControllero
 {
     /**
-     * @Route("/videoplayer/magic/{secret}", name="pumukit_videoplayer_magicindex", defaults={"show_hide":true})
+     * @Route("/videoplayer/magic/{secret}", name="pumukit_videoplayer_magicindex")
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig")
      */
     public function magicAction(MultimediaObject $multimediaObject, Request $request)
@@ -35,8 +35,6 @@ class BasePlayerController extends BasePlayerControllero
         $track = $request->query->has('track_id') ?
         $multimediaObject->getTrackById($request->query->get('track_id')) :
         $multimediaObject->getFilteredTrackWithTags(array('display'));
-
-        $this->dispatchViewEvent($multimediaObject, $track);
 
         if($track && $track->containsTag("download")) {
             return $this->redirect($track->getUrl());
@@ -66,8 +64,6 @@ class BasePlayerController extends BasePlayerControllero
         $track = $request->query->has('track_id') ?
         $multimediaObject->getTrackById($request->query->get('track_id')) :
         $multimediaObject->getFilteredTrackWithTags(array('display'));
-
-        $this->dispatchViewEvent($multimediaObject, $track);
 
         if($track && $track->containsTag("download")) {
             return $this->redirect($track->getUrl());

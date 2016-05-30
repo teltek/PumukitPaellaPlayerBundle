@@ -195,7 +195,8 @@ class PaellaRepositoryController extends Controller implements WebTVController
      */
     private function buildDataStream(Track $track, Request $request)
     {
-        $src = $this->getAbsoluteUrl($request, $track->getUrl());
+        $trackService = $this->get('pumukit_baseplayer.trackurl');
+        $src = $this->getAbsoluteUrl($request, $trackService->generateTrackFileUrl($track, true));
         $mimeType = $track->getMimetype();
         $dataStream = array(
             'sources' => array(
