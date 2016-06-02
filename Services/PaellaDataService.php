@@ -3,12 +3,15 @@
 namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Pumukit\SchemaBundle\Document\MultimediaObject;
+use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Document\Track;
 use Pumukit\SchemaBundle\Services\PicService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
+use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
 use Pumukit\WebTVBundle\Services\UserAgentParserService;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PaellaDataService
 {
@@ -18,10 +21,12 @@ class PaellaDataService
     private $mobileDetectorService;
     private $userAgentParserService;
 
-    public function __construct(PicService $picService, TrackUrlService $trackService, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService)
+    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService)
     {
         $this->picService = $picService;
         $this->trackService = $trackService;
+        $this->playlistService = $playlistService;
+        $this->urlGenerator = $urlGenerator;
         //Only used to check whether the request is mobile and return a side-by-side on opencast videos.
         $this->mobileDetectorService = $mobileDetectorService;
         $this->userAgentParserService = $userAgentParserService;
@@ -30,6 +35,36 @@ class PaellaDataService
     public function setOpencastClient($opencastClient)
     {
         $this->opencastClient = $opencastClient;
+    }
+
+    /**
+     * Returns a dictionary array with the playlist data using the paella playlist plugin necessary structure.
+     *
+     * This structure can be later serialized and returned as a json file for the paella player to use.
+     */
+    public function getPaellaPlaylistData(Series $series, Request $request)
+    {
+        $data = array();
+        $mmobjs = $this->playlistService->getPlaylistMmobjs($series);
+
+        foreach($mmobjs as $mmobj) {
+            $url = $this->urlGenerator->generate(
+                'pumukit_seriesplaylist_index',
+                array(
+                    'playlistId' => $series->getId(),
+                    'videoId' => $mmobj->getId(),
+                    'autostart' => 'true',
+                ),
+                true  //Makes the url absolute.
+            );
+            $data[] = array(
+                'name' => $mmobj->getTitle(),
+                'id' => $mmobj->getId(),
+                'url' => $url
+            );
+        }
+
+        return $data;
     }
 
     /**
