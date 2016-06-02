@@ -64,6 +64,10 @@
                 "direction": "Forward",
                 "seconds": 30
             },
+            "es.teltek.paella.playlistPlugin": {
+                "enabled": true,
+                "playlistApi": ""
+            },
             "es.upv.paella.captionsPlugin": {
                 "enabled": true,
                 "searchOnCaptions": true

@@ -22,6 +22,8 @@ Class("paella.MyInitDelegate", paella.InitDelegate, {
     getId: function() {
         var id = base.parameters.get("id")
         if(!id)
+            id = base.parameters.get("videoId")
+        if(!id)
             id = window.location.pathname.match(/\/(\w+)$/)[1];
         return  id || "noid"
     }
