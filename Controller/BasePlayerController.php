@@ -4,15 +4,9 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\SchemaBundle\Document\Broadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Pumukit\SchemaBundle\Document\Track;
-
 use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerControllero;
 
 class BasePlayerController extends BasePlayerControllero
@@ -23,7 +17,7 @@ class BasePlayerController extends BasePlayerControllero
      */
     public function magicAction(MultimediaObject $multimediaObject, Request $request)
     {
-        if(!$request->query->has('secret')) {
+        if (!$request->query->has('secret')) {
             return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', array('id' => $multimediaObject->getSecret(), 'secret' => $multimediaObject->getSecret())).'&secret='.$multimediaObject->getSecret());
         }
 
@@ -38,7 +32,7 @@ class BasePlayerController extends BasePlayerControllero
 
         $this->dispatchViewEvent($multimediaObject, $track);
 
-        if($track && $track->containsTag("download")) {
+        if ($track && $track->containsTag('download')) {
             return $this->redirect($track->getUrl());
         }
         //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
@@ -48,7 +42,7 @@ class BasePlayerController extends BasePlayerControllero
         return array('autostart' => $request->query->get('autostart', 'false'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'multimediaObject' => $multimediaObject,
-                     'tracks' => $tracks);
+                     'tracks' => $tracks, );
     }
 
     /**
@@ -69,7 +63,7 @@ class BasePlayerController extends BasePlayerControllero
 
         $this->dispatchViewEvent($multimediaObject, $track);
 
-        if($track && $track->containsTag("download")) {
+        if ($track && $track->containsTag('download')) {
             return $this->redirect($track->getUrl());
         }
         //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
@@ -79,6 +73,6 @@ class BasePlayerController extends BasePlayerControllero
         return array('autostart' => $request->query->get('autostart', 'true'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'multimediaObject' => $multimediaObject,
-                     'tracks' => $tracks);
+                     'tracks' => $tracks, );
     }
 }
