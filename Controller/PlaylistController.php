@@ -7,23 +7,24 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Pumukit\SchemaBundle\Document\Series;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Pumukit\WebTVBundle\Controller\WebTVController;
+use Pumukit\BasePlayerBundle\Controller\BasePlaylistController;
 
 class PlaylistController extends BasePlaylistController
 {
     /**
-     * @Route("/playlist/{id}", name="pumukit_seriesplaylist_index", defaults={"no_channels": true} )
-     * @Route("/playlist/magic/{secret}", name="pumukit_videoplayer_magicindex", defaults={"show_hide": true, "no_channels": true} )
+     * @Route("/playlist/{id}", name="pumukit_playlistplayer_index", defaults={"no_channels": true} )
+     * @Route("/playlist/magic/{secret}", name="pumukit_playlistplayer_magicindex", defaults={"show_hide": true, "no_channels": true} )
      *
      * Added default indexAction and redirect to the paella route.
      */
     public function indexAction(Series $series, Request $request)
     {
-        return $this->redirectWithMmobj($series, $request);
+        $mmobjId = $request->get('videoId');
+        return $this->redirectWithMmobj($series, $request, $mmobjId);
     }
 
     /**
-     * @Route("/playlist", name="pumukit_seriesplaylist_index", defaults={"no_channels": true} )
+     * @Route("/playlist", name="pumukit_playlistplayer_paellaindex", defaults={"no_channels": true} )
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
      *
      * In order to make things easier on the paella side, we drop the symfony custom urls.
@@ -62,18 +63,21 @@ class PlaylistController extends BasePlaylistController
     /**
      * Helper function to used to redirect when the mmobj id is not specified in the request.
      */
-    private function redirectWithMmobj(Series $series, Request $request)
+    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null)
     {
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
-        $mmobj = $playlistService->getPlaylistFirstMmobj($series);
+        if(!$mmobjId) {
+            $mmobj = $playlistService->getPlaylistFirstMmobj($series);
+            if(!$mmobj)
+                throw $this->createNotFoundException("Not mmobj found for the playlist with id: {$series->getId()}");
+            $mmobjId = $mmobj->getId();
+        }
 
-        if(!$mmobj)
-            throw $this->createNotFoundException("Not mmobj found for the playlist with id: {$series->getId()}");
         $redirectUrl = $this->generateUrl(
-            'pumukit_seriesplaylist_index',
+            'pumukit_playlistplayer_paellaindex',
             array(
                 'playlistId' => $series->getId(),
-                'videoId' => $mmobj->getId(),
+                'videoId' => $mmobjId,
                 'autostart' => $request->query->get('autostart', 'false'),
             )
         );

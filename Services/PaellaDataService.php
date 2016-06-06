@@ -49,7 +49,7 @@ class PaellaDataService
 
         foreach($mmobjs as $mmobj) {
             $url = $this->urlGenerator->generate(
-                'pumukit_seriesplaylist_index',
+                'pumukit_playlistplayer_paellaindex',
                 array(
                     'playlistId' => $series->getId(),
                     'videoId' => $mmobj->getId(),
