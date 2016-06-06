@@ -9,14 +9,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Pumukit\WebTVBundle\Controller\WebTVController;
 
-class PlaylistController extends Controller implements WebTVController
+class PlaylistController extends BasePlaylistController
 {
     /**
-     * @Route("/playlist/{id}", name="pumukit_seriesplaylist_prettyIndex", defaults={"no_channels": true} )
+     * @Route("/playlist/{id}", name="pumukit_seriesplaylist_index", defaults={"no_channels": true} )
+     * @Route("/playlist/magic/{secret}", name="pumukit_videoplayer_magicindex", defaults={"show_hide": true, "no_channels": true} )
      *
-     * In case we want to use the 'pretty' url (like for embedding to an iframe).
+     * Added default indexAction and redirect to the paella route.
      */
-    public function prettyIndexAction(Series $series, Request $request)
+    public function indexAction(Series $series, Request $request)
     {
         return $this->redirectWithMmobj($series, $request);
     }
@@ -24,8 +25,10 @@ class PlaylistController extends Controller implements WebTVController
     /**
      * @Route("/playlist", name="pumukit_seriesplaylist_index", defaults={"no_channels": true} )
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
+     *
+     * In order to make things easier on the paella side, we drop the symfony custom urls.
      */
-    public function indexAction(Request $request)
+    public function paellaIndexAction(Request $request)
     {
         $mmobjId = $request->get('videoId');
         $seriesId = $request->get('playlistId');
@@ -55,6 +58,10 @@ class PlaylistController extends Controller implements WebTVController
             'responsive' => true,
         );
     }
+
+    /**
+     * Helper function to used to redirect when the mmobj id is not specified in the request.
+     */
     private function redirectWithMmobj(Series $series, Request $request)
     {
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
