@@ -17,6 +17,36 @@
 .editorTrackItemMark {
   border: none !important;
 }
+/*** File: plugins/es.teltek.paella.playlistPlugin/playlist.less ***/
+.buttonPlugin.playlistPlugin {
+  background-position: -89.5% -89%;
+}
+.buttonPluginPopUp.playlistPlugin {
+  background-image: none;
+  min-width: 40px;
+  width: 500%;
+  min-height: 40px;
+  max-height: 150px;
+  overflow: auto;
+  text-align: left;
+}
+.buttonPluginPopUp.playlistPlugin .videobutton {
+  cursor: pointer;
+  text-align: left;
+  text-transform: capitalize;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.buttonPluginPopUp.playlistPlugin .videobutton:hover {
+  background-color: #faa166;
+}
+.buttonPluginPopUp.playlistPlugin .videobutton.playing {
+  font-style: italic;
+  font-weight: bold;
+  padding-left: 15px;
+}
 /*** File: plugins/es.upv.paella.annotationPlugins/player.less ***/
 .textAnnotation {
   background-color: rgba(128, 128, 128, 0.7);

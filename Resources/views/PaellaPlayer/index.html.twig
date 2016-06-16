@@ -25,9 +25,8 @@
   <link rel="stylesheet" href="{{ asset('bundles/pumukitpaellaplayer/paella/player/resources/style/style_dark.css') }}" id="paellaSkin" type="text/css" media="screen" title="no title" charset="utf-8">
 {% endblock %}
 
-{% block title %}{{ parent() }} - {{ multimediaObject.title }}{% endblock %}
-{% block keywords %}{{ parent() }} - {{ multimediaObject.keyword }}{% endblock %}
+{% block title %}{{ parent() }} - {{ object.title }}{% endblock %}
+{% block keywords %}{{ parent() }} - {{ object.keyword }}{% endblock %}
 
 {% block body_base %}
-  {% include 'PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig' with {'width': 'window.document.documentElement.clientWidth', 'height': 'window.document.documentElement.clientHeight', 'autostart': autostart} %}
 {% endblock %}

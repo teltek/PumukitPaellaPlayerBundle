@@ -19,7 +19,7 @@ class BasePlayerController extends BasePlayerControllero
 {
     /**
      * @Route("/videoplayer/magic/{secret}", name="pumukit_videoplayer_magicindex")
-     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig")
+     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
      */
     public function magicAction(MultimediaObject $multimediaObject, Request $request)
     {
@@ -46,13 +46,14 @@ class BasePlayerController extends BasePlayerControllero
         return array('autostart' => $request->query->get('autostart', 'false'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'multimediaObject' => $multimediaObject,
+                     'object' => $multimediaObject,
                      'tracks' => $tracks);
     }
 
     /**
      * @Route("/videoplayer/{id}", name="pumukit_videoplayer_index" )
      * @Route("/videoplayer/opencast/{id}", name="pumukit_videoplayer_opencast" )
-     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig")
+     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
      */
     public function indexAction(MultimediaObject $multimediaObject, Request $request)
     {
@@ -75,6 +76,7 @@ class BasePlayerController extends BasePlayerControllero
         return array('autostart' => $request->query->get('autostart', 'true'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'multimediaObject' => $multimediaObject,
+                     'object' => $multimediaObject,
                      'tracks' => $tracks);
     }
 }
