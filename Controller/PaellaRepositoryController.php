@@ -90,6 +90,11 @@ class PaellaRepositoryController extends Controller implements WebTVController
             $data['frameList'] = $frameList;
         }
 
+        $captions = $this->getCaptions($mmobj, $request);
+        if ($captions) {
+            $data['captions'] = $captions;
+        }
+
         return $data;
     }
 
@@ -153,6 +158,24 @@ class PaellaRepositoryController extends Controller implements WebTVController
         }
 
         return $tracks;
+    }
+
+    /**
+     * Returns a caption list formatted to be added to the paella.
+     */
+    private function getCaptions(MultimediaObject $mmobj, Request $request)
+    {
+        $captions = $this->get('pumukitschema.material')->getCaptions($mmobj);
+
+        return array_map(
+            function ($material) use ($request) {
+                return array('lang' => $material->getLanguage(),
+                             'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
+                             'format' => $material->getMimeType(),
+                             'url' => $this->getAbsoluteUrl($request, $material->getUrl()), );
+            },
+            $captions->toArray()
+        );
     }
 
     /**
