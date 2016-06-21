@@ -165,7 +165,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
      */
     private function getCaptions(MultimediaObject $mmobj, Request $request)
     {
-        $captions = $this->get('pumukitschema.material')->getCaptions($mmobj, false);
+        $captions = $this->get('pumukitschema.material')->getCaptions($mmobj);
 
         $captionsMapped = array_map(
             function ($material) use ($request) {
