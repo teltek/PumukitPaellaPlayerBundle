@@ -224,7 +224,7 @@ class PaellaDataService
      */
     private function getCaptions(MultimediaObject $mmobj, Request $request)
     {
-        $captions = $this->materialService->getCaptions($mmobj, false);
+        $captions = $this->materialService->getCaptions($mmobj);
 
         $captionsMapped = array_map(
             function ($material) use ($request) {
