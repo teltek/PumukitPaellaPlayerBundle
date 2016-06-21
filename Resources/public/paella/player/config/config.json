@@ -65,8 +65,8 @@
                 "seconds": 30
             },
             "es.upv.paella.captionsPlugin": {
-                "enabled": false,
-                "searchOnCaptions": false
+                "enabled": true,
+                "searchOnCaptions": true
             },
             "es.upv.paella.extendedTabAdapterPlugin": {
                 "enabled": false
