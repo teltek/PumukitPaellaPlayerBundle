@@ -165,9 +165,9 @@ class PaellaRepositoryController extends Controller implements WebTVController
      */
     private function getCaptions(MultimediaObject $mmobj, Request $request)
     {
-        $captions = $this->get('pumukitschema.material')->getCaptions($mmobj);
+        $captions = $this->get('pumukitschema.material')->getCaptions($mmobj, false);
 
-        return array_map(
+        $captionsMapped = array_map(
             function ($material) use ($request) {
                 return array('lang' => $material->getLanguage(),
                              'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
@@ -176,6 +176,7 @@ class PaellaRepositoryController extends Controller implements WebTVController
             },
             $captions->toArray()
         );
+        return array_values($captionsMapped);
     }
 
     /**
