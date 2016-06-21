@@ -11,6 +11,7 @@
       <argument type="service" id="pumukitschema.pic" />
       <argument type="service" id="pumukit_baseplayer.trackurl" />
       <argument type="service" id="pumukit_baseplayer.seriesplaylist" />
+      <argument type="service" id="pumukitschema.material" />
       <argument type="service" id="router" />
       <argument type="service" id="mobile_detect.mobile_detector" />
       <argument type="service" id="pumukit_web_tv.useragent_parser" />

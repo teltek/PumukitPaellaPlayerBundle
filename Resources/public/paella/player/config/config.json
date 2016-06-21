@@ -69,8 +69,8 @@
                 "playlistApi": "/paellaplaylist"
             },
             "es.upv.paella.captionsPlugin": {
-                "enabled": false,
-                "searchOnCaptions": false
+                "enabled": true,
+                "searchOnCaptions": true
             },
             "es.upv.paella.extendedTabAdapterPlugin": {
                 "enabled": false

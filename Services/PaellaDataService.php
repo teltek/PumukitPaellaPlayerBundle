@@ -6,6 +6,7 @@ use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Document\Track;
 use Pumukit\SchemaBundle\Services\PicService;
+use Pumukit\SchemaBundle\Services\MaterialService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
 use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
 use Pumukit\WebTVBundle\Services\UserAgentParserService;
@@ -21,11 +22,12 @@ class PaellaDataService
     private $mobileDetectorService;
     private $userAgentParserService;
 
-    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService)
+    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService)
     {
         $this->picService = $picService;
         $this->trackService = $trackService;
         $this->playlistService = $playlistService;
+        $this->materialService = $materialService;
         $this->urlGenerator = $urlGenerator;
         //Only used to check whether the request is mobile and return a side-by-side on opencast videos.
         $this->mobileDetectorService = $mobileDetectorService;
@@ -112,6 +114,11 @@ class PaellaDataService
         $frameList = $this->getOpencastFrameList($mmobj);
         if($frameList)
             $data['frameList'] = $frameList;
+
+        $captions = $this->getCaptions($mmobj, $request);
+        if ($captions) {
+            $data['captions'] = $captions;
+        }
 
         return $data;
     }
@@ -209,6 +216,26 @@ class PaellaDataService
             }
         }
         return $images;
+    }
+
+
+    /**
+     * Returns a caption list formatted to be added to the paella.
+     */
+    private function getCaptions(MultimediaObject $mmobj, Request $request)
+    {
+        $captions = $this->materialService->getCaptions($mmobj, false);
+
+        $captionsMapped = array_map(
+            function ($material) use ($request) {
+                return array('lang' => $material->getLanguage(),
+                             'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
+                             'format' => $material->getMimeType(),
+                             'url' => $this->getAbsoluteUrl($request, $material->getUrl()), );
+            },
+            $captions->toArray()
+        );
+        return array_values($captionsMapped);
     }
 
     /**
