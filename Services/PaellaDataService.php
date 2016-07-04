@@ -2,6 +2,7 @@
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
+use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Document\Track;
@@ -44,11 +45,11 @@ class PaellaDataService
      *
      * This structure can be later serialized and returned as a json file for the paella player to use.
      */
-    public function getPaellaPlaylistData(Series $series, Request $request)
+    public function getPaellaPlaylistData(Series $series, Request $request, $criteria = array())
     {
-        $data = array();
-        $mmobjs = $this->playlistService->getPlaylistMmobjs($series);
+        $mmobjs = $this->playlistService->getPlaylistMmobjs($series, $criteria);
 
+        $data = array();
         foreach($mmobjs as $mmobj) {
             $url = $this->urlGenerator->generate(
                 'pumukit_playlistplayer_paellaindex',
