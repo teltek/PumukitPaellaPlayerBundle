@@ -40,7 +40,7 @@ class PlaylistController extends BasePlaylistController
                        ->getRepository('PumukitSchemaBundle:Series')
                        ->find($seriesId);
         if(!$series){
-            $this->return404Response("Not series found with id: $seriesId");
+            $this->return404Response("No playlist found with id: $seriesId");
         }
 
         if(!$mmobjId) {
@@ -53,7 +53,7 @@ class PlaylistController extends BasePlaylistController
         $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
 
         if(!$mmobj)
-            return $this->return404Response("Not mmobj found with the id: $mmobjId as part of the series with id: $seriesId");
+            return $this->return404Response("No playable multimedia object found with id: $mmobjId belonging to this playlist. ({$series->getTitle()})");
 
         return array(
             'autostart' => $request->query->get('autostart', 'false'),
@@ -73,7 +73,7 @@ class PlaylistController extends BasePlaylistController
             $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
             $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
             if(!$mmobj)
-                return $this->return404Response("Not mmobj found for the playlist with id: {$series->getId()}");
+                return $this->return404Response("This playlist does not have any playable multimedia objects.");
             $mmobjId = $mmobj->getId();
         }
 
