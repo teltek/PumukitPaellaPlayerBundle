@@ -2,6 +2,7 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
+use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Document\Track;
@@ -24,7 +25,8 @@ class PaellaRepositoryController extends Controller implements WebTVController
     {
         $serializer = $this->get('serializer');
         $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
-        $data = $paellaDataService->getPaellaMmobjData($mmobj, $request);
+        $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+        $data = $paellaDataService->getPaellaMmobjData($mmobj, $request, $criteria);
         $response = $serializer->serialize($data, $request->getRequestFormat());
 
         return new Response($response);
@@ -39,7 +41,8 @@ class PaellaRepositoryController extends Controller implements WebTVController
     {
         $serializer = $this->get('serializer');
         $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
-        $data = $paellaDataService->getPaellaPlaylistData($series, $request);
+        $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+        $data = $paellaDataService->getPaellaPlaylistData($series, $request, $criteria);
         $response = $serializer->serialize($data, $request->getRequestFormat());
 
         return new Response($response);
