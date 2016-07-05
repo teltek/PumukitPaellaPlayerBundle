@@ -40,7 +40,7 @@ class PlaylistController extends BasePlaylistController
                        ->getRepository('PumukitSchemaBundle:Series')
                        ->find($seriesId);
         if(!$series){
-            $this->return404Response("No playlist found with id: $seriesId");
+            return $this->return404Response("No playlist found with id: $seriesId");
         }
 
         if(!$mmobjId) {
