@@ -2,12 +2,14 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
+use Pumukit\BasePlayerBundle\Controller\BasePlaylistController;
+use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
+use Pumukit\SchemaBundle\Document\Series;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Pumukit\SchemaBundle\Document\Series;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Pumukit\BasePlayerBundle\Controller\BasePlaylistController;
+use Symfony\Component\HttpFoundation\Response;
 
 class PlaylistController extends BasePlaylistController
 {
@@ -38,7 +40,7 @@ class PlaylistController extends BasePlaylistController
                        ->getRepository('PumukitSchemaBundle:Series')
                        ->find($seriesId);
         if(!$series){
-            throw $this->createNotFoundException("Not series found with id: $seriesId");
+            $this->return404Response("No playlist found with id: $seriesId");
         }
 
         if(!$mmobjId) {
@@ -47,10 +49,11 @@ class PlaylistController extends BasePlaylistController
         }
 
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
-        $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series);
+        $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+        $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
 
         if(!$mmobj)
-            throw $this->createNotFoundException("Not mmobj found with the id: $mmobjId as part of the series with id: $seriesId");
+            return $this->return404Response("No playable multimedia object found with id: $mmobjId belonging to this playlist. ({$series->getTitle()})");
 
         return array(
             'autostart' => $request->query->get('autostart', 'false'),
@@ -67,9 +70,10 @@ class PlaylistController extends BasePlaylistController
     {
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         if(!$mmobjId) {
-            $mmobj = $playlistService->getPlaylistFirstMmobj($series);
+            $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+            $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
             if(!$mmobj)
-                throw $this->createNotFoundException("Not mmobj found for the playlist with id: {$series->getId()}");
+                return $this->return404Response("This playlist does not have any playable multimedia objects.");
             $mmobjId = $mmobj->getId();
         }
 
@@ -82,5 +86,18 @@ class PlaylistController extends BasePlaylistController
             )
         );
         return $this->redirect($redirectUrl);
+    }
+
+    private function return404Response($message = '')
+    {
+        $params = array(
+            'message' => $message,
+        );
+        $template = $this->renderView(
+            "PumukitPaellaPlayerBundle:PaellaPlayer:404exception.html.twig",
+            $params
+        );
+        return new Response($template, 404);
+        throw $this->createNotFoundException($message);
     }
 }
