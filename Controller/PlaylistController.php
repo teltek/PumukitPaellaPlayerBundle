@@ -22,7 +22,8 @@ class PlaylistController extends BasePlaylistController
     public function indexAction(Series $series, Request $request)
     {
         $mmobjId = $request->get('videoId');
-        return $this->redirectWithMmobj($series, $request, $mmobjId);
+        $videoPos = $request->get('videoPos');
+        return $this->redirectWithMmobj($series, $request, $mmobjId, $videoPos);
     }
 
     /**
@@ -34,8 +35,8 @@ class PlaylistController extends BasePlaylistController
     public function paellaIndexAction(Request $request)
     {
         $mmobjId = $request->get('videoId');
+        $videoPos =  $request->get('videoPos');
         $seriesId = $request->get('playlistId');
-
         $series = $this->get('doctrine_mongodb.odm.document_manager')
                        ->getRepository('PumukitSchemaBundle:Series')
                        ->find($seriesId);
@@ -66,7 +67,7 @@ class PlaylistController extends BasePlaylistController
     /**
      * Helper function to used to redirect when the mmobj id is not specified in the request.
      */
-    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null)
+    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $pos = null)
     {
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         if(!$mmobjId) {
@@ -75,13 +76,14 @@ class PlaylistController extends BasePlaylistController
             if(!$mmobj)
                 return $this->return404Response("This playlist does not have any playable multimedia objects.");
             $mmobjId = $mmobj->getId();
+            $videoPos = 0;
         }
-
         $redirectUrl = $this->generateUrl(
             'pumukit_playlistplayer_paellaindex',
             array(
                 'playlistId' => $series->getId(),
                 'videoId' => $mmobjId,
+                'videoPos' => $videoPos,
                 'autostart' => $request->query->get('autostart', 'false'),
             )
         );

@@ -50,12 +50,13 @@ class PaellaDataService
         $mmobjs = $this->playlistService->getPlaylistMmobjs($series, $criteria);
 
         $data = array();
-        foreach($mmobjs as $mmobj) {
+        foreach($mmobjs as $pos => $mmobj) {
             $url = $this->urlGenerator->generate(
                 'pumukit_playlistplayer_paellaindex',
                 array(
                     'playlistId' => $series->getId(),
                     'videoId' => $mmobj->getId(),
+                    'videoPos' => $pos,
                     'autostart' => 'true',
                 ),
                 true  //Makes the url absolute.
@@ -63,7 +64,8 @@ class PaellaDataService
             $data[] = array(
                 'name' => $mmobj->getTitle(),
                 'id' => $mmobj->getId(),
-                'url' => $url
+                'pos' => $pos,
+                'url' => $url,
             );
         }
 
