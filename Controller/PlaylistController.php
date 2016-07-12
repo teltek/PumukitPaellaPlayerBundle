@@ -35,7 +35,6 @@ class PlaylistController extends BasePlaylistController
     public function paellaIndexAction(Request $request)
     {
         $mmobjId = $request->get('videoId');
-        $videoPos =  $request->get('videoPos');
         $seriesId = $request->get('playlistId');
         $series = $this->get('doctrine_mongodb.odm.document_manager')
                        ->getRepository('PumukitSchemaBundle:Series')
@@ -67,7 +66,7 @@ class PlaylistController extends BasePlaylistController
     /**
      * Helper function to used to redirect when the mmobj id is not specified in the request.
      */
-    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $pos = null)
+    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $videoPos = null)
     {
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         if(!$mmobjId) {
