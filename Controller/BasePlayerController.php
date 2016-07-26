@@ -21,7 +21,9 @@ class BasePlayerController extends BasePlayerControllero
             return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', array('id' => $multimediaObject->getSecret(), 'secret' => $multimediaObject->getSecret())).'&secret='.$multimediaObject->getSecret());
         }
 
-        $response = $this->testBroadcast($multimediaObject, $request);
+        $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
+        $password = $request->get('broadcast_password');
+        $response = $embeddedBroadcastService->canUserPlayMultimediaObject($multimediaObject, $this->getUser(), $password);
         if ($response instanceof Response) {
             return $response;
         }
@@ -52,7 +54,9 @@ class BasePlayerController extends BasePlayerControllero
      */
     public function indexAction(MultimediaObject $multimediaObject, Request $request)
     {
-        $response = $this->testBroadcast($multimediaObject, $request);
+        $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
+        $password = $request->get('broadcast_password');
+        $response = $embeddedBroadcastService->canUserPlayMultimediaObject($multimediaObject, $this->getUser(), $password);
         if ($response instanceof Response) {
             return $response;
         }
