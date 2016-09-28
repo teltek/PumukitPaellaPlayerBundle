@@ -27,11 +27,10 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         $track = $request->query->has('track_id') ?
-        $multimediaObject->getTrackById($request->query->get('track_id')) :
-        $multimediaObject->getFilteredTrackWithTags(array('display'));
+               $multimediaObject->getTrackById($request->query->get('track_id')) :
+               $multimediaObject->getDisplayTrack();
 
         if($track && $track->containsTag("download")) {
-
             return $this->redirect($track->getUrl());
         }
         //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
@@ -58,11 +57,10 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         $track = $request->query->has('track_id') ?
-        $multimediaObject->getTrackById($request->query->get('track_id')) :
-        $multimediaObject->getFilteredTrackWithTags(array('display'));
+               $multimediaObject->getTrackById($request->query->get('track_id')) :
+               $multimediaObject->getDisplayTrack();
 
         if($track && $track->containsTag("download")) {
-
             return $this->redirect($track->getUrl());
         }
         //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)

@@ -176,7 +176,7 @@ class PaellaDataService
                     $track = null;
             }
             else {
-                $track = $mmobj->getFilteredTrackWithTags(array('display'));
+                $track = $mmobj->getDisplayTrack();
             }
             if($track)
                 $tracks['display'] = $track;
