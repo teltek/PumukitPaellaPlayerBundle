@@ -5,6 +5,7 @@ To get the diff between two versions, go to https://github.com/teltek/PuMuKIT2-p
 
 
 ## 1.1.0 (XXXX-XX-XX)
+- Use PumukitCoreBundle filters.
 - Add support for playlist.
 
 ## [1.0.4][1.0.4] (2016-05-28)
