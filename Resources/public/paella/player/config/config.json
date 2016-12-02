@@ -135,7 +135,7 @@
                 "showWidthRes": true
             },
             "es.upv.paella.playbackRatePlugin": {
-                "enabled": false,
+                "enabled": true,
                 "availableRates": [
                     0.75,
                     1,
