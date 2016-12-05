@@ -7,11 +7,6 @@
 	background-position: -200% 22%;
 }
 
-/*** File: plugins/es.teltek.paella.chapterMarksPlugins/editor.less ***/
-.pumukitChapterMarkPlugin .editorTrackItemLabel { margin: 0px; display:none }
-.pumukitChapterMarkPlugin .editorTrackItemMoveArea { left:0px; right:0px }
-.editorTrackItemMark { border: none !important }
-
 /*** File: plugins/es.teltek.paella.playlistPlugin/playlist.less ***/
 .buttonPlugin.playlistPlugin {
    background-position: -89.5% -89%;
@@ -44,7 +39,6 @@
    font-weight: bold;
    padding-left: 15px;
 }
-
 /*** File: plugins/es.upv.paella.annotationPlugins/player.less ***/
 .textAnnotation {
 	background-color: rgba(128,128,128,0.7);
@@ -514,7 +508,7 @@ textarea {
 }
 
 .frameControlItem {
-	width: 100px;
+	width: 140px;
 	cursor: pointer;
 	margin-left:3px;
 	margin-right: 3px;
@@ -529,15 +523,19 @@ textarea {
 }*/
 
 .frameControlItem.selected {
-	width:94px;
+	width:134px;
 	border: 3px dotted @mainColor;
 	opacity: 1;
 }
 
 .frameControlItem.current {
-	width: 94px;
+	width: 134px;
 	border: 3px solid @mainColor;
 	opacity: 1;
+}
+
+.frameControlImage {
+  width: 100%;
 }
 
 
@@ -608,7 +606,7 @@ textarea {
 	background-position: -1300% 0%;
 }
 
-/*** File: plugins/es.upv.paella.liveStramingIndicatorPlugin/live_stream_indicator.less ***/
+/*** File: plugins/es.upv.paella.liveStreamingIndicatorPlugin/live_stream_indicator.less ***/
 
 .buttonPlugin.right.liveIndicator {
     width: 100px;
@@ -1053,6 +1051,212 @@ svg rect{
 .viewModeItemButton.slide {
 	background-position: 80px 0px;
 }
+/*** File: plugins/es.upv.paella.visualAnnotationPlugin/visualAnnotationPlugin.less ***/
+.annotationiframe{
+	width:100%;
+	 height:65vh;
+}
+
+.annotationClose{
+  margin-top:2px;
+  margin-right:2px;
+  cursor:pointer;
+  color: rgba(255, 255, 255, 0.50);
+}
+
+/*.AdtextAnnotationLink {
+  left: 0;
+  top: 0;
+  position: absolute;
+  z-index: 1;
+  width: 18%;
+  height: 100%;
+  background-color: black;
+}
+
+.AdtextAnnotationIMG{
+ position: relative;    left: 33%;    top: 33%;    width: 30%;    height: 30%;
+}
+
+.AdtextAnnotationBody{
+    padding-left: 20%;    top: 30%;    position: absolute;
+}
+
+.ADtextAnnotation {
+    color:rgba(255,255,255,1);
+	background-color: rgba(0,0,0,0.6);
+	text-align: justify;
+	-moz-border-radius: 15px;
+    border-radius: 15px;
+	line-height: 3vmin;
+	font-size: 2.3vmin;
+    padding: 1vw;
+    position: absolute;
+    bottom:70px;
+    left:30px;
+    width:33%;
+    height:16%;
+}
+
+.ADtextAnnotation:hover {
+	background-color: rgba(0,0,0,0.8);
+}
+
+.ADtextAnnotation a{
+      color: rgb(255, 230, 45);
+}
+
+.ADtextAnnotation a:visited{
+      color: rgba(255, 255, 150, 0.80);
+}
+
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618ad0 .AdtextAnnotationLink {  left: 0;  top: 0;  position: absolute;  z-index: 1;  width: 18%;  height: 100%;  background-color: black;} #e28e0130-9824-11e5-88b4-a94245a618ad0 .AdtextAnnotationIMG{ position: relative;    left: 33%;    top: 33%;    width: 30%;    height: 30%; } #e28e0130-9824-11e5-88b4-a94245a618ad0 .AdtextAnnotationBody{    padding-left: 20%;    top: 30%;    position: absolute; } #e28e0130-9824-11e5-88b4-a94245a618ad0 {color:rgba(255,255,255,1);background-color: rgba(0,0,0,0.6);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:70px;left:30px;width:33%;height:16%;} #e28e0130-9824-11e5-88b4-a94245a618ad0:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618ad0 a{color: rgb(255, 230, 45);} .ADtextAnnotation a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618bnd {color:rgba(255,255,255,1);background-color: rgba(0,0,0,0.6);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:70px;left:30px;right30px;} #e28e0130-9824-11e5-88b4-a94245a618ad0:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618bnd a{color: rgb(255, 230, 45);} #e28e0130-9824-11e5-88b4-a94245a618bnd a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618bnd {color:rgba(255,255,255,1);background-color: rgba(0,0,0,0.6);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:70px;left:30px;right30px;} #e28e0130-9824-11e5-88b4-a94245a618ad0:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618bnd a{color: rgb(255, 230, 45);} #e28e0130-9824-11e5-88b4-a94245a618bnd a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618ban {color:rgba(255,255,255,1);background-color: rgba(0,0,0,0.6);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:70px;left:30px;width:40%;} #e28e0130-9824-11e5-88b4-a94245a618ban:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618ban a{color: rgb(255, 230, 45);} #e28e0130-9824-11e5-88b4-a94245a618ban a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+*/
+/*
+.BANNERtextAnnotation {
+    color:rgba(255,255,255,1);
+	background-color: rgba(0,0,0,0.6);
+	text-align: justify;
+	-moz-border-radius: 15px;
+    border-radius: 15px;
+	line-height: 3vmin;
+	font-size: 2.3vmin;
+      padding: 1vw;
+     position: absolute;
+     bottom:70px;
+     left:30px;
+     right:30px;
+
+}
+
+.BANNERtextAnnotation:hover {
+	background-color: rgba(0,0,0,0.8);
+}
+
+.BANNERtextAnnotation a{
+      color: rgb(255, 229, 43);
+}
+
+.BANNERtextAnnotation a:visited{
+      color: rgba(255, 255, 150, 0.80);
+}
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618ban {color:rgba(255,255,255,1);background-color: rgba(0,0,0,0.6);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:70px;left:30px;width:40%;} #e28e0130-9824-11e5-88b4-a94245a618ban:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618ban a{color: rgb(255, 230, 45);} #e28e0130-9824-11e5-88b4-a94245a618ban a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+.NOTEtextAnnotation {
+    color:rgba(255,255,255,1);
+	background-color: rgba(0,0,0,0.6);
+	text-align: justify;
+	-moz-border-radius: 15px;
+    border-radius: 15px;
+	line-height: 3vmin;
+	font-size: 2.3vmin;
+    padding: 1vw;
+	position:absolute;
+	bottom:70px;
+	left:30px;
+	width:40%;
+}
+
+.NOTEtextAnnotation:hover {
+	background-color: rgba(0,0,0,0.8);
+}
+
+.NOTEtextAnnotation a{
+      color: rgb(255, 229, 43);
+}
+
+.NOTEtextAnnotation a:visited{
+      color: rgba(255, 255, 150, 0.80);
+}
+
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618pro {color:rgb(0,0,0);background-color: rgba(247,247,247,0.30);border-style:dashed;border-color: rgba(100,100,100,0.8);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:10px;top:10px;left:30px;width:50%;} #e28e0130-9824-11e5-88b4-a94245a618pro:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618pro a{color: rgb(255, 230, 45);} #e28e0130-9824-11e5-88b4-a94245a618pro a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+.MEMOtextAnnotation {
+    color: rgb(0, 0, 0);
+	background-color: rgba(247, 247, 247, 0.30);
+    border-style:dashed;
+    border-color: rgba(100,100,100,0.8);
+	text-align: justify;
+	-moz-border-radius: 15px;
+    border-radius: 15px;
+	line-height: 3vmin;
+	font-size: 2.3vmin;
+    padding: 1vw;
+    position: absolute;
+    left:30px;
+    bottom: 10px;
+    top:10px;
+    width:50%;
+}
+
+.MEMOtextAnnotation:hover {
+	background-color: rgba(247, 247, 247, 0.90);
+}
+
+.MEMOtextAnnotation a{
+      color: rgb(255, 229, 43);
+}
+
+.MEMOtextAnnotation a:visited{
+      color: rgba(255, 255, 150, 0.80);
+}
+
+.MEMOtextAnnotation .annotationClose{
+      color: rgba(0, 0, 0, 0.80);
+}
+
+\"style\":\"#e28e0130-9824-11e5-88b4-a94245a618ful {color:rgba(255,255,255,1);background-color: rgba(0,0,0,0.6);text-align: justify;-moz-border-radius: 15px;border-radius: 15px;line-height: 3vmin;font-size: 1.2vw;padding: 1vw;position: absolute;bottom:40px;top:20px,left:30px;right:30px;} #e28e0130-9824-11e5-88b4-a94245a618ful:hover { background-color: rgba(0,0,0,0.8);} #e28e0130-9824-11e5-88b4-a94245a618ful a{color: rgb(255, 230, 45);} #e28e0130-9824-11e5-88b4-a94245a618ful a:visited{color: rgba(255, 255, 150, 0.80);}\"
+
+
+.FULLtextAnnotation {
+    color:rgba(255,255,255,1);
+	background-color: rgba(0,0,0,0.6);
+	text-align: justify;
+	-moz-border-radius: 15px;
+    border-radius: 15px;
+	line-height: 3vmin;
+	font-size: 2.3vmin;
+	position: absolute;
+	left:30px;
+	right: 30px;
+	top:20px;
+	bottom:40px;
+}
+
+.FULLtextAnnotation:hover {
+	background-color: rgba(0,0,0,0.8);
+}
+
+.FULLtextAnnotation a{
+      color: rgb(255, 229, 43);
+}
+
+.FULLtextAnnotation a:visited{
+      color: rgba(255, 255, 150, 0.80);
+}
+*/
+.innerAnnotation>a::after{
+  content:url('../images/popup.png');
+  display:inline-flex;
+  clear: both;
+}
+
+.righttop{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+}
+
 /*** File: plugins/es.upv.paella.volumeRangePlugin/volumeRange.less ***/
 .buttonPlugin.volumeRangeButton {
 }
@@ -1227,11 +1431,13 @@ svg rect{
 
 @playbackBarButtonWidth: unit(@playbackBarButtonWidthPx, px);
 
-@playbackControlHeight: unit(@playbackControlHeightPx,px);
+@playbackControlHeight: unit(@playbackControlHeightPx + 2,px);
+
+@playbackControlFullHeight: unit(@playbackControlHeightPx, px);
 
 @playbackBarHeightPx: (@playbackBarButtonHeightPx + @playbackControlHeightPx + 2);
 
-@playbackBarHeight: unit(@playbackBarHeightPx,px);
+@playbackBarHeight: unit(@playbackBarHeightPx + 2,px);
 
 @playbackControlOuterHeight: unit(@playbackControlHeightPx + 2, px);
 
@@ -1337,7 +1543,7 @@ div {
 }
 
 .playbackBarFull {
-	height: @playbackControlHeight;
+	height: @playbackControlFullHeight;
 	background-color: @mainColor;
 }
 
@@ -1427,15 +1633,15 @@ div {
 	display: block;
 	position: relative;
 	width: 69px;
-	height: @playbackControlHeight;
+	height: @playbackControlFullHeight;
 	font-size: 10px;
 	background-repeat: no-repeat;
 	padding-left: 5px;
 	font-family: verdana;
 	text-align: left;
 	z-index: 100;
-	line-height: @playbackControlHeight;
-	margin-top: -@playbackControlHeight;
+	line-height: @playbackControlFullHeight;
+	margin-top: -@playbackControlFullHeight;
 	cursor:pointer;
 }
 
@@ -1598,6 +1804,10 @@ div {
 .playerContainer_controls_playback_playbackBar_canvas{
   	overflow: hidden;
   	position: absolute;
+}
+
+#playerContainer_controls_playback_playbackBar {
+  overflow: hidden;
 }
 
 .login-link {
@@ -1847,7 +2057,7 @@ a.btn {
 	margin-right: 2px;
 }
 
-/*** File: /home/alfro/projects/paellaplayer/resources/style/skins/dark_small.less ***/
+/*** File: /home/mrey/repos/paella/resources/style/skins/dark_small.less ***/
 /* Light icons over dark background */
 @fontFamily: Verdana, sans-serif;
 
