@@ -273,9 +273,8 @@ class PaellaDataService
     private function isMobile(Request $request)
     {
         $userAgent = $request->headers->get('user-agent');
-        $isMobileDevice = ($this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent));
-        $isOldBrowser = $this->userAgentParserService->isOldBrowser($userAgent);
-        return $isMobileDevice || $isOldBrowser;
+        return ($this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent));
+
     }
 
 }
