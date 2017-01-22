@@ -84,7 +84,6 @@ class PaellaDataService
 
         $data = array();
         $data['streams'] = array();
-
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
         if($isMobile) {
             if($tracks['sbs']) {
@@ -150,18 +149,19 @@ class PaellaDataService
             'presentation' => false,
             'sbs' => false,
         );
+        $availableCodecs = array('h264','vp8', 'vp9');
         if($mmobj->getProperty('opencast')) {
             $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
             $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
             $sbsTrack =  $mmobj->getFilteredTrackWithTags(array('sbs'));
             foreach($presenterTracks as $track) {
-                if($track->getVcodec() == 'h264') {
+                if(in_array($track->getVcodec(), $availableCodecs)) {
                     $tracks['display'] = $track;
                     break;
                 }
             }
             foreach($presentationTracks as $track) {
-                if($track->getVcodec() == 'h264') {
+                if(in_array($track->getVcodec(), $availableCodecs)) {
                     $tracks['presentation'] = $track;
                     break;
                 }
