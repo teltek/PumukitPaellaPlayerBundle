@@ -20,6 +20,7 @@
             { "factory":"RTMPVideoFactory", "enabled":true },
             { "factory":"ImageVideoFactory", "enabled":true },
             { "factory":"YoutubeVideoFactory", "enabled":false },
+            { "factory":"Video360ThetaFactory", "enabled":false },
             { "factory":"Video360Factory", "enabled":false }
         ],
         "audioMethods":[
@@ -71,7 +72,7 @@
             "es.upv.paella.captionsPlugin": {"enabled":true, "searchOnCaptions":true},
             "es.upv.paella.extendedTabAdapterPlugin": {"enabled":false},
             "es.upv.paella.footprintsPlugin": {"enabled":false},
-            "es.upv.paella.frameControlPlugin":  {"enabled": true},
+            "es.upv.paella.frameControlPlugin":  {"enabled": true, "showFullPreview": "auto"},
             "es.upv.paella.fullScreenButtonPlugin": {"enabled":true, "reloadOnFullscreen":{ "enabled":true, "keepUserSelection":true }},
             "es.upv.paella.helpPlugin": {"enabled":false, "langs":["en","es"]},
             "es.upv.paella.multipleQualitiesPlugin": {"enabled":true, "showWidthRes":true},
@@ -89,6 +90,7 @@
             "//****": "Video Overlay Button Plugins",
             "es.upv.paella.liveStreamingIndicatorPlugin":  { "enabled": false },
             "es.upv.paella.showEditorPlugin":{"enabled":false,"alwaysVisible":false},
+            "es.upv.paella.arrowSlidesNavigatorPlugin": {"enabled": true, "showArrowsIn": "slave"},
 
             "//****": "TabBar Plugins",
             "es.upv.paella.commentsPlugin": {"enabled": false},
@@ -111,6 +113,7 @@
 
             "//****": "Search Service Plugins",
             "es.upv.paella.search.captionsSearchPlugin": {"enabled":true},
+            "es.upv.paella.frameCaptionsSearchPlugin": {"enabled":true},
 
             "//****": "User Tracking Saver Plugins",
             "es.upv.paella.usertracking.elasticsearchSaverPlugin": { "enabled": false, "url": "http://my.elastic.server"},
