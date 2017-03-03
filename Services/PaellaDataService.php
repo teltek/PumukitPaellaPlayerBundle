@@ -151,6 +151,14 @@ class PaellaDataService
         );
         $availableCodecs = array('h264','vp8', 'vp9');
         if($mmobj->getProperty('opencast')) {
+            if($trackId) {
+                $track = $mmobj->getTrackById($trackId);
+                if($track->containsTag('display')) {
+                    $tracks['display'] = $track;
+                    return $tracks;
+                }
+            }
+
             $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
             $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
             $sbsTrack =  $mmobj->getFilteredTrackWithTags(array('sbs'));
