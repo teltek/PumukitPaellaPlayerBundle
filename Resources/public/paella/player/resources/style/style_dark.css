@@ -549,12 +549,6 @@ a.btn {
   margin-bottom: -3px;
   margin-right: 2px;
 }
-.buttonPlugin.flexSkip_Rewind_10 {
-  background-position: -205% 22%;
-}
-.buttonPlugin.flexSkip_Forward_30 {
-  background-position: -200% 22%;
-}
 .buttonPlugin.playlistPlugin {
   background-position: -89.5% -89%;
 }
@@ -584,13 +578,11 @@ a.btn {
   font-weight: bold;
   padding-left: 15px;
 }
-.buttonPlugin.arrowSlideNavidator.nextButton {
-  background-position: -1500% -100%;
-  pointer-events: all !important;
+.buttonPlugin.flexSkip_Rewind_10 {
+  background-position: -205% 22%;
 }
-.buttonPlugin.arrowSlideNavidator.prevButton {
-  background-position: -1600% -100%;
-  pointer-events: all !important;
+.buttonPlugin.flexSkip_Forward_30 {
+  background-position: -200% 22%;
 }
 .textAnnotation {
   background-color: rgba(128, 128, 128, 0.7);
@@ -601,6 +593,14 @@ a.btn {
   padding-top: 10px;
   padding-bottom: 10px;
   border-radius: 12px;
+}
+.buttonPlugin.arrowSlideNavidator.nextButton {
+  background-position: -1500% -100%;
+  pointer-events: all !important;
+}
+.buttonPlugin.arrowSlideNavidator.prevButton {
+  background-position: -1600% -100%;
+  pointer-events: all !important;
 }
 .blackBoardDiv {
   position: absolute;
@@ -828,6 +828,30 @@ textarea {
   display: inline-block;
   margin-left: 3px;
 }
+.editorPluginToolStatusHelp,
+.editorPluginConsolidateHelp {
+  position: absolute;
+  height: 113px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  overflow: auto;
+}
+.editorPluginToolStatus_trackItemList,
+.editorPluginConsolidate_trackItemList {
+  position: absolute;
+  overflow: auto;
+  bottom: 123px;
+  top: 65px;
+  left: 10px;
+  right: 10px;
+  box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.39);
+  border-radius: 7px;
+  padding-left: 13px;
+}
+.trackEditorFieldSelected {
+  background-color: red;
+}
 .buttonPlugin.extendedTabAdapterPlugin {
   background-position: -500% -200%;
 }
@@ -912,30 +936,6 @@ textarea {
   height: 100%;
   overflow: hidden;
   display: inline-block;
-}
-.editorPluginToolStatusHelp,
-.editorPluginConsolidateHelp {
-  position: absolute;
-  height: 113px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  overflow: auto;
-}
-.editorPluginToolStatus_trackItemList,
-.editorPluginConsolidate_trackItemList {
-  position: absolute;
-  overflow: auto;
-  bottom: 123px;
-  top: 65px;
-  left: 10px;
-  right: 10px;
-  box-shadow: inset 0px 0px 10px 2px rgba(0, 0, 0, 0.39);
-  border-radius: 7px;
-  padding-left: 13px;
-}
-.trackEditorFieldSelected {
-  background-color: red;
 }
 .buttonPlugin.frameControl {
   background-position: -1200% -100%;
@@ -1356,6 +1356,27 @@ svg rect {
 .btn {
   margin-left: 20px;
 }
+.buttonPlugin.themeChooserPlugin {
+  background-position: -800% -100%;
+}
+.buttonPluginPopUp.themeChooserPlugin {
+  background-image: none;
+  min-width: 40px;
+  width: 120px;
+  text-align: right;
+}
+.buttonPluginPopUp.themeChooserPlugin .themebutton {
+  cursor: pointer;
+  text-align: left;
+  text-transform: capitalize;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.buttonPluginPopUp.themeChooserPlugin .themebutton:hover {
+  background-color: #FF4C4C;
+}
 .translecturesCaptionsMessageBox {
   margin-left: auto;
   margin-right: auto;
@@ -1385,27 +1406,6 @@ svg rect {
 	position:absolute;
 	left: 0px;
 */
-}
-.buttonPlugin.themeChooserPlugin {
-  background-position: -800% -100%;
-}
-.buttonPluginPopUp.themeChooserPlugin {
-  background-image: none;
-  min-width: 40px;
-  width: 120px;
-  text-align: right;
-}
-.buttonPluginPopUp.themeChooserPlugin .themebutton {
-  cursor: pointer;
-  text-align: left;
-  text-transform: capitalize;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-.buttonPluginPopUp.themeChooserPlugin .themebutton:hover {
-  background-color: #FF4C4C;
 }
 .buttonPluginPopUp.showViewModeButton {
   background-image: none;
