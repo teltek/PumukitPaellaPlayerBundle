@@ -1191,6 +1191,10 @@ textarea {
 .rateButtons .starButton:first-of-type {
   margin-left: 19px;
 }
+.buttonPlugin.showEditorButton {
+  background-color: rgba(0, 0, 0, 0.6);
+  background-position: -400% -100%;
+}
 .buttonPlugin.searchButton {
   background-size: 2000% 1000%;
   background-position: -900% -100%;
@@ -1287,10 +1291,6 @@ svg rect {
 }
 .noResults {
   margin: 5px;
-}
-.buttonPlugin.showEditorButton {
-  background-color: rgba(0, 0, 0, 0.6);
-  background-position: -400% -100%;
 }
 .buttonPlugin.showSocialPluginButton {
   background-position: -800% 0%;
