@@ -124,11 +124,11 @@
 		"hidden":false,
 		"icon":"slide_over_professor_icon.png",
 		"masterVideo":{"content":"presenter","rect":[
-			{"aspectRatio":"16/9","left":"-201","top":"1","width":"720","height":"405"},
-			{"aspectRatio":"16/10","left":"-201","top":"1","width":"720","height":"450"},
-			{"aspectRatio":"5/3","left":"-201","top":"1","width":"720","height":"432"},
-			{"aspectRatio":"5/4","left":"-201","top":"1","width":"720","height":"576"},
-			{"aspectRatio":"4/3","left":"-201","top":"1","width":"720","height":"540"}],"visible":"true","layer":"1"},
+			{"aspectRatio":"16/9","left":"-112","top":"1","width":"544","height":"306"},
+			{"aspectRatio":"16/10","left":"-112","top":"1","width":"544","height":"340"},
+			{"aspectRatio":"5/3","left":"-107","top":"1","width":"535","height":"321"},
+			{"aspectRatio":"5/4","left":"-107","top":"1","width":"535","height":"428"},
+			{"aspectRatio":"4/3","left":"-108","top":"1","width":"536","height":"402"}],"visible":"true","layer":"1"},
 		"slaveVideo":{"content":"presentation","rect":[
 			{"aspectRatio":"16/9","left":"321","top":"1","width":"960","height":"540"},
 			{"aspectRatio":"16/10","left":"321","top":"1","width":"960","height":"600"},
@@ -143,11 +143,11 @@
 		"hidden":false,
 		"icon":"slide_over_professor_right_icon.png",
 		"masterVideo":{"content":"presenter","rect":[
-			{"aspectRatio":"16/9","left":"761","top":"1","width":"720","height":"405"},
-			{"aspectRatio":"16/10","left":"761","top":"1","width":"720","height":"450"},
-			{"aspectRatio":"5/3","left":"761","top":"1","width":"720","height":"432"},
-			{"aspectRatio":"5/4","left":"761","top":"1","width":"720","height":"576"},
-			{"aspectRatio":"4/3","left":"761","top":"1","width":"720","height":"540"}],"visible":"true","layer":"1"},
+			{"aspectRatio":"16/9","left":"848","top":"1","width":"544","height":"306"},
+			{"aspectRatio":"16/10","left":"848","top":"1","width":"544","height":"340"},
+			{"aspectRatio":"5/3","left":"853","top":"1","width":"535","height":"321"},
+			{"aspectRatio":"5/4","left":"853","top":"1","width":"535","height":"428"},
+			{"aspectRatio":"4/3","left":"852","top":"1","width":"536","height":"402"}],"visible":"true","layer":"1"},
 		"slaveVideo":{"content":"presentation","rect":[
 			{"aspectRatio":"16/9","left":"1","top":"1","width":"960","height":"540"},
 			{"aspectRatio":"16/10","left":"1","top":"1","width":"960","height":"600"},
