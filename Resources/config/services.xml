@@ -20,5 +20,10 @@
       </call>
     </service>
 
+    <service id="pumukit_paella_player.twig_extension" class="Pumukit\PaellaPlayerBundle\Twig\PumukitExtension">
+      <argument type="service" id="router.request_context" on-invalid="ignore" />
+      <tag name="twig.extension" />
+    </service>
+
   </services>
 </container>
