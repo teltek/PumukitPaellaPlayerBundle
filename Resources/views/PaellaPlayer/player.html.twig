@@ -23,7 +23,7 @@
        {% endif %}
 
        setTimeout(function(){
-           paella.player.setProfile("{{ getPaellaLayout(app.request, multimediaObject) }}");
+           paella.player.setProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
        }, 300);
 
    });
