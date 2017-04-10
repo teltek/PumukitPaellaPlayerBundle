@@ -17,9 +17,11 @@
   <script>
    $(document).bind(paella.events.loadComplete,function(event,params) {
        {% if autostart is defined and autostart == 'true' %}
-       setTimeout(function(){
-           paella.player.play();
-       }, 300);
+       if (!base.userAgent.browser.IsMobileVersion) {
+         setTimeout(function(){
+             paella.player.play();
+         }, 300);
+       }
        {% endif %}
 
        setTimeout(function(){
