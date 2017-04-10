@@ -204,7 +204,11 @@ class PaellaDataService
         $images = array();
         //Only works if the video is an opencast video
         if($opencastId = $mmobj->getProperty('opencast')) {
-            $mediaPackage = $this->opencastClient->getMediaPackage($opencastId);
+            try {
+                $mediaPackage = $this->opencastClient->getMediaPackage($opencastId);
+            } catch (\Exception $e) {
+                //TODO: Inject logger and log a warning.
+            }
             //If it doesn't have attachments as opencast should, we return an empty result
             if(!isset($mediaPackage['attachments']['attachment']))
                 return array();
