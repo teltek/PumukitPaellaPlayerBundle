@@ -23,10 +23,17 @@
        {% endif %}
 
        setTimeout(function(){
+           setPaellaProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
            paella.player.setProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
        }, 300);
 
    });
    loadPaella('playerContainer', '{{multimediaObject.id}}');
+   function setPaellaProfile(profileName) {
+       $('.viewModeItemButton').removeClass('selected');
+       $('.viewModeItemButton.' + profileName).addClass('selected');
+       paella.player.setProfile(profileName);
+       base.cookies.set("lastProfile", profileName);
+   }
   </script>
 {% endblock %}
