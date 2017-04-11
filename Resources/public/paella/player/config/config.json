@@ -4,7 +4,7 @@
         "profileFrameStrategy": "paella.ProfileFrameStrategy",
         "videoQualityStrategy": "paella.LimitedBestFitVideoQualityStrategy",
         "videoQualityStrategyParams":{ "maxAutoQualityRes":720 },
-        "reloadOnFullscreen": true,
+        "reloadOnFullscreen": false,
 
         "deprecated-methods":[{"name":"streaming","enabled":true},
                    {"name":"html","enabled":true},
