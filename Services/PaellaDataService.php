@@ -175,7 +175,7 @@ class PaellaDataService
                 break;
             }
         }
-        if($sbsTrack && $sbsTrack->getVcodec() == 'h264')
+        if($sbsTrack && in_array($track->getVcodec(), $availableCodecs))
             $tracks['sbs'] = $sbsTrack;
 
         if(!$tracks['display']){
