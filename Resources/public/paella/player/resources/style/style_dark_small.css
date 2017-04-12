@@ -549,6 +549,12 @@ a.btn {
   margin-bottom: -3px;
   margin-right: 2px;
 }
+.buttonPlugin.flexSkip_Rewind_10 {
+  background-position: -205% 22%;
+}
+.buttonPlugin.flexSkip_Forward_30 {
+  background-position: -200% 22%;
+}
 .buttonPlugin.playlistPlugin {
   background-position: -89.5% -89%;
 }
@@ -577,12 +583,6 @@ a.btn {
   font-style: italic;
   font-weight: bold;
   padding-left: 15px;
-}
-.buttonPlugin.flexSkip_Rewind_10 {
-  background-position: -205% 22%;
-}
-.buttonPlugin.flexSkip_Forward_30 {
-  background-position: -200% 22%;
 }
 .textAnnotation {
   background-color: rgba(128, 128, 128, 0.7);
@@ -615,6 +615,12 @@ a.btn {
   background-color: rgba(255, 236, 195, 0.3);
   position: absolute;
   border: 1px dotted white;
+}
+.lensContainer img {
+  width: 100% !important;
+}
+#overlayContainer div.lensContainer {
+  pointer-events: all;
 }
 .textBreak {
   background-color: rgba(128, 128, 128, 0.7);
@@ -1191,10 +1197,6 @@ textarea {
 .rateButtons .starButton:first-of-type {
   margin-left: 19px;
 }
-.buttonPlugin.showEditorButton {
-  background-color: rgba(0, 0, 0, 0.6);
-  background-position: -400% -100%;
-}
 .buttonPlugin.searchButton {
   background-size: 2000% 1000%;
   background-position: -900% -100%;
@@ -1291,6 +1293,10 @@ svg rect {
 }
 .noResults {
   margin: 5px;
+}
+.buttonPlugin.showEditorButton {
+  background-color: rgba(0, 0, 0, 0.6);
+  background-position: -400% -100%;
 }
 .buttonPlugin.showSocialPluginButton {
   background-position: -800% 0%;
