@@ -153,10 +153,10 @@ class PaellaDataService
 
         if($trackId) {
             $track = $mmobj->getTrackById($trackId);
-            if($track->containsTag('display')) {
+            if($track->containsAnyTag(array('display', 'presenter/delivery', 'presentation/delivery')) && in_array($track->getVcodec(), $availableCodecs)) {
                 $tracks['display'] = $track;
-                return $tracks;
             }
+            return $tracks;
         }
 
         $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
@@ -175,12 +175,15 @@ class PaellaDataService
                 break;
             }
         }
-        if($sbsTrack && in_array($track->getVcodec(), $availableCodecs))
+
+        if($sbsTrack && in_array($sbsTrack->getVcodec(), $availableCodecs))
             $tracks['sbs'] = $sbsTrack;
 
         if(!$tracks['display']){
             $track = $mmobj->getDisplayTrack();
-            $tracks['display'] = $track;
+            if(in_array($track->getVcodec(), $availableCodecs)) {
+                $tracks['display'] = $track;
+            }
         }
 
         return $tracks;
