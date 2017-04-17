@@ -17,20 +17,24 @@
   <script>
    $(document).bind(paella.events.loadComplete,function(event,params) {
        {% if autostart is defined and autostart == 'true' %}
-       setTimeout(function(){
-           paella.player.play();
-       }, 300);
+       if (!base.userAgent.browser.IsMobileVersion) {
+         setTimeout(function(){
+             paella.player.play();
+         }, 300);
+       }
        {% endif %}
-       {% if multimediaObject.getProperty('opencastinvert') %}
+
        setTimeout(function(){
-           paella.player.setProfile("slide_professor");
+           setPaellaProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
        }, 300);
-       {% else %}
-       setTimeout(function(){
-           paella.player.setProfile("professor_slide");
-       }, 300);
-       {% endif %}
+
    });
    loadPaella('playerContainer', '{{multimediaObject.id}}');
+   function setPaellaProfile(profileName) {
+       $('.viewModeItemButton').removeClass('selected');
+       $('.viewModeItemButton.' + profileName).addClass('selected');
+       paella.player.setProfile(profileName);
+       base.cookies.set("lastProfile", profileName);
+   }
   </script>
 {% endblock %}

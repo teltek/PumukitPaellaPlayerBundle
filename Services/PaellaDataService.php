@@ -84,7 +84,6 @@ class PaellaDataService
 
         $data = array();
         $data['streams'] = array();
-
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
         if($isMobile) {
             if($tracks['sbs']) {
@@ -150,36 +149,41 @@ class PaellaDataService
             'presentation' => false,
             'sbs' => false,
         );
-        if($mmobj->getProperty('opencast')) {
-            $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
-            $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
-            $sbsTrack =  $mmobj->getFilteredTrackWithTags(array('sbs'));
-            foreach($presenterTracks as $track) {
-                if($track->getVcodec() == 'h264') {
-                    $tracks['display'] = $track;
-                    break;
-                }
-            }
-            foreach($presentationTracks as $track) {
-                if($track->getVcodec() == 'h264') {
-                    $tracks['presentation'] = $track;
-                    break;
-                }
-            }
-            if($sbsTrack && $sbsTrack->getVcodec() == 'h264')
-                $tracks['sbs'] = $sbsTrack;
-        }
-        else {
-            if($trackId) {
-                $track = $mmobj->getTrackById($trackId);
-                if(!$track->containsTag('display'))
-                    $track = null;
-            }
-            else {
-                $track = $mmobj->getDisplayTrack();
-            }
-            if($track)
+        $availableCodecs = array('h264','vp8', 'vp9');
+
+        if($trackId) {
+            $track = $mmobj->getTrackById($trackId);
+            if($track->containsAnyTag(array('display', 'presenter/delivery', 'presentation/delivery')) && in_array($track->getVcodec(), $availableCodecs)) {
                 $tracks['display'] = $track;
+            }
+            return $tracks;
+        }
+
+        $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
+        $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
+        $sbsTrack =  $mmobj->getFilteredTrackWithTags(array('sbs'));
+
+        foreach($presenterTracks as $track) {
+            if(in_array($track->getVcodec(), $availableCodecs)) {
+                $tracks['display'] = $track;
+                break;
+            }
+        }
+        foreach($presentationTracks as $track) {
+            if(in_array($track->getVcodec(), $availableCodecs)) {
+                $tracks['presentation'] = $track;
+                break;
+            }
+        }
+
+        if($sbsTrack && in_array($sbsTrack->getVcodec(), $availableCodecs))
+            $tracks['sbs'] = $sbsTrack;
+
+        if(!$tracks['display']){
+            $track = $mmobj->getDisplayTrack();
+            if(in_array($track->getVcodec(), $availableCodecs)) {
+                $tracks['display'] = $track;
+            }
         }
 
         return $tracks;
@@ -196,7 +200,11 @@ class PaellaDataService
         $images = array();
         //Only works if the video is an opencast video
         if($opencastId = $mmobj->getProperty('opencast')) {
-            $mediaPackage = $this->opencastClient->getMediaPackage($opencastId);
+            try {
+                $mediaPackage = $this->opencastClient->getMediaPackage($opencastId);
+            } catch (\Exception $e) {
+                //TODO: Inject logger and log a warning.
+            }
             //If it doesn't have attachments as opencast should, we return an empty result
             if(!isset($mediaPackage['attachments']['attachment']))
                 return array();
@@ -273,9 +281,8 @@ class PaellaDataService
     private function isMobile(Request $request)
     {
         $userAgent = $request->headers->get('user-agent');
-        $isMobileDevice = ($this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent));
-        $isOldBrowser = $this->userAgentParserService->isOldBrowser($userAgent);
-        return $isMobileDevice || $isOldBrowser;
+        return ($this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent));
+
     }
 
 }

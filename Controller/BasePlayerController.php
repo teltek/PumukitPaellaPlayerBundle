@@ -18,7 +18,7 @@ class BasePlayerController extends BasePlayerControllero
     public function magicAction(MultimediaObject $multimediaObject, Request $request)
     {
         if (!$request->query->has('secret')) {
-            return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', array('id' => $multimediaObject->getSecret(), 'secret' => $multimediaObject->getSecret())).'&secret='.$multimediaObject->getSecret());
+            return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', array('id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret())).'&secret='.$multimediaObject->getSecret());
         }
 
         $response = $this->testBroadcast($multimediaObject, $request);
@@ -67,7 +67,7 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
-        return array('autostart' => $request->query->get('autostart', 'true'),
+        return array('autostart' => $request->query->get('autostart', 'false'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'multimediaObject' => $multimediaObject,
                      'object' => $multimediaObject,
