@@ -3,13 +3,7 @@
 namespace Pumukit\PaellaPlayerBundle\Twig;
 
 use Symfony\Component\Routing\RequestContext;
-use Pumukit\SchemaBundle\Document\Broadcast;
-use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
-use Pumukit\SchemaBundle\Services\MaterialService;
-use Pumukit\SchemaBundle\Services\PicService;
-use Pumukit\WebTVBundle\Services\LinkService;
-use Doctrine\ODM\MongoDB\DocumentManager;
 
 class PumukitExtension extends \Twig_Extension
 {
@@ -49,6 +43,10 @@ class PumukitExtension extends \Twig_Extension
 
         if ($mmobj->getProperty('opencastinvert')) {
             $paellaLayout = 'slide_professor';
+        }
+
+        if ($mmobj->getProperty('paellalayout')) {
+            $paellaLayout = $mmobj->getProperty('paellalayout');
         }
 
         $paellaLayout = $request->query->get('paella_layout', $paellaLayout);
