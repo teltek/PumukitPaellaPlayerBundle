@@ -1,4 +1,12 @@
 {% extends 'PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig' %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {% if custom_css_url is defined and custom_css_url %}
+    <link rel="stylesheet" href="{{ custom_css_url }}" type="text/css" media="screen" charset="utf-8">
+  {% endif %}
+{% endblock %}
+
 {% block body_base %}
   <div id="playerContainer" style="display:block;width:100%;" >
   </div>
