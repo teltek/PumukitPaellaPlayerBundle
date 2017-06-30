@@ -1,24 +1,9 @@
 {
 	"metadata": {
 		"duration": 0,
-		"title": "UPV-TV"
+		"title": ""
 	},
 	"streams": [
-		{
-			"sources": {
-				"hls": [
-					{
-						"src": "https://walterebert.com/playground/video/hls/sintel-trailer.m3u8",
-						"mimetype": "video/mp4",
-						"res": {
-							"w": "1280",
-							"h": "720"
-						}
-					}
-				]
-			},
-			"preview": "490512.jpg"
-		},
 		{
 			"sources": {
 				"mp4": [
@@ -73,6 +58,23 @@
 				]
 			},
 			"preview": "http://paellaplayer.upv.es/demo/repository/pm-be0c7738-039d-9445-8237-8b85f37cd303/slides/thumb_0.jpg"
+		}
+	],
+	"frameList": [
+		{
+			"id": "frame_0",
+			"mimetype": "image/jpeg",
+			"time": 0,
+			"url": "http://paellaplayer.upv.es/demo/repository/pm-be0c7738-039d-9445-8237-8b85f37cd303/slides/thumb_0.jpg",
+			"thumb": "http://paellaplayer.upv.es/demo/repository/pm-be0c7738-039d-9445-8237-8b85f37cd303/slides/thumb_0.jpg"
+		}
+	],
+	"captions": [
+		{
+			"lang": "es",
+			"text": "Español (traducción automática)",
+			"format": "vtt",
+			"url": "captions.es.vtt"
 		}
 	]
 }
