@@ -87,6 +87,8 @@ class PaellaDataService
 
         if ($mmobj->isOnlyAudio() && ($track = $mmobj->getDisplayTrack())) {
             $dataStream = $this->buildDataStream($track, $request);
+            $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+            $dataStream['preview'] = $pic;
             $data['streams'][] = $dataStream;
         } elseif ($isMobile) {
             if ($tracks['sbs']) {
