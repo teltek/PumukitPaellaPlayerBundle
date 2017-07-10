@@ -34,6 +34,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         gc_collect_cycles();
         parent::tearDown();
     }
+
     private function callRepo($mmobj, $track = null)
     {
         $client = static::createClient();

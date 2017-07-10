@@ -5,11 +5,9 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\SchemaBundle\Document\Track;
 use Pumukit\CoreBundle\Controller\PersonalController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +21,6 @@ class PaellaRepositoryController extends Controller implements PersonalControlle
      */
     public function indexAction(MultimediaObject $mmobj, Request $request)
     {
-
         $serializer = $this->get('serializer');
         $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
         $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
