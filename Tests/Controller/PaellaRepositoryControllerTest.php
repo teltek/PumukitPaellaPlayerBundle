@@ -203,4 +203,29 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
     }
+
+    public function testAudioPaellaRepository()
+    {
+        //Init Mmobj
+        $series = $this->factoryService->createSeries();
+        $mmobj = $this->factoryService->createMultimediaObject($series);
+        $mmobj->setStatus(MultimediaObject::STATUS_PUBLISHED);
+
+        $track = new Track();
+        $track->setDuration(2);
+        $track->setOnlyAudio(true);
+        $track->setTags(array('display'));
+        $mmobj->addTrack($track);
+
+        $this->dm->persist($series);
+        $this->dm->persist($mmobj);
+        $this->dm->flush();
+
+        //Should return ok and empty
+        $response = $this->callRepo($mmobj);
+        $this->assertEquals(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertEquals(count($responseData['streams']), 1);
+        $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
+    }
 }
