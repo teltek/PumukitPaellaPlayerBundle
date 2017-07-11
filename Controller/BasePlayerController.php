@@ -33,6 +33,11 @@ class BasePlayerController extends BasePlayerControllero
         if ($track && $track->containsTag('download')) {
             return $this->redirect($track->getUrl());
         }
+
+        if ($url = $multimediaObject->getProperty('externalplayer')) {
+            return $this->redirect($url);
+        }
+
         //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
         //Then just return several tracks.
         $tracks = array($track);
@@ -64,6 +69,11 @@ class BasePlayerController extends BasePlayerControllero
         if ($track && $track->containsTag('download')) {
             return $this->redirect($track->getUrl());
         }
+
+        if ($url = $multimediaObject->getProperty('externalplayer')) {
+            return $this->redirect($url);
+        }
+
         //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
         //Then just return several tracks.
         $tracks = array($track);
