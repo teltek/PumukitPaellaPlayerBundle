@@ -227,5 +227,49 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
+
+        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track, true),
+                            $responseData['streams'][0]['sources']['mp4'][0]['src']);
+    }
+
+    public function testMultipleAudioPaellaRepository()
+    {
+        //Init Mmobj
+        $series = $this->factoryService->createSeries();
+        $mmobj = $this->factoryService->createMultimediaObject($series);
+        $mmobj->setStatus(MultimediaObject::STATUS_PUBLISHED);
+
+        $track = new Track();
+        $track->setDuration(2);
+        $track->setOnlyAudio(true);
+        $track->setTags(array('display'));
+        $mmobj->addTrack($track);
+
+        $track2 = new Track();
+        $track2->setDuration(2);
+        $track2->setOnlyAudio(true);
+        $track2->setTags(array('display'));
+        $mmobj->addTrack($track2);
+
+        $this->dm->persist($series);
+        $this->dm->persist($mmobj);
+        $this->dm->flush();
+
+        //Should return ok and empty
+        $response = $this->callRepo($mmobj, $track);
+        $this->assertEquals(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertEquals(count($responseData['streams']), 1);
+        $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
+        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track, true),
+                            $responseData['streams'][0]['sources']['mp4'][0]['src']);
+
+        $response = $this->callRepo($mmobj, $track2);
+        $this->assertEquals(200, $response->getStatusCode());
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertEquals(count($responseData['streams']), 1);
+        $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
+        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track2, true),
+                            $responseData['streams'][0]['sources']['mp4'][0]['src']);
     }
 }

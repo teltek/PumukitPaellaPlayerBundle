@@ -85,11 +85,19 @@ class PaellaDataService
         $data['streams'] = array();
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
 
-        if ($mmobj->isOnlyAudio() && ($track = $mmobj->getDisplayTrack())) {
-            $dataStream = $this->buildDataStream($track, $request);
-            $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
-            $dataStream['preview'] = $pic;
-            $data['streams'][] = $dataStream;
+        if ($mmobj->isOnlyAudio()) {
+            if ($trackId) {
+                $track = $mmobj->getTrackById($trackId);
+            } else {
+                $track = $mmobj->getDisplayTrack();
+            }
+
+            if ($track) {
+                $dataStream = $this->buildDataStream($track, $request);
+                $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+                $dataStream['preview'] = $pic;
+                $data['streams'][] = $dataStream;
+            }
         } elseif ($isMobile) {
             if ($tracks['sbs']) {
                 $dataStream = $this->buildDataStream($tracks['sbs'], $request);
