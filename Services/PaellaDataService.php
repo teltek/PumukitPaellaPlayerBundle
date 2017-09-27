@@ -81,6 +81,11 @@ class PaellaDataService
         $trackId = $request->query->get('track_id');
         $isMobile = $this->isMobile($request);
 
+        // Preview test of https://github.com/teltek/PuMuKIT2-paella-player-bundle/issues/32
+        if ($request->query->get('force_dual')) {
+            $isMobile = false;
+        }
+
         $data = array();
         $data['streams'] = array();
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
@@ -255,10 +260,12 @@ class PaellaDataService
 
         $captionsMapped = array_map(
             function ($material) use ($request) {
-                return array('lang' => $material->getLanguage(),
-                             'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
-                             'format' => $material->getMimeType(),
-                             'url' => $this->getAbsoluteUrl($request, $material->getUrl()), );
+                return array(
+                    'lang' => $material->getLanguage(),
+                    'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
+                    'format' => $material->getMimeType(),
+                    'url' => $this->getAbsoluteUrl($request, $material->getUrl()),
+                );
             },
             $captions->toArray()
         );
