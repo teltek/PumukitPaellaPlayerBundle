@@ -211,39 +211,35 @@ class PaellaDataService
      */
     private function getOpencastFrameList($mmobj)
     {
-        //If there is no opencast client this won't work
         if (!$this->opencastClient) {
             return array();
         }
 
         $images = array();
-        //Only works if the video is an opencast video
         if ($opencastId = $mmobj->getProperty('opencast')) {
             try {
-                $mediaPackage = $this->opencastClient->getMediaPackage($opencastId);
+                $mediaPackage = $this->opencastClient->getFullMediaPackage($opencastId);
             } catch (\Exception $e) {
                 //TODO: Inject logger and log a warning.
             }
-            //If it doesn't have attachments as opencast should, we return an empty result
-            if (!isset($mediaPackage['attachments']['attachment'])) {
+
+            if (!isset($mediaPackage['segments']['segment'])) {
                 return array();
             }
 
-            foreach ($mediaPackage['attachments']['attachment'] as $attachmnt) {
-                if ($attachmnt['type'] == 'presentation/segment+preview') {
-                    $result = array();
+            foreach ($mediaPackage['segments']['segment'] as $segment) {
+                $time = intval($segment['time'] / 1000);
+                $id = 'frame_'.$time;
+                $mimeType = 'image/jpeg';
 
-                    //Getting time by parsing hours, minutes and second of a string of this type ->  time=T12:12:12:0F1000
-                    preg_match('/time\=T(.*?):(.*?):(.*?):;*/', $attachmnt['ref'], $result);
-                    $time = $result[1] * 3600 + $result[2] * 60 + $result[3];
-
-                    $images[] = array('id' => 'frame_'.$time,
-                                      'mimetype' => $attachmnt['mimetype'],
-                                      'time' => $time,
-                                      'url' => $attachmnt['url'],
-                                      'thumb' => $attachmnt['url'],
-                    );
-                }
+                $images[] = array(
+                    'id' => $id,
+                    'mimetype' => $mimeType,
+                    'time' => $time,
+                    'url' => $segment['previews']['preview']['$'],
+                    'thumb' => $segment['previews']['preview']['$'],
+                    'caption' => $segment['text'],
+                );
             }
         }
 
