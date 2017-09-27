@@ -83,7 +83,7 @@
             "es.upv.paella.multipleQualitiesPlugin": {"enabled":true, "showWidthRes":true},
             "es.upv.paella.playbackRatePlugin": {"enabled":true, "availableRates": [0.75, 1, 1.25, 1.5]},
             "es.upv.paella.playPauseButtonPlugin": {"enabled":true},
-            "es.upv.paella.searchPlugin": {"enabled":false, "sortType":"time", "colorSearch":false},
+            "es.upv.paella.searchPlugin": {"enabled":true, "sortType":"time", "colorSearch":false},
             "es.upv.paella.socialPlugin": {"enabled":false},
             "es.upv.paella.themeChooserPlugin":  {"enabled":false},
             "es.upv.paella.viewModePlugin": { "enabled": true },
