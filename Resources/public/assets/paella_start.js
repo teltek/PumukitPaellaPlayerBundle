@@ -40,12 +40,10 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
         if (videoId) {
             that = this;
             var repo_url = '/paellarepository/' + videoId
-            var trackId = paella.utils.parameters.get('track_id')
             var secret = paella.utils.parameters.get('secret')
             if(secret)
                 repo_url = '/secret/paellarepository/' + secret
-            if(trackId)
-                repo_url += '?track_id=' + trackId
+            repo_url += window.location.search
             $.get(repo_url)
                 .done(function(data){
                     var This = that;
