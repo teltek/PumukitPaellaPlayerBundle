@@ -333,8 +333,8 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 	read:function(context,params,onSuccess) {
 		var episodeId = params.id;
 
-		var domain = '';
-		if(localStorage != null) {
+        var domain = '';
+        if( localStorage !== null && (localStorage.opencast_host) !== '') {
             domain = localStorage.opencast_host;
         }
 
@@ -361,7 +361,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 		var thisClass = this;
 		var episodeId = params.id;
         var domain = '';
-        if(localStorage.opencast_host != null) {
+        if(localStorage !== null && (localStorage.opencast_host) !== '') {
             domain = localStorage.opencast_host;
         }
 

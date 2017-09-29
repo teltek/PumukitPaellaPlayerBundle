@@ -1,53 +1,53 @@
 {% extends 'PumukitPaellaPlayerBundle:PaellaPlayer:index.html.twig' %}
 
 {% block stylesheets %}
-  {{ parent() }}
-  {% if custom_css_url is defined and custom_css_url %}
-    <link rel="stylesheet" href="{{ custom_css_url }}" type="text/css" media="screen" charset="utf-8">
-  {% endif %}
+    {{ parent() }}
+    {% if custom_css_url is defined and custom_css_url %}
+        <link rel="stylesheet" href="{{ custom_css_url }}" type="text/css" media="screen" charset="utf-8">
+    {% endif %}
 {% endblock %}
 
 {% block body_base %}
-  <div id="playerContainer" style="display:block;width:100%;" >
-  </div>
-  <style>
-   #playerContainer_videoContainer {
-     background-color: #222;
-     background-image: linear-gradient(to bottom, #333333, #111111);
-   }
-   #playerContainer_videoContainer_bkg {
-     display: none;
-   }
-   #paella_logo\.png {
-     display: none !important;
-   }
-  </style>
-  <script>
+    <div id="playerContainer" style="display:block;width:100%;">
+    </div>
+    <style>
+        #playerContainer_videoContainer {
+            background-color: #222;
+            background-image: linear-gradient(to bottom, #333333, #111111);
+        }
 
-      var opencast_host = "{{ app.request.session.has('opencast_host') ? app.request.session.get('opencast_host') : '' }}";
-      if(opencast_host != '') {
-          localStorage.opencast_host = "{{ app.request.session.get('opencast_host') }}";
-      }
-   $(document).bind(paella.events.loadComplete,function(event,params) {
-       {% if autostart is defined and autostart == 'true' %}
-       if (!base.userAgent.browser.IsMobileVersion) {
-         setTimeout(function(){
-             paella.player.play();
-         }, 300);
-       }
-       {% endif %}
+        #playerContainer_videoContainer_bkg {
+            display: none;
+        }
 
-       setTimeout(function(){
-           setPaellaProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
-       }, 300);
+        #paella_logo\.png {
+            display: none !important;
+        }
+    </style>
+    <script>
 
-   });
-   loadPaella('playerContainer', '{{multimediaObject.id}}');
-   function setPaellaProfile(profileName) {
-       $('.viewModeItemButton').removeClass('selected');
-       $('.viewModeItemButton.' + profileName).addClass('selected');
-       paella.player.setProfile(profileName);
-       base.cookies.set("lastProfile", profileName);
-   }
-  </script>
+        localStorage.opencast_host = "{{ opencast_host }}";
+        $(document).bind(paella.events.loadComplete, function (event, params) {
+            {% if autostart is defined and autostart == 'true' %}
+            if (!base.userAgent.browser.IsMobileVersion) {
+                setTimeout(function () {
+                    paella.player.play();
+                }, 300);
+            }
+            {% endif %}
+
+            setTimeout(function () {
+                setPaellaProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
+            }, 300);
+
+        });
+        loadPaella('playerContainer', '{{ multimediaObject.id }}');
+
+        function setPaellaProfile(profileName) {
+            $('.viewModeItemButton').removeClass('selected');
+            $('.viewModeItemButton.' + profileName).addClass('selected');
+            paella.player.setProfile(profileName);
+            base.cookies.set("lastProfile", profileName);
+        }
+    </script>
 {% endblock %}
