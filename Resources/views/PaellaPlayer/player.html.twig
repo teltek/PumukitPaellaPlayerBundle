@@ -23,6 +23,11 @@
    }
   </style>
   <script>
+
+      var opencast_host = "{{ app.request.session.has('opencast_host') ? app.request.session.get('opencast_host') : '' }}";
+      if(opencast_host != '') {
+          localStorage.opencast_host = "{{ app.request.session.get('opencast_host') }}";
+      }
    $(document).bind(paella.events.loadComplete,function(event,params) {
        {% if autostart is defined and autostart == 'true' %}
        if (!base.userAgent.browser.IsMobileVersion) {

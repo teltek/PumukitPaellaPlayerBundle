@@ -51,7 +51,8 @@
             "default": "MHAnnotationServiceDefaultDataDelegate",
             "trimming": "MHAnnotationServiceTrimmingDataDelegate",
             "userInfo": "UserDataDelegate",
-            "visualAnnotations": "VisualAnnotationsDataDelegate"
+            "visualAnnotations": "VisualAnnotationsDataDelegate",
+            "footprints" : "MHFootPrintsDataDelegate"
         }
     },
     "folders": {
@@ -73,7 +74,7 @@
             "es.teltek.paella.playlistPlugin":  {"enabled":true, "playlistApi":"/paellaplaylist"},
             "es.upv.paella.captionsPlugin": {"enabled":true, "searchOnCaptions":true},
             "es.upv.paella.extendedTabAdapterPlugin": {"enabled":false},
-            "es.upv.paella.footprintsPlugin": {"enabled":false},
+            "es.upv.paella.footprintsPlugin": {"enabled":true},
             "es.upv.paella.frameControlPlugin":  {"enabled": true, "showFullPreview": "auto"},
             "es.upv.paella.fullScreenButtonPlugin": {"enabled":true, "reloadOnFullscreen":{ "enabled":true, "keepUserSelection":true }},
             "es.upv.paella.helpPlugin": {"enabled":false, "langs":["en","es"]},
