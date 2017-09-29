@@ -333,10 +333,12 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 	read:function(context,params,onSuccess) {
 		var episodeId = params.id;
 
-        var domain = '';
-        if( localStorage !== null && (localStorage.opencast_host) !== '') {
-            domain = localStorage.opencast_host;
-        }
+		if (!localStorage || !localStorage.opencast_host) {
+            onSuccess({}, false);
+            return;
+		}
+
+		var domain = localStorage.opencast_host;
 
 		paella.ajax.get({url: domain + '/usertracking/footprint.json', params: {id: episodeId}},
 			function(data, contentType, returnCode) {
@@ -360,10 +362,13 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 	write:function(context,params,value,onSuccess) {
 		var thisClass = this;
 		var episodeId = params.id;
-        var domain = '';
-        if(localStorage !== null && (localStorage.opencast_host) !== '') {
-            domain = localStorage.opencast_host;
+
+        if (!localStorage || !localStorage.opencast_host) {
+            onSuccess({}, false);
+            return;
         }
+
+        var domain = localStorage.opencast_host;
 
 		paella.ajax.get({url: domain + '/usertracking/', params: {
 					_method: 'PUT',
