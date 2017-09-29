@@ -42,12 +42,19 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
+        $opencastHost = '';
+        if ($this->container->hasParameter('pumukit_opencast.host')) {
+            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
+        }
+
         return array('autostart' => $request->query->get('autostart', 'false'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
                      'multimediaObject' => $multimediaObject,
                      'object' => $multimediaObject,
-                     'tracks' => $tracks, );
+                     'tracks' => $tracks,
+                     'opencast_host' => $opencastHost,
+            );
     }
 
     /**
@@ -78,11 +85,18 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
+        $opencastHost = '';
+        if ($this->container->hasParameter('pumukit_opencast.host')) {
+            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
+        }
+
         return array('autostart' => $request->query->get('autostart', 'false'),
                      'intro' => $this->getIntro($request->query->get('intro')),
                      'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
                      'multimediaObject' => $multimediaObject,
                      'object' => $multimediaObject,
-                     'tracks' => $tracks, );
+                     'tracks' => $tracks,
+                     'opencast_host' => $opencastHost,
+            );
     }
 }
