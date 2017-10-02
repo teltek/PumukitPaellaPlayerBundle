@@ -27,6 +27,13 @@
     <script>
 
         localStorage.opencast_host = "{{ opencast_host }}";
+        var isOpencast = "{{ multimediaObject.getProperty('opencast') }}";
+        if(isOpencast) {
+            localStorage.opencastId = "{{ multimediaObject.getProperty('opencast') }}"
+        } else {
+            localStorage.opencastId = null;
+        }
+
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if autostart is defined and autostart == 'true' %}
             if (!base.userAgent.browser.IsMobileVersion) {
