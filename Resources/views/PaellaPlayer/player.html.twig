@@ -30,6 +30,8 @@
         var isOpencast = "{{ multimediaObject.getProperty('opencast') }}";
         if(isOpencast) {
             localStorage.opencastId = "{{ multimediaObject.getProperty('opencast') }}"
+        } else {
+            localStorage.opencastId = null;
         }
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
@@ -47,7 +49,7 @@
 
         });
         loadPaella('playerContainer', '{{ multimediaObject.id }}');
-        
+
         function setPaellaProfile(profileName) {
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
