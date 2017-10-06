@@ -23,15 +23,25 @@
         #paella_logo\.png {
             display: none !important;
         }
+
+        {% if not multimediaObject.getProperty('opencast') %}
+            .buttonPlugin.searchButton{
+                display:none !important;
+            }
+
+            .buttonPlugin.footPrints{
+                display:none !important;
+            }
+        {% endif %}
     </style>
     <script>
 
-        localStorage.opencast_host = "{{ opencast_host }}";
+        localStorage.setItem('opencast_host', "{{ opencast_host }}");
         var isOpencast = "{{ multimediaObject.getProperty('opencast') }}";
         if(isOpencast) {
-            localStorage.opencastId = "{{ multimediaObject.getProperty('opencast') }}"
+            localStorage.setItem('opencastId',"{{ multimediaObject.getProperty('opencast') }}");
         } else {
-            localStorage.opencastId = null;
+            localStorage.removeItem('opencastId');
         }
 
         $(document).bind(paella.events.loadComplete, function (event, params) {

@@ -333,15 +333,15 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 	read:function(context,params,onSuccess) {
 		var episodeId = params.id;
 
-		if (!localStorage || !localStorage.opencast_host) {
+		if (!localStorage || !localStorage.getItem('opencast_host')) {
             onSuccess({}, false);
             return;
 		}
-		if(localStorage.opencastId) {
-			episodeId = localStorage.opencastId;
+		if(localStorage.getItem('opencastId')) {
+			episodeId = localStorage.getItem('opencastId');
 		}
 
-		var domain = localStorage.opencast_host;
+		var domain = localStorage.getItem('opencast_host');
 
 		paella.ajax.get({url: domain + '/usertracking/footprint.json', params: {id: episodeId}},
 			function(data, contentType, returnCode) {
