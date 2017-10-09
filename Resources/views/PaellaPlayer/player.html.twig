@@ -24,6 +24,43 @@
             display: none !important;
         }
 
+        #introContainer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        #intro {
+            width: 100%;
+            height: 100%;
+        }
+
+        #skipContainer{
+            position: absolute;
+            bottom: 3em;
+            cursor: pointer;
+            max-width: 300px;
+            right: 1em;
+            background: rgba(80, 80, 80, 0.8);
+            font-weight: bold;
+            color: #fafafa;
+            padding: .65em;
+            font-size: 1.2em;
+            z-index: 99999;
+        }
+
+        #overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 99998;
+        }
+
         {% if not multimediaObject.getProperty('opencast') %}
             .buttonPlugin.searchButton{
                 display:none !important;
@@ -58,8 +95,39 @@
             }, 300);
 
         });
-        loadPaella('playerContainer', '{{ multimediaObject.id }}');
 
+        {% if intro %}
+        const container= document.querySelector("#playerContainer");
+        const intro = document.createElement("video");
+        const introContainer = document.createElement("div");
+        const skipContainer = document.createElement("div");
+        const overlay = document.createElement("overlay");
+
+        intro.src="{{ asset(intro, absolute=true) }}";
+        intro.id="intro";
+        intro.addEventListener('ended', onEndedVideo);
+
+        skipContainer.id = "skipContainer";
+        introContainer.id = "introContainer";
+        overlay.id = "overlay";
+        skipContainer.addEventListener("click", onEndedVideo);
+
+        skipContainer.innerHTML = '{{ "Next Up" | trans}}';
+
+        introContainer.appendChild(intro);
+        introContainer.appendChild(skipContainer);
+        introContainer.appendChild(overlay);
+        container.appendChild(introContainer);
+        intro.play();
+
+        function onEndedVideo() {
+            container.removeChild(introContainer);
+            loadPaella('playerContainer', '{{ multimediaObject.id }}');
+        }
+        {% else %}
+            loadPaella('playerContainer', '{{ multimediaObject.id }}');
+        {% endif %}
+        
         function setPaellaProfile(profileName) {
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
