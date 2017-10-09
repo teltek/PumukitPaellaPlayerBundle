@@ -85,13 +85,15 @@
             }, 300);
 
         });
+
+        {% if intro %}
         const container= document.querySelector("#playerContainer");
         const intro = document.createElement("video");
         const introContainer = document.createElement("div");
         const skipContainer = document.createElement("div");
         const overlay = document.createElement("overlay");
 
-        intro.src="https://dls2.uvigo.es/vod//1771/74650.mp4";
+        intro.src="{{ asset(intro, absolute=true) }}";
         intro.id="intro";
         intro.addEventListener('ended', onEndedVideo);
 
@@ -112,6 +114,10 @@
             container.removeChild(introContainer);
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         }
+        {% else %}
+            loadPaella('playerContainer', '{{ multimediaObject.id }}');
+        {% endif %}
+        
         function setPaellaProfile(profileName) {
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
