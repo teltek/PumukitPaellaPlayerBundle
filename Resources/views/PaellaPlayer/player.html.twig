@@ -91,11 +91,9 @@
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if autostart is defined and autostart == 'true' %}
-            if (!base.userAgent.browser.IsMobileVersion) {
                 setTimeout(function () {
                     paella.player.play();
                 }, 300);
-            }
             {% endif %}
 
             setTimeout(function () {
@@ -114,7 +112,7 @@
             intro.src = "{{ asset(intro, absolute=true) }}";
             intro.id = "intro";
             intro.addEventListener('ended', onEndedVideo);
-            intro.autoplay = getParameterByName('autostart') !== 'false';
+            intro.autoplay = "{{ autostart != 'false' }}";
 
             skipContainer.id = "skipContainer";
             introContainer.id = "introContainer";
@@ -135,20 +133,10 @@
                 loadPaella('playerContainer', '{{ multimediaObject.id }}');
             }
 
-            function getParameterByName(name, url) {
-                if (!url) url = window.location.href;
-                name = name.replace(/[\[\]]/g, "\\$&");
-                const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
-                const results = regex.exec(url);
-                if (!results) return null;
-                if (!results[2]) return '';
-                return decodeURIComponent(results[2].replace(/\+/g, " "));
-            }
-
             function playPauseCanvas(mainContainer, video){
                 const icon = document.createElement('canvas');
                 icon.className = 'playButtonOnScreenIcon';
-                icon.style = getParameterByName('autostart') !== 'false' ? 'display: none' : 'display: block';
+                icon.style = "{{ autostart != 'false' ? 'display: none' : 'display: block' }}";
                 mainContainer.appendChild(icon);
 
                 setTimeout(function(){
