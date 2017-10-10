@@ -24,42 +24,50 @@
             display: none !important;
         }
 
-        #introContainer {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            overflow: hidden;
-        }
+        {% if intro %}
+            #introContainer {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                overflow: hidden;
+            }
 
-        #intro {
-            width: 100%;
-            height: 100%;
-        }
+            #intro {
+                width: 100%;
+                height: 100%;
+            }
 
-        #skipContainer{
-            position: absolute;
-            bottom: 3em;
-            cursor: pointer;
-            max-width: 300px;
-            right: 1em;
-            background: rgba(80, 80, 80, 0.8);
-            font-weight: bold;
-            color: #fafafa;
-            padding: .65em;
-            font-size: 1.2em;
-            z-index: 99999;
-        }
+            #skipContainer{
+                position: absolute;
+                bottom: 3em;
+                cursor: pointer;
+                max-width: 300px;
+                right: 1em;
+                background: rgba(80, 80, 80, 0.8);
+                font-weight: bold;
+                color: #fafafa;
+                padding: .65em;
+                font-size: 1.2em;
+                z-index: 99999;
+            }
 
-        #overlay {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 99998;
-        }
+            #overlay {
+                position: absolute;
+                opacity: 0.7;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 99998;
+                cursor: pointer;
+            }
+            
+            .playButtonOnScreenIcon {
+                height: 100%;
+            }
+        {% endif %}
 
         {% if not multimediaObject.getProperty('opencast') %}
             .buttonPlugin.searchButton{
@@ -97,33 +105,97 @@
         });
 
         {% if intro %}
-        const container= document.querySelector("#playerContainer");
-        const intro = document.createElement("video");
-        const introContainer = document.createElement("div");
-        const skipContainer = document.createElement("div");
-        const overlay = document.createElement("overlay");
+            const container= document.querySelector("#playerContainer");
+            const intro = document.createElement("video");
+            const introContainer = document.createElement("div");
+            const skipContainer = document.createElement("div");
+            const overlay = document.createElement("overlay");
 
-        intro.src="{{ asset(intro, absolute=true) }}";
-        intro.id="intro";
-        intro.addEventListener('ended', onEndedVideo);
+            intro.src = "{{ asset(intro, absolute=true) }}";
+            intro.id = "intro";
+            intro.addEventListener('ended', onEndedVideo);
+            intro.autoplay = getParameterByName('autostart') !== 'false';
 
-        skipContainer.id = "skipContainer";
-        introContainer.id = "introContainer";
-        overlay.id = "overlay";
-        skipContainer.addEventListener("click", onEndedVideo);
+            skipContainer.id = "skipContainer";
+            introContainer.id = "introContainer";
+            overlay.id = "overlay";
+            skipContainer.addEventListener("click", onEndedVideo);
 
-        skipContainer.innerHTML = '{{ "Next Up" | trans}}';
+            skipContainer.innerHTML = '{{ "Next Up" | trans}}';
 
-        introContainer.appendChild(intro);
-        introContainer.appendChild(skipContainer);
-        introContainer.appendChild(overlay);
-        container.appendChild(introContainer);
-        intro.play();
+            introContainer.appendChild(intro);
+            introContainer.appendChild(skipContainer);
+            introContainer.appendChild(overlay);
+            container.appendChild(introContainer);
 
-        function onEndedVideo() {
-            container.removeChild(introContainer);
-            loadPaella('playerContainer', '{{ multimediaObject.id }}');
-        }
+            playPauseCanvas(overlay, intro);
+            
+            function onEndedVideo() {
+                container.removeChild(introContainer);
+                loadPaella('playerContainer', '{{ multimediaObject.id }}');
+            }
+
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+                const results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+            function playPauseCanvas(mainContainer, video){
+                const icon = document.createElement('canvas');
+                icon.className = 'playButtonOnScreenIcon';
+                icon.style = getParameterByName('autostart') !== 'false' ? 'display: none' : 'display: block';
+                mainContainer.appendChild(icon);
+
+                setTimeout(function(){
+                    const width = jQuery(mainContainer).innerWidth();
+                    const height = jQuery(mainContainer).innerHeight();
+
+                    icon.width = width;
+                    icon.height = height;
+
+                    const iconSize = (width<height) ? width/3 : height/3;
+
+                    const ctx = icon.getContext('2d');
+
+                    ctx.translate((width-iconSize)/2, (height-iconSize)/2);
+
+                    ctx.beginPath();
+                    ctx.arc(iconSize/2, iconSize/2 ,iconSize/2, 0, 2*Math.PI, true);
+                    ctx.closePath();
+
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 10;
+                    ctx.stroke();
+                    ctx.fillStyle = '#8f8f8f';
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.moveTo(iconSize/3, iconSize/4);
+                    ctx.lineTo(3*iconSize/4, iconSize/2);
+                    ctx.lineTo(iconSize/3, 3*iconSize/4);
+                    ctx.lineTo(iconSize/3, iconSize/4);
+                    ctx.closePath();
+                    ctx.fillStyle = 'white';
+                    ctx.fill();
+
+                    ctx.stroke();
+                }, 100);
+
+                $(mainContainer).bind('click', function () {
+                    if(video.paused){
+                        icon.style = 'display: none';
+                        video.play();
+                    }else{
+                        icon.style = 'display: block';
+                        video.pause();
+                    }
+                });
+            }
         {% else %}
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
