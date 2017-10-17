@@ -113,6 +113,7 @@
             intro.id = "intro";
             intro.addEventListener('ended', onEndedVideo);
             intro.autoplay = "{{ autostart != 'false' }}";
+            intro.muted= base.userAgent.browser.IsMobileVersion;
 
             skipContainer.id = "skipContainer";
             introContainer.id = "introContainer";
