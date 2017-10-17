@@ -1871,3 +1871,6 @@ a:active {
   font-family: 'Istok Web', sans-serif;
   font-style: oblique;
 }
+.footPrintsContainer {
+  height: 60px !important;
+}
