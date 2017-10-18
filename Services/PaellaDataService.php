@@ -201,7 +201,7 @@ class PaellaDataService
             $tracks['sbs'] = $sbsTrack;
         }
 
-        if (!$tracks['display']) {
+        if (!$tracks['display'] && !$tracks['presentation']) {
             $track = $mmobj->getDisplayTrack();
             if (in_array($track->getVcodec(), $availableCodecs)) {
                 $tracks['display'] = $track;
