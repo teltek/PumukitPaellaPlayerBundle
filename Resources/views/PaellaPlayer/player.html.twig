@@ -90,7 +90,8 @@
         }
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
-            {% if intro or (autostart is defined and autostart == 'true') %}
+            {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/')) 
+                or (autostart is defined and autostart == 'true') %}
                 setTimeout(function () {
                     paella.player.play();
                 }, 300);
@@ -102,7 +103,7 @@
 
         });
 
-        {% if intro %}
+        {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
             const container= document.querySelector("#playerContainer");
             const intro = document.createElement("video");
             const introContainer = document.createElement("div");
