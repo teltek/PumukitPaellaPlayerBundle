@@ -63,7 +63,7 @@
                 z-index: 99998;
                 cursor: pointer;
             }
-            
+
             .playButtonOnScreenIcon {
                 height: 100%;
             }
@@ -90,11 +90,13 @@
         }
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
-            {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/')) 
+            {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
-                setTimeout(function () {
-                    paella.player.play();
-                }, 300);
+                if (!base.userAgent.browser.IsMobileVersion) {
+                    setTimeout(function () {
+                        paella.player.play();
+                    }, 300);
+                }
             {% endif %}
 
             setTimeout(function () {
@@ -129,7 +131,7 @@
             container.appendChild(introContainer);
 
             playPauseCanvas(overlay, intro);
-            
+
             function onEndedVideo() {
                 container.removeChild(introContainer);
                 loadPaella('playerContainer', '{{ multimediaObject.id }}');
@@ -189,7 +191,7 @@
         {% else %}
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
-        
+
         function setPaellaProfile(profileName) {
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
