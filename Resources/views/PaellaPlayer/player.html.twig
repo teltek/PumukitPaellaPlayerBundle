@@ -32,6 +32,7 @@
                 bottom: 0;
                 left: 0;
                 overflow: hidden;
+                z-index: 88888;
             }
 
             #intro {
@@ -92,7 +93,7 @@
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
-                if (!base.userAgent.browser.IsMobileVersion) {
+                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")) {
                     setTimeout(function () {
                         paella.player.play();
                     }, 300);
@@ -130,11 +131,17 @@
             introContainer.appendChild(overlay);
             container.appendChild(introContainer);
 
+            
             playPauseCanvas(overlay, intro);
+            loadPaella('playerContainer', '{{ multimediaObject.id }}');
 
             function onEndedVideo() {
                 container.removeChild(introContainer);
-                loadPaella('playerContainer', '{{ multimediaObject.id }}');
+                if(paella.player.videoLoader.loadStatus){
+                    setTimeout(function () {
+                        paella.player.play();
+                    }, 300);
+                }
             }
 
             function playPauseCanvas(mainContainer, video){
