@@ -398,6 +398,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 paella.dataDelegates.FootprintsDataDelegate = Class.create(paella.DataDelegate,{
 	_intervalTime: 0,
 	_intervals: [],
+	_firstTime: true,
 
 	initialize:function() {},
 
@@ -413,12 +414,13 @@ paella.dataDelegates.FootprintsDataDelegate = Class.create(paella.DataDelegate,{
 			
 			that._intervals.push({'in':params.in, 'out': params.out});
 			
-			if (that._intervalTime >= portions){
+			if (that._intervalTime >= portions || that._firstTime){
 				
 				base.ajax.post({url: "/paella/save_group/"+id.id, params:{"intervals": that._intervals, "isLive": paella.player.isLiveStream()}},
 					function(data,contentType,code) {
 						that._intervalTime = 0;
 						that._intervals = [];
+						that._firstTime = false;
 					}
 				);				
 			}
