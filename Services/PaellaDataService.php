@@ -177,6 +177,10 @@ class PaellaDataService
                 $tracks['display'] = $track;
             }
 
+            if ($track->isOnlyAudio()) {
+                $tracks['display'] = $track;
+            }
+
             return $tracks;
         }
 
