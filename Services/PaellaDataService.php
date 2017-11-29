@@ -232,7 +232,14 @@ class PaellaDataService
                 return array();
             }
 
-            foreach ($mediaPackage['segments']['segment'] as $segment) {
+            //Fix Opencast one-result behavior
+            if (isset($mediaPackage['segments']['segment']['title'])) {
+                $segments = array($mediaPackage['segments']['segment']);
+            } else {
+                $segments = $mediaPackage['segments']['segment'];
+            }
+
+            foreach ($segments as $segment) {
                 $time = intval($segment['time'] / 1000);
                 $id = 'frame_'.$time;
                 $mimeType = 'image/jpeg';
