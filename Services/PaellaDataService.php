@@ -237,7 +237,7 @@ class PaellaDataService
             }
 
             //Fix Opencast one-result behavior
-            if (isset($mediaPackage['segments']['segment']['title'])) {
+            if (isset($mediaPackage['segments']['segment']['time'])) {
                 $segments = array($mediaPackage['segments']['segment']);
             } else {
                 $segments = $mediaPackage['segments']['segment'];
