@@ -92,7 +92,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
 
         $trackPresenter = new Track();
         $trackPresenter->setDuration(2);
-        $trackPresenter->setTags(array('display'));
+        $trackPresenter->setTags(array('display', 'presenter/delivery'));
 
         $mmobj->addTrack($trackPresenter);
         $this->dm->persist($mmobj);
@@ -188,10 +188,10 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return presentation & presenterDup
+        //Should return presentation & presenter (not Dup)
         $response = $this->callRepo($mmobj);
         $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter2, $trackPresentation]), $responseData);
+        $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
 
         //Should return presenterDup
         $response = $this->callRepo($mmobj, $trackPresenter3);
@@ -216,6 +216,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $track->setOnlyAudio(true);
         $track->setTags(array('display'));
         $mmobj->addTrack($track);
+        $mmobj->setType(MultimediaObject::TYPE_AUDIO);
 
         $this->dm->persist($series);
         $this->dm->persist($mmobj);
@@ -244,6 +245,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $track->setOnlyAudio(true);
         $track->setTags(array('display'));
         $mmobj->addTrack($track);
+        $mmobj->setType(MultimediaObject::TYPE_AUDIO);
 
         $track2 = new Track();
         $track2->setDuration(2);
