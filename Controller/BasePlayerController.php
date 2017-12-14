@@ -47,14 +47,16 @@ class BasePlayerController extends BasePlayerControllero
             $opencastHost = $this->container->getParameter('pumukit_opencast.host');
         }
 
-        return array('autostart' => $request->query->get('autostart', 'false'),
-                     'intro' => $this->getIntro($request->query->get('intro')),
-                     'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
-                     'multimediaObject' => $multimediaObject,
-                     'object' => $multimediaObject,
-                     'tracks' => $tracks,
-                     'opencast_host' => $opencastHost,
-            );
+        return array(
+            'autostart' => $request->query->get('autostart', 'false'),
+            'intro' => $this->getIntro($request->query->get('intro')),
+            'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
+            'logo' => $this->container->getParameter('pumukitpaella.logo'),
+            'multimediaObject' => $multimediaObject,
+            'object' => $multimediaObject,
+            'tracks' => $tracks,
+            'opencast_host' => $opencastHost,
+        );
     }
 
     /**
@@ -90,13 +92,15 @@ class BasePlayerController extends BasePlayerControllero
             $opencastHost = $this->container->getParameter('pumukit_opencast.host');
         }
 
-        return array('autostart' => $request->query->get('autostart', 'false'),
-                     'intro' => $this->getIntro($request->query->get('intro')),
-                     'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
-                     'multimediaObject' => $multimediaObject,
-                     'object' => $multimediaObject,
-                     'tracks' => $tracks,
-                     'opencast_host' => $opencastHost,
-            );
+        return array(
+            'autostart' => $request->query->get('autostart', 'false'),
+            'intro' => $this->getIntro($request->query->get('intro')),
+            'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
+            'logo' => $this->container->getParameter('pumukitpaella.logo'),
+            'multimediaObject' => $multimediaObject,
+            'object' => $multimediaObject,
+            'tracks' => $tracks,
+            'opencast_host' => $opencastHost,
+        );
     }
 }
