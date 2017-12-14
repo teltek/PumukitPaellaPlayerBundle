@@ -99,7 +99,7 @@ class PaellaDataService
 
             if ($track) {
                 $dataStream = $this->buildDataStream($track, $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
             }
@@ -109,13 +109,13 @@ class PaellaDataService
             } elseif ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
             }
-            $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+            $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
             $dataStream['preview'] = $pic;
             $data['streams'][] = $dataStream;
         } else {
             if ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
             }
