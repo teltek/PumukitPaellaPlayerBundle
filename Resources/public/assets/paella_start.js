@@ -120,7 +120,7 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
 });
 
 function loadPaella(containerId, videoId) {
-    var initDelegate = new paella.MyInitDelegate({accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
+    var initDelegate = new paella.MyInitDelegate({configUrl: "/paella/config.json?id=" + videoId, accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
     initPaellaEngage(containerId,initDelegate);
 }
 
