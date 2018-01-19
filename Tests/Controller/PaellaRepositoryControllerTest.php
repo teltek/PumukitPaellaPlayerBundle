@@ -92,7 +92,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
 
         $trackPresenter = new Track();
         $trackPresenter->setDuration(2);
-        $trackPresenter->setTags(array('display'));
+        $trackPresenter->setTags(array('display', 'presenter/delivery'));
 
         $mmobj->addTrack($trackPresenter);
         $this->dm->persist($mmobj);
@@ -188,10 +188,10 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return presentation & presenterDup
+        //Should return presentation & presenter (not Dup)
         $response = $this->callRepo($mmobj);
         $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter2, $trackPresentation]), $responseData);
+        $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
 
         //Should return presenterDup
         $response = $this->callRepo($mmobj, $trackPresenter3);
@@ -202,6 +202,20 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $response = $this->callRepo($mmobj, $trackPresenter);
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
+
+        $trackAudio = new Track();
+        $trackAudio->setDuration(2);
+        $trackAudio->setTags(array('audio', 'display'));
+        $trackAudio->setOnlyAudio(true);
+
+        $mmobj->addTrack($trackAudio);
+        $this->dm->persist($mmobj);
+        $this->dm->flush();
+
+        //Should return presenter
+        $response = $this->callRepo($mmobj, $trackAudio);
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertEquals($this->makePaellaData($mmobj, [$trackAudio]), $responseData);
     }
 
     public function testAudioPaellaRepository()
@@ -216,6 +230,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $track->setOnlyAudio(true);
         $track->setTags(array('display'));
         $mmobj->addTrack($track);
+        $mmobj->setType(MultimediaObject::TYPE_AUDIO);
 
         $this->dm->persist($series);
         $this->dm->persist($mmobj);
@@ -244,6 +259,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $track->setOnlyAudio(true);
         $track->setTags(array('display'));
         $mmobj->addTrack($track);
+        $mmobj->setType(MultimediaObject::TYPE_AUDIO);
 
         $track2 = new Track();
         $track2->setDuration(2);

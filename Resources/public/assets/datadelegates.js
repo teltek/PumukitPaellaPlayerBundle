@@ -334,7 +334,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 		var episodeId = params.id;
 
 		if (!localStorage || !localStorage.getItem('opencast_host')) {
-            onSuccess({}, false);
+            if (onSuccess) { onSuccess({}, false); }
             return;
 		}
 		if(localStorage.getItem('opencastId')) {
@@ -367,7 +367,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 		var episodeId = params.id;
 
         if (!localStorage || !localStorage.opencast_host) {
-            onSuccess({}, false);
+            if (onSuccess) { onSuccess({}, false); }
             return;
         }
         if(localStorage.opencastId) {

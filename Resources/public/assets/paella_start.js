@@ -63,6 +63,7 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
                     }
                     that.streams = data.streams;
                     that.frameList = data.frameList;
+                    that.metadata = data.metadata;
                     that.loadStatus = that.streams.length>0;
                     onSuccess();
                 })

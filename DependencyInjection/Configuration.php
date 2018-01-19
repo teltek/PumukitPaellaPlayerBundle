@@ -21,6 +21,10 @@ class Configuration implements ConfigurationInterface
               ->defaultValue(null)
               ->info('Custom CSS URL')
             ->end()
+            ->scalarNode('logo')
+              ->defaultValue(null)
+              ->info('Custom logo URL')
+            ->end()
           ->end();
 
         return $treeBuilder;
