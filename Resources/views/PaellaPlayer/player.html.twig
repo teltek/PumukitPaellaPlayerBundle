@@ -32,6 +32,7 @@
                 bottom: 0;
                 left: 0;
                 overflow: hidden;
+                z-index: 88888;
             }
 
             #intro {
@@ -63,7 +64,7 @@
                 z-index: 99998;
                 cursor: pointer;
             }
-            
+
             .playButtonOnScreenIcon {
                 height: 100%;
             }
@@ -90,10 +91,13 @@
         }
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
-            {% if intro or (autostart is defined and autostart == 'true') %}
-                setTimeout(function () {
-                    paella.player.play();
-                }, 300);
+            {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
+                or (autostart is defined and autostart == 'true') %}
+                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")) {
+                    setTimeout(function () {
+                        paella.player.play();
+                    }, 300);
+                }
             {% endif %}
 
             setTimeout(function () {
@@ -102,7 +106,7 @@
 
         });
 
-        {% if intro %}
+        {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
             const container= document.querySelector("#playerContainer");
             const intro = document.createElement("video");
             const introContainer = document.createElement("div");
@@ -127,11 +131,17 @@
             introContainer.appendChild(overlay);
             container.appendChild(introContainer);
 
-            playPauseCanvas(overlay, intro);
             
+            playPauseCanvas(overlay, intro);
+            loadPaella('playerContainer', '{{ multimediaObject.id }}');
+
             function onEndedVideo() {
                 container.removeChild(introContainer);
-                loadPaella('playerContainer', '{{ multimediaObject.id }}');
+                if(paella.player.videoLoader.loadStatus){
+                    setTimeout(function () {
+                        paella.player.play();
+                    }, 300);
+                }
             }
 
             function playPauseCanvas(mainContainer, video){
@@ -188,7 +198,7 @@
         {% else %}
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
-        
+
         function setPaellaProfile(profileName) {
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
