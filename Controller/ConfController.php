@@ -18,10 +18,10 @@ class ConfController extends Controller
   */
   public function confAction(Request $request)
   {
-    $endpoint = isset($this->getParameter('pumukit_paella')['endpoint']) ? $this->getParameter('pumukit_paella')['endpoint'] : null;
-    $auth = isset($this->getParameter('pumukit_paella')['auth']) ? $this->getParameter('pumukit_paella')['auth'] : null;
+    $endpoint = $this->getParameter('pumukitpaella.xapi_endpoint');
+    $auth =  $this->getParameter('pumukitpaella.xapi_auth');
 
-    $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('endpoint' => $endpoint, 'auth' => $auth));
+    $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth));
 
     return new Response($jsonData, 200, array('Content-Type'=>'application/json'));
   }

@@ -1,5 +1,3 @@
-
-
 {
     "player":{
         "accessControlClass":"paella.AccessControl",
@@ -132,8 +130,8 @@
             "es.upv.paella.frameCaptionsSearchPlugin": {"enabled":true},
 
             "//****": "User Tracking Saver Plugins",
-            {% if endpoint and auth %}
-                 "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint": "{{ endpoint }}", "auth":"{{ auth }}"},
+            {% if xapi_endpoint and xapi_auth %}
+                 "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint": "{{ xapi_endpoint }}", "auth":"{{ xapi_auth }}"},
             {% endif %}
             "es.upv.paella.usertracking.elasticsearchSaverPlugin": { "enabled": false, "url": "http://my.elastic.server"},
             "es.upv.paella.usertracking.GoogleAnalyticsSaverPlugIn": { "enabled": false, "trackingID": "UA-XXXXXXXX-Y" }
