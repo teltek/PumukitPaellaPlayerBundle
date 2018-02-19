@@ -11,19 +11,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ConfController extends Controller
 {
-  /**
-  *
-  * @return JsonResponse
-  * @Route("/paella/config.json", name="paella_player_config")
-  */
-  public function confAction(Request $request)
-  {
-    $endpoint = $this->getParameter('pumukitpaella.xapi_endpoint');
-    $auth =  $this->getParameter('pumukitpaella.xapi_auth');
+    /**
+    *
+    * @return JsonResponse
+    * @Route("/paella/config.json", name="paella_player_config")
+    */
+    public function confAction(Request $request)
+    {
+        $endpoint = $this->getParameter('pumukitpaella.xapi_endpoint');
+        $auth =  $this->getParameter('pumukitpaella.xapi_auth');
+        $accessControlClass = $this->getParameter('pumukitpaella.access_control_class');
 
-    $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth));
+        $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth, 'access_control_class' => $accessControlClass));
 
-    return new Response($jsonData, 200, array('Content-Type'=>'application/json'));
-  }
-
+        return new Response($jsonData, 200, array('Content-Type'=>'application/json'));
+    }
 }

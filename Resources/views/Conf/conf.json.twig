@@ -1,6 +1,8 @@
 {
     "player":{
-        "accessControlClass":"paella.AccessControl",
+        {% if access_control_class %}
+          "accessControlClass":"{{ access_control_class }}",
+        {% endif %}
         "profileFrameStrategy": "paella.ProfileFrameStrategy",
         "videoQualityStrategy": "paella.LimitedBestFitVideoQualityStrategy",
         "videoQualityStrategyParams":{ "maxAutoQualityRes":720 },

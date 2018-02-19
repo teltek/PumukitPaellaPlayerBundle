@@ -96,6 +96,9 @@
             localStorage.removeItem('opencastId');
         }
 
+        var username = "{{ app.user.username }}";
+        var useremail = "{{ app.user.email }}";
+
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
@@ -137,7 +140,7 @@
             introContainer.appendChild(overlay);
             container.appendChild(introContainer);
 
-            
+
             playPauseCanvas(overlay, intro);
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
 

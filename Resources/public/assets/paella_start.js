@@ -1,22 +1,47 @@
 // startsWith function
-        if ( typeof String.prototype.startsWith != 'function' ) {
-            String.prototype.startsWith = function( str ) {
-                return this.substring( 0, str.length ) === str;
-            }
-        };
+if ( typeof String.prototype.startsWith != 'function' ) {
+  String.prototype.startsWith = function( str ) {
+    return this.substring( 0, str.length ) === str;
+  }
+};
 
 var MyAccessControl = Class.create(paella.AccessControl,{
-    checkAccess:function(onSuccess) {
-        this.permissions.canRead = true;
-        this.permissions.canWrite = true;
-        this.permissions.canContribute = true;
-        this.permissions.loadError = false;
-        this.permissions.isAnonymous = true;
-        this.userData.login = 'anonymous';
-        this.userData.name = 'Anonymous';
-        this.userData.avatar = 'resources/images/default_avatar.png';
-        onSuccess(this.permissions);
-    }
+  _read: undefined,
+  _write: undefined,
+  _userData: undefined,
+
+  userData:function() {
+    var self = this;
+    return new Promise((resolve, reject)=>{
+      if (self._userData) {
+        resolve(self._userData);
+      }
+      else {
+        var user_info = {"name": "Annonymous", "email" : "mailto:annonymous@example.com"}
+        //Check if the user comes from Openedx/Moodle
+        var params = decodeURIComponent(window.location.search).replace(/(^\?)/,'').split("&").map(function(n){return n = n.split("="),this[n[0]] = n[1],this}.bind({}))[0];
+        if (params.email && params.username){
+          user_info.name = params.username
+          user_info.email = "mailto:" + params.email
+          user_info.platform = "Openedx/Moodle"
+        }
+        //If not comes from Openedx/Moodle check if the user is logged in Pumukit
+        else if (username !== "" && useremail !== "") {
+          user_info.name = username
+          user_info.email = "mailto:" + useremail
+          user_info.platform = "Pumukit"
+        }
+        self._userData = {
+          name: user_info.name,
+          email: user_info.email,
+          platform: user_info.platform,
+          avatar: paella.utils.folders.resources() + '/images/default_avatar.png'
+        };
+      }
+      resolve(self._userData);
+    });
+  },
+
 });
 Class("paella.MyInitDelegate", paella.InitDelegate, {
     getId: function() {
@@ -120,7 +145,7 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
 });
 
 function loadPaella(containerId, videoId) {
-    var initDelegate = new paella.MyInitDelegate({configUrl: "/paella/config.json?id=" + videoId, accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
+    var initDelegate = new paella.MyInitDelegate({configUrl: "/paella/config.json?id=" + videoId,videoLoader:new MyVideoLoader()});
     initPaellaEngage(containerId,initDelegate);
 }
 

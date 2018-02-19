@@ -33,6 +33,10 @@ class Configuration implements ConfigurationInterface
               ->defaultValue(null)
               ->info('LRS auth token for xAPI')
             ->end()
+            ->scalarNode('access_control_class')
+              ->defaultValue("paella.AccessControl")
+              ->info('Paella accessControlClass')
+            ->end()
           ->end();
 
         return $treeBuilder;
