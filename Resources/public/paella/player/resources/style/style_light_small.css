@@ -33,28 +33,6 @@ div {
   -ms-user-select: none;
   user-select: none;
 }
-i.button-icon {
-  color: black;
-  font-size: 12px;
-  padding-left: 3px;
-  line-height: 20px;
-}
-.buttonPlugin {
-  position: relative;
-}
-.button-text {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  text-align: center;
-  line-height: 15px;
-}
-i.button-icon.icon-screen {
-  font-size: 14.64px;
-  padding-left: 0px;
-}
 #playerContainer {
   background-color: white;
 }
@@ -133,9 +111,9 @@ i.button-icon.icon-screen {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  /*background-image: @paella_icons_image;
-    background-size: @paella_icons_bkg_size;
-    background-position: 0px 0px;*/
+  background-image: url(../images/paella_icons_dark.png);
+  background-size: 2000% 1000%;
+  background-position: 0px 0px;
   margin-left: 0px;
   margin-right: 0px;
   margin-top: 0px;
@@ -578,207 +556,6 @@ a.btn {
   margin-bottom: -3px;
   margin-right: 2px;
 }
-@font-face {
-  font-family: 'icomoon';
-  src: url('fonts/icomoon.eot?1n9l1y');
-  src: url('fonts/icomoon.eot?1n9l1y#iefix') format('embedded-opentype'), url('fonts/icomoon.ttf?1n9l1y') format('truetype'), url('fonts/icomoon.woff?1n9l1y') format('woff'), url('fonts/icomoon.svg?1n9l1y#icomoon') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
-[class^="icon-"],
-[class*=" icon-"] {
-  /* use !important to prevent issues with browser extensions that change fonts */
-  font-family: 'icomoon' !important;
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  /* Better Font Rendering =========== */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-.icon-mini-camera:before {
-  content: "\e900";
-}
-.icon-captions:before {
-  content: "\e901";
-}
-.icon-paintbrush:before {
-  content: "\e902";
-}
-.icon-airplay:before {
-  content: "\e903";
-}
-.icon-arrow-down:before {
-  content: "\e904";
-}
-.icon-arrow-left:before {
-  content: "\e905";
-}
-.icon-arrow-right:before {
-  content: "\e906";
-}
-.icon-arrow-up:before {
-  content: "\e907";
-}
-.icon-back-10-s:before {
-  content: "\e908";
-}
-.icon-back-30-s:before {
-  content: "\e909";
-}
-.icon-comments-disabled:before {
-  content: "\e90a";
-}
-.icon-comments:before {
-  content: "\e90b";
-}
-.icon-edit:before {
-  content: "\e90c";
-}
-.icon-facebook:before {
-  content: "\e90d";
-}
-.icon-folder:before {
-  content: "\e90e";
-}
-.icon-forward-30-s:before {
-  content: "\e90f";
-}
-.icon-frames:before {
-  content: "\e910";
-}
-.icon-fullscreen:before {
-  content: "\e911";
-}
-.icon-headphone:before {
-  content: "\e912";
-}
-.icon-help:before {
-  content: "\e913";
-}
-.icon-info:before {
-  content: "\e914";
-}
-.icon-link:before {
-  content: "\e915";
-}
-.icon-mini-frames:before {
-  content: "\e916";
-}
-.icon-mini-videocamera:before {
-  content: "\e917";
-}
-.icon-mini-window:before {
-  content: "\e918";
-}
-.icon-mini-zoom-in:before {
-  content: "\e919";
-}
-.icon-mini-zoom-out:before {
-  content: "\e91a";
-}
-.icon-pause:before {
-  content: "\e91b";
-}
-.icon-photo:before {
-  content: "\e91c";
-}
-.icon-pip:before {
-  content: "\e91d";
-}
-.icon-play:before {
-  content: "\e91e";
-}
-.icon-player-mode-1:before {
-  content: "\e91f";
-}
-.icon-player-mode-2:before {
-  content: "\e920";
-}
-.icon-player-mode-3:before {
-  content: "\e921";
-}
-.icon-present-mode-1:before {
-  content: "\e922";
-}
-.icon-present-mode-2:before {
-  content: "\e923";
-}
-.icon-present-mode-3:before {
-  content: "\e924";
-}
-.icon-present-mode-4:before {
-  content: "\e925";
-}
-.icon-present-mode-5:before {
-  content: "\e926";
-}
-.icon-present-mode-6:before {
-  content: "\e927";
-}
-.icon-present-mode-7:before {
-  content: "\e928";
-}
-.icon-present-mode-8:before {
-  content: "\e929";
-}
-.icon-present-mode-9:before {
-  content: "\e92a";
-}
-.icon-present-mode-10:before {
-  content: "\e92b";
-}
-.icon-presentation-mode:before {
-  content: "\e92c";
-}
-.icon-screen:before {
-  content: "\e92d";
-}
-.icon-slideshow:before {
-  content: "\e92e";
-}
-.icon-social:before {
-  content: "\e92f";
-}
-.icon-star-empty:before {
-  content: "\e930";
-}
-.icon-star:before {
-  content: "\e931";
-}
-.icon-stats:before {
-  content: "\e932";
-}
-.icon-twitter:before {
-  content: "\e933";
-}
-.icon-user:before {
-  content: "\e934";
-}
-.icon-volume-high:before {
-  content: "\e935";
-}
-.icon-volume-low:before {
-  content: "\e936";
-}
-.icon-volume-mid:before {
-  content: "\e937";
-}
-.icon-volume-mute:before {
-  content: "\e938";
-}
-.icon-windowed:before {
-  content: "\e939";
-}
-.icon-zoom-in:before {
-  content: "\e93a";
-}
-.icon-zoom:before {
-  content: "\e93b";
-}
 .buttonPlugin.flexSkip_Rewind_10 {
   background-position: -205% 22%;
 }
@@ -792,6 +569,13 @@ a.btn {
 .buttonPlugin.arrowSlideNavidator.prevButton {
   background-position: -1600% -100%;
   pointer-events: all !important;
+}
+.arrow-slide-navigator-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
 }
 .buttonPlugin.audioLanguages {
   text-align: center;
@@ -1081,6 +865,28 @@ textarea {
 .extendedTabAdapterPlugin > .tabsPluginContainer > .tabsContentContainer > .tabContent.disabled {
   display: none;
 }
+.buttonPlugin.footPrints {
+  background-position: -700% 0%;
+}
+.footPrintsContainer {
+  height: 20px;
+  width: 100%;
+  overflow: hidden;
+  display: block;
+}
+.footPrintsCanvas {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: inline-block;
+}
+.buttonPlugin.frameControl {
+  background-position: -1200% -100%;
+}
+/*
+.buttonPlugin.frameControl:hover {}
+.buttonPlugin.frameControl.selected {}
+*/
 .frameControlContainer {
   height: 87px;
   width: 90%;
@@ -1201,21 +1007,6 @@ textarea {
 .enabledFrameThumbnail:hover {
   border: 3px #fa8533 solid;
 }
-.buttonPlugin.footPrints {
-  background-position: -700% 0%;
-}
-.footPrintsContainer {
-  height: 20px;
-  width: 100%;
-  overflow: hidden;
-  display: block;
-}
-.footPrintsCanvas {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  display: inline-block;
-}
 .buttonPlugin.showFullScreenButton {
   background-position: -900% 0%;
 }
@@ -1272,6 +1063,27 @@ textarea {
 .multipleQualityItem.selected:hover {
   color: black;
 }
+.playbackRateItem {
+  font-size: 19px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  cursor: pointer;
+}
+.playbackRateItem:hover {
+  background-color: #faa166;
+}
+.buttonPlugin.showPlaybackRateButton {
+  text-align: center;
+  line-height: 20px;
+  background-position: -600% -100%;
+  font-size: 1em;
+}
+.playbackRateItem.selected {
+  color: #fa8533;
+}
+.playbackRateItem.selected:hover {
+  color: black;
+}
 .buttonPlugin.playButton {
   background-position: -500% -100%;
 }
@@ -1293,27 +1105,6 @@ textarea {
   display: block;
   cursor: pointer;
   width: 100%;
-}
-.playbackRateItem {
-  font-size: 19px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  cursor: pointer;
-}
-.playbackRateItem:hover {
-  background-color: #faa166;
-}
-.buttonPlugin.showPlaybackRateButton {
-  text-align: center;
-  line-height: 20px;
-  background-position: -600% -100%;
-  font-size: 1em;
-}
-.playbackRateItem.selected {
-  color: #fa8533;
-}
-.playbackRateItem.selected:hover {
-  color: black;
 }
 .buttonPlugin.rateButtonPlugin {
   text-align: center;
@@ -1555,37 +1346,6 @@ svg rect {
 	left: 0px;
 */
 }
-.buttonPlugin.left.videoData {
-  height: auto;
-  width: 100%;
-  margin-top: 5px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-.buttonPlugin.left.videoData h1 {
-  color: white;
-  padding: 0px 0px 0px 20px;
-  margin: 0px;
-}
-@media (max-width: 400px) {
-  .buttonPlugin.left.videoData h1 {
-    font-size: 16px;
-    line-height: 24px;
-  }
-}
-@media (min-width: 401px) and (max-width: 800px) {
-  .buttonPlugin.left.videoData h1 {
-    font-size: 20px;
-    line-height: 34px;
-  }
-}
-@media (min-width: 801px) {
-  .buttonPlugin.left.videoData h1 {
-    font-size: 30px;
-    line-height: 44px;
-  }
-}
 .buttonPlugin.right.videoZoom {
   width: 200px;
   background-image: none;
@@ -1627,11 +1387,6 @@ svg rect {
   display: flex;
   justify-content: center;
 }
-/* The canvas "freeze frame" to overlay video element, instead of flex side aligned */
-.freezeFrame {
-  align-self: center;
-  position: absolute;
-}
 .videoZoomButton {
   z-index: 1;
   margin-left: 2px;
@@ -1670,6 +1425,12 @@ svg rect {
     height: 68px;
   }
 }
+.buttonPlugin.videoZoomToolbar {
+  background-position: -600% -100%;
+  font-size: 0.8em;
+  padding-top: 9px;
+  text-align: center;
+}
 .videoZoomToolbarItem {
   width: 30px;
   height: 30px;
@@ -1678,6 +1439,37 @@ svg rect {
   margin-right: 5px;
   margin-top: 5px;
   font-size: 20px;
+}
+.buttonPlugin.left.videoData {
+  height: auto;
+  width: 100%;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+.buttonPlugin.left.videoData h1 {
+  color: white;
+  padding: 0px 0px 0px 20px;
+  margin: 0px;
+}
+@media (max-width: 400px) {
+  .buttonPlugin.left.videoData h1 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+@media (min-width: 401px) and (max-width: 800px) {
+  .buttonPlugin.left.videoData h1 {
+    font-size: 20px;
+    line-height: 34px;
+  }
+}
+@media (min-width: 801px) {
+  .buttonPlugin.left.videoData h1 {
+    font-size: 30px;
+    line-height: 44px;
+  }
 }
 .buttonPluginPopUp.showViewModeButton {
   background-image: none;
@@ -1776,100 +1568,6 @@ svg rect {
 }
 .videoRangeContainer .range .image.slave {
   background-position: -740px 0px;
-}
-input[type=range] {
-  -webkit-appearance: none;
-  margin: 18px 0;
-  width: 100%;
-}
-input[type=range]:focus {
-  outline: none;
-}
-input[type=range]::-moz-focus-outer {
-  border: 0;
-}
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #cc0000;
-  border-radius: 1.3px;
-  border: 0.2px solid #010101;
-}
-input[type=range]::-webkit-slider-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 32px;
-  width: 16px;
-  border-radius: 3px;
-  background: #ffffff;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -14px;
-}
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #bb0000;
-  outline: none;
-}
-input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #cc0000;
-  border-radius: 1.3px;
-  border: 0.2px solid #010101;
-}
-input[type=range]::-moz-range-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 32px;
-  width: 16px;
-  border-radius: 3px;
-  background: #ffffff;
-  cursor: pointer;
-}
-input[type=range]::-ms-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  border-color: transparent;
-  border-width: 16px 0;
-  color: transparent;
-}
-input[type=range]::-ms-fill-lower {
-  background: #cc0000;
-  border: 0.2px solid #010101;
-  border-radius: 2.6px;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-}
-input[type=range]::-ms-fill-upper {
-  background: #cc0000;
-  border: 0.2px solid #010101;
-  border-radius: 2.6px;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-}
-input[type=range]::-ms-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 32px;
-  width: 16px;
-  border-radius: 3px;
-  background: #ffffff;
-  cursor: pointer;
-}
-input[type=range]:focus::-ms-fill-lower {
-  background: #cc0000;
-  outline: none;
-}
-input[type=range]:focus::-ms-fill-upper {
-  background: #cc0000;
-  outline: none;
 }
 .buttonPlugin.zoomButton {
   background-position: -280px -40px;

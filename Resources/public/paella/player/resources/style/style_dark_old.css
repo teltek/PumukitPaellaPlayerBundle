@@ -570,6 +570,13 @@ a.btn {
   background-position: -1600% -100%;
   pointer-events: all !important;
 }
+.arrow-slide-navigator-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
 .buttonPlugin.audioLanguages {
   text-align: center;
   background-position: -900% -200%;
@@ -1056,6 +1063,27 @@ textarea {
 .multipleQualityItem.selected:hover {
   color: white;
 }
+.playbackRateItem {
+  font-size: 19px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  cursor: pointer;
+}
+.playbackRateItem:hover {
+  background-color: #faa166;
+}
+.buttonPlugin.showPlaybackRateButton {
+  text-align: center;
+  line-height: 40px;
+  background-position: -600% -100%;
+  font-size: 1em;
+}
+.playbackRateItem.selected {
+  color: #fa8533;
+}
+.playbackRateItem.selected:hover {
+  color: white;
+}
 .buttonPlugin.playButton {
   background-position: -500% -100%;
 }
@@ -1077,27 +1105,6 @@ textarea {
   display: block;
   cursor: pointer;
   width: 100%;
-}
-.playbackRateItem {
-  font-size: 19px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  cursor: pointer;
-}
-.playbackRateItem:hover {
-  background-color: #faa166;
-}
-.buttonPlugin.showPlaybackRateButton {
-  text-align: center;
-  line-height: 40px;
-  background-position: -600% -100%;
-  font-size: 1em;
-}
-.playbackRateItem.selected {
-  color: #fa8533;
-}
-.playbackRateItem.selected:hover {
-  color: white;
 }
 .buttonPlugin.rateButtonPlugin {
   text-align: center;
@@ -1288,6 +1295,27 @@ svg rect {
 .btn {
   margin-left: 20px;
 }
+.buttonPlugin.themeChooserPlugin {
+  background-position: -800% -100%;
+}
+.buttonPluginPopUp.themeChooserPlugin {
+  background-image: none;
+  min-width: 40px;
+  width: 120px;
+  text-align: right;
+}
+.buttonPluginPopUp.themeChooserPlugin .themebutton {
+  cursor: pointer;
+  text-align: left;
+  text-transform: capitalize;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.buttonPluginPopUp.themeChooserPlugin .themebutton:hover {
+  background-color: #faa166;
+}
 .translecturesCaptionsMessageBox {
   margin-left: auto;
   margin-right: auto;
@@ -1317,58 +1345,6 @@ svg rect {
 	position:absolute;
 	left: 0px;
 */
-}
-.buttonPlugin.themeChooserPlugin {
-  background-position: -800% -100%;
-}
-.buttonPluginPopUp.themeChooserPlugin {
-  background-image: none;
-  min-width: 40px;
-  width: 120px;
-  text-align: right;
-}
-.buttonPluginPopUp.themeChooserPlugin .themebutton {
-  cursor: pointer;
-  text-align: left;
-  text-transform: capitalize;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-}
-.buttonPluginPopUp.themeChooserPlugin .themebutton:hover {
-  background-color: #faa166;
-}
-.buttonPlugin.left.videoData {
-  height: auto;
-  width: 100%;
-  margin-top: 5px;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-.buttonPlugin.left.videoData h1 {
-  color: white;
-  padding: 0px 0px 0px 20px;
-  margin: 0px;
-}
-@media (max-width: 400px) {
-  .buttonPlugin.left.videoData h1 {
-    font-size: 16px;
-    line-height: 24px;
-  }
-}
-@media (min-width: 401px) and (max-width: 800px) {
-  .buttonPlugin.left.videoData h1 {
-    font-size: 20px;
-    line-height: 34px;
-  }
-}
-@media (min-width: 801px) {
-  .buttonPlugin.left.videoData h1 {
-    font-size: 30px;
-    line-height: 44px;
-  }
 }
 .buttonPlugin.right.videoZoom {
   width: 200px;
@@ -1463,6 +1439,37 @@ svg rect {
   margin-right: 5px;
   margin-top: 5px;
   font-size: 20px;
+}
+.buttonPlugin.left.videoData {
+  height: auto;
+  width: 100%;
+  margin-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+.buttonPlugin.left.videoData h1 {
+  color: white;
+  padding: 0px 0px 0px 20px;
+  margin: 0px;
+}
+@media (max-width: 400px) {
+  .buttonPlugin.left.videoData h1 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+@media (min-width: 401px) and (max-width: 800px) {
+  .buttonPlugin.left.videoData h1 {
+    font-size: 20px;
+    line-height: 34px;
+  }
+}
+@media (min-width: 801px) {
+  .buttonPlugin.left.videoData h1 {
+    font-size: 30px;
+    line-height: 44px;
+  }
 }
 .buttonPluginPopUp.showViewModeButton {
   background-image: none;
@@ -1561,100 +1568,6 @@ svg rect {
 }
 .videoRangeContainer .range .image.slave {
   background-position: -740px 0px;
-}
-input[type=range] {
-  -webkit-appearance: none;
-  margin: 18px 0;
-  width: 100%;
-}
-input[type=range]:focus {
-  outline: none;
-}
-input[type=range]::-moz-focus-outer {
-  border: 0;
-}
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #cc0000;
-  border-radius: 1.3px;
-  border: 0.2px solid #010101;
-}
-input[type=range]::-webkit-slider-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 32px;
-  width: 16px;
-  border-radius: 3px;
-  background: #ffffff;
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -14px;
-}
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #bb0000;
-  outline: none;
-}
-input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #cc0000;
-  border-radius: 1.3px;
-  border: 0.2px solid #010101;
-}
-input[type=range]::-moz-range-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 32px;
-  width: 16px;
-  border-radius: 3px;
-  background: #ffffff;
-  cursor: pointer;
-}
-input[type=range]::-ms-track {
-  width: 100%;
-  height: 8.4px;
-  cursor: pointer;
-  animate: 0.2s;
-  background: transparent;
-  border-color: transparent;
-  border-width: 16px 0;
-  color: transparent;
-}
-input[type=range]::-ms-fill-lower {
-  background: #cc0000;
-  border: 0.2px solid #010101;
-  border-radius: 2.6px;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-}
-input[type=range]::-ms-fill-upper {
-  background: #cc0000;
-  border: 0.2px solid #010101;
-  border-radius: 2.6px;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-}
-input[type=range]::-ms-thumb {
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  border: 1px solid #000000;
-  height: 32px;
-  width: 16px;
-  border-radius: 3px;
-  background: #ffffff;
-  cursor: pointer;
-}
-input[type=range]:focus::-ms-fill-lower {
-  background: #cc0000;
-  outline: none;
-}
-input[type=range]:focus::-ms-fill-upper {
-  background: #cc0000;
-  outline: none;
 }
 .buttonPlugin.zoomButton {
   background-position: -280px -40px;
