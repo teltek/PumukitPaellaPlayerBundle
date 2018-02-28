@@ -22,7 +22,18 @@ class ConfController extends Controller
         $auth =  $this->getParameter('pumukitpaella.xapi_auth');
         $accessControlClass = $this->getParameter('pumukitpaella.access_control_class');
 
-        $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth, 'access_control_class' => $accessControlClass));
+        $id = $request->get('id');
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+        $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(array('_id' => new \MongoId($id)));
+        $folders_profiles = "config/profiles";
+        if($mmobj) {
+          $pr = $mmobj->getProperty('personalrecorder');
+          if ($pr){
+            $folders_profiles = "config/profiles/pr";
+          }
+        }
+
+        $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth, 'access_control_class' => $accessControlClass, 'folders_profiles' => $folders_profiles));
 
         return new Response($jsonData, 200, array('Content-Type'=>'application/json'));
     }
