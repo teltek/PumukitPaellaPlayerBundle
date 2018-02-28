@@ -48,7 +48,7 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         return array(
-            'autostart' => $request->query->get('autostart', 'false'),
+            'autostart' => $this->getAutoStart($request),
             'intro' => $this->getIntro($request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
@@ -93,7 +93,7 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         return array(
-            'autostart' => $request->query->get('autostart', 'false'),
+            'autostart' => $this->getAutoStart($request),
             'intro' => $this->getIntro($request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
@@ -102,5 +102,16 @@ class BasePlayerController extends BasePlayerControllero
             'tracks' => $tracks,
             'opencast_host' => $opencastHost,
         );
+    }
+
+    private function getAutoStart($request)
+    {
+        $autoStart = $request->query->get('autostart', 'false');
+        $userAgent = $request->headers->get('user-agent');
+        if (true === strpos($userAgent, 'Safari')) {
+            $autoStart = false;
+        }
+
+        return $autoStart;
     }
 }
