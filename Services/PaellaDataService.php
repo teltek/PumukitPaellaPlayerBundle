@@ -51,21 +51,21 @@ class PaellaDataService
         $data = array();
         foreach ($mmobjs as $pos => $mmobj) {
             $url = $this->urlGenerator->generate(
-        'pumukit_playlistplayer_paellaindex',
-        array(
-            'playlistId' => $series->getId(),
-            'videoId' => $mmobj->getId(),
-            'videoPos' => $pos,
-            'autostart' => 'true',
-        ),
-        true  //Makes the url absolute.
-        );
+                'pumukit_playlistplayer_paellaindex',
+                array(
+                    'playlistId' => $series->getId(),
+                    'videoId' => $mmobj->getId(),
+                    'videoPos' => $pos,
+                    'autostart' => 'true',
+                ),
+                true  //Makes the url absolute.
+            );
             $data[] = array(
-        'name' => $mmobj->getTitle(),
-        'id' => $mmobj->getId(),
-        'pos' => $pos,
-        'url' => $url,
-        );
+                'name' => $mmobj->getTitle(),
+                'id' => $mmobj->getId(),
+                'pos' => $pos,
+                'url' => $url,
+            );
         }
 
         return $data;
@@ -107,7 +107,7 @@ class PaellaDataService
         } elseif ($isMobile) {
             if ($tracks['sbs']) {
                 $dataStream = $this->buildDataStream($tracks['sbs'], $request);
-                $dataStream['language'] = $tracks['sbs']->getLanguage();
+                 $dataStream['language'] = $tracks['sbs']->getLanguage();
             } elseif ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $dataStream['language'] = $tracks['display']->getLanguage();
@@ -129,14 +129,13 @@ class PaellaDataService
                 $data['streams'][] = $dataStream;
             }
         }
-
         $data['metadata'] = array(
-        'title' => $mmobj->getTitle(),
-        'description' => $mmobj->getDescription(),
-        'duration' => $mmobj->getDuration(),
-        'i18nTitle' => $mmobj->getI18nTitle(),
-        'i18nDescription' => $mmobj->getI18nDescription(),
-    );
+            'title' => $mmobj->getTitle(),
+            'description' => $mmobj->getDescription(),
+            'duration' => $mmobj->getDuration(),
+            'i18nTitle' => $mmobj->getI18nTitle(),
+            'i18nDescription' => $mmobj->getI18nDescription(),
+        );
 
         $frameList = $this->getOpencastFrameList($mmobj);
         if ($frameList) {
@@ -173,10 +172,10 @@ class PaellaDataService
     private function getMmobjTracks(MultimediaObject $mmobj, $trackId)
     {
         $tracks = array(
-        'display' => false,
-        'presentation' => false,
-        'sbs' => false,
-    );
+            'display' => false,
+            'presentation' => false,
+            'sbs' => false,
+        );
         $availableCodecs = array('h264', 'vp8', 'vp9');
 
         if ($trackId) {
@@ -257,13 +256,13 @@ class PaellaDataService
                 $mimeType = 'image/jpeg';
 
                 $images[] = array(
-            'id' => $id,
-            'mimetype' => $mimeType,
-            'time' => $time,
-            'url' => $segment['previews']['preview']['$'],
-            'thumb' => $segment['previews']['preview']['$'],
-            'caption' => $segment['text'],
-        );
+                    'id' => $id,
+                    'mimetype' => $mimeType,
+                    'time' => $time,
+                    'url' => $segment['previews']['preview']['$'],
+                    'thumb' => $segment['previews']['preview']['$'],
+                    'caption' => $segment['text'],
+                );
             }
         }
 
@@ -278,16 +277,16 @@ class PaellaDataService
         $captions = $this->materialService->getCaptions($mmobj);
 
         $captionsMapped = array_map(
-        function ($material) use ($request) {
-            return array(
-            'lang' => $material->getLanguage(),
-            'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
-            'format' => $material->getMimeType(),
-            'url' => $this->getAbsoluteUrl($request, $material->getUrl()),
+            function ($material) use ($request) {
+                return array(
+                    'lang' => $material->getLanguage(),
+                    'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
+                    'format' => $material->getMimeType(),
+                    'url' => $this->getAbsoluteUrl($request, $material->getUrl()),
+                );
+            },
+            $captions->toArray()
         );
-        },
-        $captions->toArray()
-    );
 
         return array_values($captionsMapped);
     }
@@ -300,15 +299,15 @@ class PaellaDataService
         $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
         $mimeType = $track->getMimetype();
         $dataStream = array(
-        'sources' => array(
-        'mp4' => array(
-            array(
-            'src' => $src,
-            'mimetype' => $mimeType,
+            'sources' => array(
+                'mp4' => array(
+                    array(
+                        'src' => $src,
+                        'mimetype' => $mimeType,
+                    ),
+                ),
             ),
-        ),
-        ),
-    );
+        );
 
         // If pumukit doesn't know the resolution, paella can guess it.
         if ($track->getWidth() && $track->getHeight()) {
