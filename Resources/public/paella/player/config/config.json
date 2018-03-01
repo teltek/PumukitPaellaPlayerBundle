@@ -132,7 +132,7 @@
             "//****": "User Tracking Saver Plugins",
             "es.upv.paella.usertracking.elasticsearchSaverPlugin": { "enabled": false, "url": "http://my.elastic.server"},
             "es.upv.paella.usertracking.GoogleAnalyticsSaverPlugIn": { "enabled": false, "trackingID": "UA-XXXXXXXX-Y" },
-						"es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint":"https://localhost:90/data/xAPI/", "auth":"b65a1ab5225a1068168959fa01b6bb18644bdbef:ece3becf84db9d9c84b52ab720438c4ccddd7606"}
+	    "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint":"https://localhost:90/data/xAPI/", "auth":"b65a1ab5225a1068168959fa01b6bb18644bdbef:ece3becf84db9d9c84b52ab720438c4ccddd7606"}
         }
     },
     "standalone" : {
