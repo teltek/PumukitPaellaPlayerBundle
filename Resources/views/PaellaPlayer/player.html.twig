@@ -153,7 +153,7 @@
             function playPauseCanvas(mainContainer, video){
                 const icon = document.createElement('canvas');
                 icon.className = 'playButtonOnScreenIcon';
-                icon.style = "{{ autostart != 'false' ? 'display: none' : 'display: block' }}";
+                icon.style.display = "{{ autostart != 'false' ? 'none' : 'block' }}";
                 mainContainer.appendChild(icon);
 
                 setTimeout(function(){
@@ -193,10 +193,10 @@
 
                 $(mainContainer).bind('click', function () {
                     if(video.paused){
-                        icon.style = 'display: none';
+                        icon.style.display = 'none';
                         video.play();
                     }else{
-                        icon.style = 'display: block';
+                        icon.style.display = 'block';
                         video.pause();
                     }
                 });
