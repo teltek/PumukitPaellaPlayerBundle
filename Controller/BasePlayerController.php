@@ -66,6 +66,8 @@ class BasePlayerController extends BasePlayerControllero
      */
     public function indexAction(MultimediaObject $multimediaObject, Request $request)
     {
+        $request = $this->container->get('request_stack')->getMasterRequest();
+
         $response = $this->testBroadcast($multimediaObject, $request);
         if ($response instanceof Response) {
             return $response;
@@ -106,13 +108,7 @@ class BasePlayerController extends BasePlayerControllero
 
     private function getAutoStart($request)
     {
-        if (!$request->query->has('autostart')) {
-            $autoStart = $request->server->get('QUERY_STRING');
-            $aAutoStart = explode('=', $autoStart);
-            $autoStart = isset($aAutoStart[1]) ? $aAutoStart[1] : 'false';
-        } else {
-            $autoStart = $request->query->get('autostart', 'false');
-        }
+        $autoStart = $request->query->get('autostart', 'false');
         $userAgent = $request->headers->get('user-agent');
         if (true === strpos($userAgent, 'Safari')) {
             $autoStart = false;
