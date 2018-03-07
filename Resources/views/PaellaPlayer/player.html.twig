@@ -154,6 +154,10 @@
                 const icon = document.createElement('canvas');
                 icon.className = 'playButtonOnScreenIcon';
                 icon.style.display = "{{ autostart != 'false' ? 'none' : 'block' }}";
+                if(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+                    icon.style.display = 'block';
+                }
+
                 mainContainer.appendChild(icon);
 
                 setTimeout(function(){
