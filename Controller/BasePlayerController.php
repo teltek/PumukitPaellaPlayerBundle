@@ -66,6 +66,8 @@ class BasePlayerController extends BasePlayerControllero
      */
     public function indexAction(MultimediaObject $multimediaObject, Request $request)
     {
+        $request = $this->container->get('request_stack')->getMasterRequest();
+
         $response = $this->testBroadcast($multimediaObject, $request);
         if ($response instanceof Response) {
             return $response;
