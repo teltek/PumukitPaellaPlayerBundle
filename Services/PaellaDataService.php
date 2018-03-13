@@ -4,7 +4,6 @@ namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\SchemaBundle\Document\Track;
 use Pumukit\SchemaBundle\Services\PicService;
 use Pumukit\SchemaBundle\Services\MaterialService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
@@ -98,7 +97,7 @@ class PaellaDataService
             }
 
             if ($track) {
-                $dataStream = $this->buildDataStream($track, $request);
+                $dataStream = $this->buildDataStream([$track], $request);
                 $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
@@ -288,7 +287,7 @@ class PaellaDataService
     private function buildDataStream(array $tracks, Request $request)
     {
         $sources = array();
-        foreach($tracks as $track){
+        foreach ($tracks as $track) {
             $mimeType = $track->getMimetype();
             $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
 
@@ -302,14 +301,15 @@ class PaellaDataService
                 $dataStreamTrack['res'] = array('w' => $track->getWidth(), 'h' => $track->getHeight());
             }
 
-            $type = explode('/', $mimeType)[1];
-            if (!isset($sources[$type])) {
-                $sources[$type] = array();
+            //$format = explode('/', $mimeType)[1] ?? 'mp4'; // FOR PHP 7
+            $format = isset(explode('/', $mimeType)[1]) ? explode('/', $mimeType)[1] : 'mp4';
+
+            if (!isset($sources[$format])) {
+                $sources[$format] = array();
             }
-            $sources[$type][] = $dataStreamTrack;
+            $sources[$format][] = $dataStreamTrack;
         }
         $dataStream['sources'] = $sources;
-
 
         return $dataStream;
     }
