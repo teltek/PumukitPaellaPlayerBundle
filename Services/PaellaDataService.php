@@ -21,7 +21,7 @@ class PaellaDataService
     private $mobileDetectorService;
     private $userAgentParserService;
 
-    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService)
+    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService, $forceDual)
     {
         $this->picService = $picService;
         $this->trackService = $trackService;
@@ -31,6 +31,7 @@ class PaellaDataService
         //Only used to check whether the request is mobile and return a side-by-side on opencast videos.
         $this->mobileDetectorService = $mobileDetectorService;
         $this->userAgentParserService = $userAgentParserService;
+        $this->forceDual = $forceDual;
     }
 
     public function setOpencastClient($opencastClient)
@@ -81,7 +82,7 @@ class PaellaDataService
         $isMobile = $this->isMobile($request);
 
         // Preview test of https://github.com/teltek/PuMuKIT2-paella-player-bundle/issues/32
-        if ($request->query->get('force_dual')) {
+        if ($this->forceDual || $request->query->get('force_dual')) {
             $isMobile = false;
         }
 

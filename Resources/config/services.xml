@@ -15,6 +15,7 @@
       <argument type="service" id="router" />
       <argument type="service" id="mobile_detect.mobile_detector" />
       <argument type="service" id="pumukit_web_tv.useragent_parser" />
+      <argument>%pumukitpaella.force_dual%</argument>
       <call method="setOpencastClient">
         <argument type="service" id="pumukit_opencast.client" on-invalid="ignore"/>
       </call>

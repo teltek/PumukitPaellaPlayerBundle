@@ -27,5 +27,6 @@ class PumukitPaellaPlayerExtension extends Extension
 
         $container->setParameter('pumukitpaella.custom_css_url', $config['custom_css_url']);
         $container->setParameter('pumukitpaella.logo', $config['logo']);
+        $container->setParameter('pumukitpaella.force_dual', $config['force_dual']);
     }
 }
