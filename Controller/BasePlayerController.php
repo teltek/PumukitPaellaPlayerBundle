@@ -54,6 +54,7 @@ class BasePlayerController extends BasePlayerControllero
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->container->getParameter('pumukitplayer.when_dispatch_view_event'),
             'tracks' => $tracks,
             'opencast_host' => $opencastHost,
         );
@@ -101,6 +102,7 @@ class BasePlayerController extends BasePlayerControllero
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->container->getParameter('pumukitplayer.when_dispatch_view_event'),
             'tracks' => $tracks,
             'opencast_host' => $opencastHost,
         );

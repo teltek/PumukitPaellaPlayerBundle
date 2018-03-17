@@ -96,6 +96,15 @@
             localStorage.removeItem('opencastId');
         }
 
+        {% if 'on_play' == when_dispatch_view_event|default('') %}
+        $(document).bind(paella.events.play, function (event, params) {
+          if (!window.notifyVideoPlayedReq) {
+            window.notifyVideoPlayedReq = $.post('{{ path('pumukit_trackplayed_index', {id: tracks[0].id}) }}');
+          }
+        });
+        {% endif %}
+
+
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
@@ -137,7 +146,7 @@
             introContainer.appendChild(overlay);
             container.appendChild(introContainer);
 
-            
+
             playPauseCanvas(overlay, intro);
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
 
