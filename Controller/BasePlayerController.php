@@ -42,11 +42,6 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
-        }
-
         return array(
             'autostart' => $this->getAutoStart($request),
             'intro' => $this->getIntro($request->query->get('intro')),
@@ -54,9 +49,9 @@ class BasePlayerController extends BasePlayerControllero
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
-            'when_dispatch_view_event' => $this->container->getParameter('pumukitplayer.when_dispatch_view_event'),
+            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
-            'opencast_host' => $opencastHost,
+            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
         );
     }
 
@@ -90,11 +85,6 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
-        }
-
         return array(
             'autostart' => $this->getAutoStart($request),
             'intro' => $this->getIntro($request->query->get('intro')),
@@ -102,9 +92,9 @@ class BasePlayerController extends BasePlayerControllero
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
-            'when_dispatch_view_event' => $this->container->getParameter('pumukitplayer.when_dispatch_view_event'),
+            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
-            'opencast_host' => $opencastHost,
+            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
         );
     }
 
@@ -117,5 +107,14 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         return $autoStart;
+    }
+
+    private function getParameterWithDefaultValue($name, $default = null)
+    {
+        if ($this->container->hasParameter($name)) {
+            return $this->container->getParameter($name);
+        }
+
+        return $default;
     }
 }
