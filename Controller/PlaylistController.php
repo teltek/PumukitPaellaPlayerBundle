@@ -115,18 +115,22 @@ class PlaylistController extends BasePlaylistController
         throw $this->createNotFoundException($message);
     }
 
-    protected function getIntro($queryIntro = false)
+    /**
+     * Use IntroService in the new version 1.3.x.
+     */
+    protected function getIntro($introParameter = null)
     {
         $hasIntro = $this->container->hasParameter('pumukit2.intro');
 
-        if ($queryIntro && filter_var($queryIntro, FILTER_VALIDATE_URL)) {
-            $intro = $queryIntro;
-        } elseif ($hasIntro) {
-            $intro = $this->container->getParameter('pumukit2.intro');
-        } else {
-            $intro = false;
+        $showIntro = true;
+        if (null !== $introParameter && false === filter_var($introParameter, FILTER_VALIDATE_BOOLEAN)) {
+            $showIntro = false;
         }
 
-        return $intro;
+        if ($hasIntro && $showIntro) {
+            return $this->container->getParameter('pumukit2.intro');
+        }
+
+        return false;
     }
 }
