@@ -129,6 +129,7 @@
             const overlay = document.createElement("overlay");
 
             intro.src = "{{ asset(intro, absolute=true) }}";
+            intro.poster = "{{ multimediaObject|first_url_pic(true) }}";
             intro.id = "intro";
             intro.addEventListener('ended', onEndedVideo);
             intro.autoplay = "{{ autostart != 'false' }}";
