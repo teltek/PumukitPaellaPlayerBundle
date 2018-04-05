@@ -96,6 +96,9 @@
             localStorage.removeItem('opencastId');
         }
 
+        var username = "{{ app.user.username }}";
+        var useremail = "{{ app.user.email }}";
+
         {% if 'on_play' == when_dispatch_view_event|default('') %}
         $(document).bind(paella.events.play, function (event, params) {
           if (!window.notifyVideoPlayedReq) {
@@ -103,7 +106,6 @@
           }
         });
         {% endif %}
-
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))

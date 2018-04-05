@@ -101,13 +101,16 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream([$track], $request);
                 $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
+                $dataStream['language'] = $track->getLanguage();
                 $data['streams'][] = $dataStream;
             }
         } elseif ($isMobile) {
             if ($tracks['sbs']) {
                 $dataStream = $this->buildDataStream($tracks['sbs'], $request);
+                 $dataStream['language'] = $tracks['sbs']->getLanguage();
             } elseif ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
+                $dataStream['language'] = $tracks['display']->getLanguage();
             }
             $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
             $dataStream['preview'] = $pic;
@@ -117,17 +120,21 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
+                $dataStream['language'] = $tracks['display']->getLanguage();
                 $data['streams'][] = $dataStream;
             }
             if ($tracks['presentation']) {
                 $dataStream = $this->buildDataStream($tracks['presentation'], $request);
+                $dataStream['language'] = $tracks['presentation']->getLanguage();
                 $data['streams'][] = $dataStream;
             }
         }
         $data['metadata'] = array(
             'title' => $mmobj->getTitle(),
             'description' => $mmobj->getDescription(),
-            'duration' => 0,
+            'duration' => $mmobj->getDuration(),
+            'i18nTitle' => $mmobj->getI18nTitle(),
+            'i18nDescription' => $mmobj->getI18nDescription(),
         );
 
         $frameList = $this->getOpencastFrameList($mmobj);

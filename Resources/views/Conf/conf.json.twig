@@ -1,6 +1,8 @@
 {
     "player":{
-        "accessControlClass":"paella.AccessControl",
+        {% if access_control_class %}
+          "accessControlClass":"{{ access_control_class }}",
+        {% endif %}
         "profileFrameStrategy": "paella.ProfileFrameStrategy",
         "videoQualityStrategy": "paella.LimitedBestFitVideoQualityStrategy",
         "videoQualityStrategyParams":{ "maxAutoQualityRes":720 },
@@ -52,11 +54,11 @@
             "trimming": "MHAnnotationServiceTrimmingDataDelegate",
             "userInfo": "UserDataDelegate",
             "visualAnnotations": "VisualAnnotationsDataDelegate",
-            "footprints" : "FootprintsDataDelegate"
+            "footprints" : "MHFootPrintsDataDelegate"
         }
     },
     "folders": {
-        "profiles": "config/profiles",
+        "profiles": "{{ folders_profiles }}",
         "resources": "resources",
         "skins": "resources/style"
     },
@@ -130,9 +132,13 @@
             "es.upv.paella.frameCaptionsSearchPlugin": {"enabled":true},
 
             "//****": "User Tracking Saver Plugins",
+            {% if xapi_endpoint and xapi_auth %}
+                 "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint": "{{ xapi_endpoint }}", "auth":"{{ xapi_auth }}"},
+            {% endif %}
             "es.upv.paella.usertracking.elasticsearchSaverPlugin": { "enabled": false, "url": "http://my.elastic.server"},
-            "es.upv.paella.usertracking.GoogleAnalyticsSaverPlugIn": { "enabled": false, "trackingID": "UA-XXXXXXXX-Y" },
-	    "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint":"https://localhost:90/data/xAPI/", "auth":"b65a1ab5225a1068168959fa01b6bb18644bdbef:ece3becf84db9d9c84b52ab720438c4ccddd7606"}
+            "es.upv.paella.usertracking.GoogleAnalyticsSaverPlugIn": { "enabled": false, "trackingID": "UA-XXXXXXXX-Y" }
+
+
         }
     },
     "standalone" : {
