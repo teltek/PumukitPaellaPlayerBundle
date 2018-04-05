@@ -56,11 +56,20 @@ class PlaylistController extends BasePlaylistController
             return $this->return404Response("No playable multimedia object found with id: $mmobjId belonging to this playlist. ({$series->getTitle()})");
         }
 
+        $opencastHost = '';
+        if ($this->container->hasParameter('pumukit_opencast.host')) {
+            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
+        }
+
         return array(
             'autostart' => $request->query->get('autostart', 'false'),
-            'object' => $series,
+            'intro' => $this->getIntro($request->query->get('intro')),
+            'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
+            'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $mmobj,
+            'object' => $series,
             'responsive' => true,
+            'opencast_host' => $opencastHost,
         );
     }
 
@@ -104,5 +113,24 @@ class PlaylistController extends BasePlaylistController
 
         return new Response($template, 404);
         throw $this->createNotFoundException($message);
+    }
+
+    /**
+     * Use IntroService in the new version 1.3.x.
+     */
+    protected function getIntro($introParameter = null)
+    {
+        $hasIntro = $this->container->hasParameter('pumukit2.intro');
+
+        $showIntro = true;
+        if (null !== $introParameter && false === filter_var($introParameter, FILTER_VALIDATE_BOOLEAN)) {
+            $showIntro = false;
+        }
+
+        if ($hasIntro && $showIntro) {
+            return $this->container->getParameter('pumukit2.intro');
+        }
+
+        return false;
     }
 }

@@ -42,20 +42,16 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
-        }
-
         return array(
-            'autostart' => $request->query->get('autostart', 'false'),
+            'autostart' => $this->getAutoStart($request),
             'intro' => $this->getIntro($request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
-            'opencast_host' => $opencastHost,
+            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
         );
     }
 
@@ -66,6 +62,8 @@ class BasePlayerController extends BasePlayerControllero
      */
     public function indexAction(MultimediaObject $multimediaObject, Request $request)
     {
+        $request = $this->container->get('request_stack')->getMasterRequest();
+
         $response = $this->testBroadcast($multimediaObject, $request);
         if ($response instanceof Response) {
             return $response;
@@ -87,20 +85,36 @@ class BasePlayerController extends BasePlayerControllero
         //Then just return several tracks.
         $tracks = array($track);
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
-        }
-
         return array(
-            'autostart' => $request->query->get('autostart', 'false'),
+            'autostart' => $this->getAutoStart($request),
             'intro' => $this->getIntro($request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
-            'opencast_host' => $opencastHost,
+            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
         );
+    }
+
+    private function getAutoStart($request)
+    {
+        $autoStart = $request->query->get('autostart', 'false');
+        $userAgent = $request->headers->get('user-agent');
+        if (true === strpos($userAgent, 'Safari')) {
+            $autoStart = false;
+        }
+
+        return $autoStart;
+    }
+
+    private function getParameterWithDefaultValue($name, $default = null)
+    {
+        if ($this->container->hasParameter($name)) {
+            return $this->container->getParameter($name);
+        }
+
+        return $default;
     }
 }
