@@ -4,7 +4,6 @@ namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\SchemaBundle\Document\Track;
 use Pumukit\SchemaBundle\Services\PicService;
 use Pumukit\SchemaBundle\Services\MaterialService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
@@ -22,7 +21,7 @@ class PaellaDataService
     private $mobileDetectorService;
     private $userAgentParserService;
 
-    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService)
+    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService, $forceDual)
     {
         $this->picService = $picService;
         $this->trackService = $trackService;
@@ -32,6 +31,7 @@ class PaellaDataService
         //Only used to check whether the request is mobile and return a side-by-side on opencast videos.
         $this->mobileDetectorService = $mobileDetectorService;
         $this->userAgentParserService = $userAgentParserService;
+        $this->forceDual = $forceDual;
     }
 
     public function setOpencastClient($opencastClient)
@@ -82,7 +82,7 @@ class PaellaDataService
         $isMobile = $this->isMobile($request);
 
         // Preview test of https://github.com/teltek/PuMuKIT2-paella-player-bundle/issues/32
-        if ($request->query->get('force_dual')) {
+        if ($this->forceDual || $request->query->get('force_dual')) {
             $isMobile = false;
         }
 
@@ -98,7 +98,7 @@ class PaellaDataService
             }
 
             if ($track) {
-                $dataStream = $this->buildDataStream($track, $request);
+                $dataStream = $this->buildDataStream([$track], $request);
                 $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $dataStream['language'] = $track->getLanguage();
@@ -172,20 +172,20 @@ class PaellaDataService
     private function getMmobjTracks(MultimediaObject $mmobj, $trackId)
     {
         $tracks = array(
-            'display' => false,
-            'presentation' => false,
-            'sbs' => false,
+            'display' => array(),
+            'presentation' => array(),
+            'sbs' => array(),
         );
         $availableCodecs = array('h264', 'vp8', 'vp9');
 
         if ($trackId) {
             $track = $mmobj->getTrackById($trackId);
             if ($track->containsAnyTag(array('display', 'presenter/delivery', 'presentation/delivery')) && in_array($track->getVcodec(), $availableCodecs)) {
-                $tracks['display'] = $track;
+                $tracks['display'][] = $track;
             }
 
             if ($track->isOnlyAudio()) {
-                $tracks['display'] = $track;
+                $tracks['display'][] = $track;
             }
 
             return $tracks;
@@ -197,25 +197,23 @@ class PaellaDataService
 
         foreach ($presenterTracks as $track) {
             if (in_array($track->getVcodec(), $availableCodecs)) {
-                $tracks['display'] = $track;
-                break;
+                $tracks['display'][] = $track;
             }
         }
         foreach ($presentationTracks as $track) {
             if (in_array($track->getVcodec(), $availableCodecs)) {
-                $tracks['presentation'] = $track;
-                break;
+                $tracks['presentation'][] = $track;
             }
         }
 
         if ($sbsTrack && in_array($sbsTrack->getVcodec(), $availableCodecs)) {
-            $tracks['sbs'] = $sbsTrack;
+            $tracks['sbs'][] = $sbsTrack;
         }
 
         if (!$tracks['display'] && !$tracks['presentation']) {
             $track = $mmobj->getDisplayTrack();
             if ($track && in_array($track->getVcodec(), $availableCodecs)) {
-                $tracks['display'] = $track;
+                $tracks['display'][] = $track;
             }
         }
 
@@ -294,25 +292,32 @@ class PaellaDataService
     /**
      * Returns a data array with the required paella structure for a 'data stream'.
      */
-    private function buildDataStream(Track $track, Request $request)
+    private function buildDataStream(array $tracks, Request $request)
     {
-        $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
-        $mimeType = $track->getMimetype();
-        $dataStream = array(
-            'sources' => array(
-                'mp4' => array(
-                    array(
-                        'src' => $src,
-                        'mimetype' => $mimeType,
-                    ),
-                ),
-            ),
-        );
+        $sources = array();
+        foreach ($tracks as $track) {
+            $mimeType = $track->getMimetype();
+            $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
 
-        // If pumukit doesn't know the resolution, paella can guess it.
-        if ($track->getWidth() && $track->getHeight()) {
-            $dataStream['sources']['mp4'][0]['res'] = array('w' => $track->getWidth(), 'h' => $track->getHeight());
+            $dataStreamTrack = array(
+                'src' => $src,
+                'mimetype' => $mimeType,
+            );
+
+            // If pumukit doesn't know the resolution, paella can guess it.
+            if ($track->getWidth() && $track->getHeight()) {
+                $dataStreamTrack['res'] = array('w' => $track->getWidth(), 'h' => $track->getHeight());
+            }
+
+            //$format = explode('/', $mimeType)[1] ?? 'mp4'; // FOR PHP 7
+            $format = isset(explode('/', $mimeType)[1]) ? explode('/', $mimeType)[1] : 'mp4';
+
+            if (!isset($sources[$format])) {
+                $sources[$format] = array();
+            }
+            $sources[$format][] = $dataStreamTrack;
         }
+        $dataStream['sources'] = $sources;
 
         return $dataStream;
     }
