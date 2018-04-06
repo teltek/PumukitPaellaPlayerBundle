@@ -41,6 +41,10 @@ class Configuration implements ConfigurationInterface
               ->defaultValue("paella.AccessControl")
               ->info('Paella accessControlClass')
             ->end()
+            ->scalarNode('footprints')
+              ->defaultValue("MHFootPrintsDataDelegate")
+              ->info('Paella footprints')
+            ->end()
           ->end();
 
         return $treeBuilder;

@@ -1,6 +1,6 @@
 {
     "player":{
-        "accessControlClass":"{{ access_control_class|default('paella.AccessControl') }}",
+        "accessControlClass":"{{ access_control_class }}",
         "profileFrameStrategy": "paella.ProfileFrameStrategy",
         "videoQualityStrategy": "paella.LimitedBestFitVideoQualityStrategy",
         "videoQualityStrategyParams":{ "maxAutoQualityRes":720 },
@@ -52,13 +52,13 @@
             "trimming": "MHAnnotationServiceTrimmingDataDelegate",
             "userInfo": "UserDataDelegate",
             "visualAnnotations": "VisualAnnotationsDataDelegate",
-            "footprints" : "FootPrintsDataDelegate",
+            "footprints" : "{{ footprints }}"
             "metadata":"VideoManifestMetadataDataDelegate",
             "cameraTrack":"TrackCameraDataDelegate"
         }
     },
     "folders": {
-        "profiles": "{{ folders_profiles|default('config/profiles') }}",
+        "profiles": "{{ folders_profiles }}",
         "resources": "resources",
         "skins": "resources/style"
     },
