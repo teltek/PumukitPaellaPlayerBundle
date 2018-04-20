@@ -99,7 +99,9 @@ class PaellaDataService
 
             if ($track) {
                 $dataStream = $this->buildDataStream([$track], $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
+
+                $pic = $this->getPicForObject($mmobj, true, true);
+
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
             }
@@ -109,13 +111,15 @@ class PaellaDataService
             } elseif ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
             }
-            $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
+
+            $pic = $this->getPicForObject($mmobj, true, true);
+
             $dataStream['preview'] = $pic;
             $data['streams'][] = $dataStream;
         } else {
             if ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
+                $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
             }
@@ -323,5 +327,22 @@ class PaellaDataService
         $userAgent = $request->headers->get('user-agent');
 
         return $this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent);
+    }
+
+    /**
+     * @param $mmobj
+     * @param $absolute
+     * @param $hd
+     *
+     * @return null|string
+     */
+    private function getPicForObject($mmobj, $absolute, $hd)
+    {
+        $pic = $this->picService->getPosterUrl($mmobj, $absolute);
+        if (!$pic) {
+            $pic = $this->picService->getFirstUrlPic($mmobj, $absolute, $hd);
+        }
+
+        return $pic;
     }
 }
