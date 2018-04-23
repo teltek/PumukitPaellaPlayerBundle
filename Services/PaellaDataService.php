@@ -338,7 +338,12 @@ class PaellaDataService
      */
     private function getPicForObject($mmobj, $absolute, $hd)
     {
-        $pic = $this->picService->getPosterUrl($mmobj, $absolute);
+        $pic = null;
+
+        if (method_exists($this->picServic, 'getPosterUrl')) {
+            $pic = $this->picService->getPosterUrl($mmobj, $absolute);
+        }
+
         if (!$pic) {
             $pic = $this->picService->getFirstUrlPic($mmobj, $absolute, $hd);
         }
