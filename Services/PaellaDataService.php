@@ -347,7 +347,7 @@ class PaellaDataService
     {
         $pic = null;
 
-        if (method_exists($this->picServic, 'getPosterUrl')) {
+        if (method_exists($this->picService, 'getPosterUrl')) {
             $pic = $this->picService->getPosterUrl($mmobj, $absolute);
         }
 
