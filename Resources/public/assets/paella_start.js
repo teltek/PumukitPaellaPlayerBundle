@@ -63,10 +63,10 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
     return parseInt(match[1]) * 3600 + parseInt(match[2]) * 60 + parseInt(match[3]);
   },
 
-  loadVideo:function(videoId, onSuccess) {
-    if (videoId) {
+  loadVideo:function(onSuccess) {
+    if (paella.player.videoIdentifier) {
       var that = this;
-      var repo_url = '/paellarepository/' + videoId
+      var repo_url = '/paellarepository/' + paella.player.videoIdentifier
       var secret = paella.utils.parameters.get('secret')
       if(secret)
       repo_url = '/secret/paellarepository/' + secret
