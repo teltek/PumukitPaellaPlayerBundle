@@ -109,10 +109,10 @@ class PaellaDataService
         } elseif ($isMobile) {
             if ($tracks['sbs']) {
                 $dataStream = $this->buildDataStream($tracks['sbs'], $request);
-                 $dataStream['language'] = $tracks['sbs']->getLanguage();
+                 $dataStream['language'] = $tracks['sbs'][0]->getLanguage();
             } elseif ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
-                $dataStream['language'] = $tracks['display']->getLanguage();
+                $dataStream['language'] = $tracks['display'][0]->getLanguage();
             }
 
             $pic = $this->getPicForObject($mmobj, true, true);
@@ -124,12 +124,12 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
-                $dataStream['language'] = $tracks['display']->getLanguage();
+                $dataStream['language'] = $tracks['display'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
             if ($tracks['presentation']) {
                 $dataStream = $this->buildDataStream($tracks['presentation'], $request);
-                $dataStream['language'] = $tracks['presentation']->getLanguage();
+                $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
         }
