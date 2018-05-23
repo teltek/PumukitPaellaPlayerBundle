@@ -24,7 +24,7 @@ paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paell
 					if (onSuccess) onSuccess(undefined, false);
 				}
 			},
-			function(data, contentType, returnCode) { onSuccess(undefined, false); }
+			function(data, contentType, returnCode) { if (onSuccess) onSuccess(undefined, false); }
 		);
 	},
 
@@ -47,15 +47,15 @@ paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paell
 							value: value,
 							'in': 0
 						}},
-						function(data, contentType, returnCode) { onSuccess({}, true); },
-						function(data, contentType, returnCode) { onSuccess({}, false); }
+						function(data, contentType, returnCode) { if (onSuccess) onSuccess({}, true); },
+						function(data, contentType, returnCode) { if (onSuccess) onSuccess({}, false); }
 					);
 				}
 				else if (annotations.length == 1 ) {
 					var annotationId = annotations[0].id;
 					paella.ajax.put({ url: '/annotation/'+ annotationId, params: { value: value }},
-						function(data, contentType, returnCode) { onSuccess({}, true); },
-						function(data, contentType, returnCode) { onSuccess({}, false); }
+						function(data, contentType, returnCode) { if (onSuccess) onSuccess({}, true); },
+						function(data, contentType, returnCode) { if (onSuccess) onSuccess({}, false); }
 					);
 				}
 				else if (annotations.length > 1 ) {
@@ -86,7 +86,7 @@ paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paell
 						var annotationId = data.annotations.annotation.annotationId;
 						asyncLoader.addCallback(new paella.JSONCallback({url:'/annotation/'+annotationId}, "DELETE"));
 					}
-					asyncLoader.load(function(){ if (onSuccess) { onSuccess({}, true); } }, function() { onSuccess({}, false); });
+					asyncLoader.load(function(){ if (onSuccess) { onSuccess({}, true); } }, function() { if (onSuccess) onSuccess({}, false); });
 				}
 				else {
 					if (onSuccess) { onSuccess({}, true); }
