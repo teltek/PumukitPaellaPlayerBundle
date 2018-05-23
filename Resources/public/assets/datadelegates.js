@@ -331,16 +331,17 @@ paella.dataDelegates.MHCaptionsDataDelegate = Class.create(paella.DataDelegate,{
 
 paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate,{
 	read:function(context,params,onSuccess) {
-		var episodeId = params.id;
 
-		if (!localStorage || !localStorage.getItem('opencast_host')) {
-            if (onSuccess) { onSuccess({}, false); }
-            return;
-		}
-		if(localStorage.getItem('opencastId')) {
-			episodeId = localStorage.getItem('opencastId');
+		if (!localStorage ||
+			!localStorage.getItem('opencast_host') ||
+			!localStorage.getItem('opencastId') ||
+			1 == localStorage.getItem('opencastId')
+		) {
+			if (onSuccess) { onSuccess({}, false); }
+			return;
 		}
 
+		var episodeId = localStorage.getItem('opencastId');
 		var domain = localStorage.getItem('opencast_host');
 
 		paella.ajax.get({url: domain + '/usertracking/footprint.json', params: {id: episodeId}},
@@ -364,17 +365,19 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 
 	write:function(context,params,value,onSuccess) {
 		var thisClass = this;
-		var episodeId = params.id;
 
-        if (!localStorage || !localStorage.opencast_host) {
-            if (onSuccess) { onSuccess({}, false); }
-            return;
-        }
-        if(localStorage.opencastId) {
-            episodeId = localStorage.opencastId;
-        }
+		if (!localStorage ||
+			!localStorage.getItem('opencast_host') ||
+			!localStorage.getItem('opencastId') ||
+			1 == localStorage.getItem('opencastId')
+		) {
+			if (onSuccess) { onSuccess({}, false); }
+			return;
+		}
 
-        var domain = localStorage.opencast_host;
+		var episodeId = localStorage.getItem('opencastId');
+		var domain = localStorage.getItem('opencast_host');
+
 
 		paella.ajax.get({url: domain + '/usertracking/', params: {
 					_method: 'PUT',
