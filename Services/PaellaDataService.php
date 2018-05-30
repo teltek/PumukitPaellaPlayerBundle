@@ -99,7 +99,9 @@ class PaellaDataService
 
             if ($track) {
                 $dataStream = $this->buildDataStream([$track], $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
+
+                $pic = $this->getPicForObject($mmobj, true, true);
+
                 $dataStream['preview'] = $pic;
                 $dataStream['language'] = $track->getLanguage();
                 $data['streams'][] = $dataStream;
@@ -112,13 +114,15 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $dataStream['language'] = $tracks['display']->getLanguage();
             }
-            $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
+
+            $pic = $this->getPicForObject($mmobj, true, true);
+
             $dataStream['preview'] = $pic;
             $data['streams'][] = $dataStream;
         } else {
             if ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
+                $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $dataStream['language'] = $tracks['display']->getLanguage();
                 $data['streams'][] = $dataStream;
@@ -330,5 +334,27 @@ class PaellaDataService
         $userAgent = $request->headers->get('user-agent');
 
         return $this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent);
+    }
+
+    /**
+     * @param $mmobj
+     * @param $absolute
+     * @param $hd
+     *
+     * @return null|string
+     */
+    private function getPicForObject($mmobj, $absolute, $hd)
+    {
+        $pic = null;
+
+        if (method_exists($this->picService, 'getPosterUrl')) {
+            $pic = $this->picService->getPosterUrl($mmobj, $absolute);
+        }
+
+        if (!$pic) {
+            $pic = $this->picService->getFirstUrlPic($mmobj, $absolute, $hd);
+        }
+
+        return $pic;
     }
 }
