@@ -96,8 +96,8 @@
             localStorage.removeItem('opencastId');
         }
 
-        var username = "{{ app.user.username }}";
-        var useremail = "{{ app.user.email }}";
+        var username = "{{ app.user.username|default('anonymous') }}";
+        var useremail = "{{ app.user.email|default('anonymous@pumukit.org') }}";
 
         {% if 'on_play' == when_dispatch_view_event|default('') %}
         $(document).bind(paella.events.play, function (event, params) {

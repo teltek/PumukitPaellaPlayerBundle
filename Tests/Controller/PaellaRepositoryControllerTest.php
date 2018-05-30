@@ -57,7 +57,9 @@ class PaellaRepositoryControllerTest extends WebTestCase
             'metadata' => [
                 'title' => $mmobj->getTitle(),
                 'description' => $mmobj->getDescription(),
-                'duration' => 0, // $mmobj->getDuration() (The service ALWAYS returns 0)
+                'duration' =>  $mmobj->getDuration(),
+                'i18nTitle' => $mmobj->getI18nTitle(),
+                'i18nDescription' => $mmobj->getI18nDescription(),
             ],
         ];
         foreach ($trackLists as $id => $tracks) {
@@ -90,7 +92,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
                     $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
                 }
             }
-            $paellaData['streams'][$id] = array('sources' => $sources);
+            $paellaData['streams'][$id] = array('sources' => $sources, 'language' => $tracks[0]->getLanguage());
 
             if($preview) {
                 $paellaData['streams'][$id]['preview'] = $preview;
@@ -144,6 +146,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         //Should return presenter
         $response = $this->callRepo($mmobj);
         $responseData = json_decode($response->getContent(), true);
+
         $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
         $trackPresentation = new Track();

@@ -5,7 +5,7 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ConfController extends Controller
 {
@@ -30,6 +30,6 @@ class ConfController extends Controller
 
         $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth, 'access_control_class' => $accessControlClass, 'footprints' => $footprints, 'folders_profiles' => $folders_profiles));
 
-        return new JsonResponse($jsonData);
+        return new Response($jsonData, 200, array('Content-Type' => 'application/json'));
     }
 }
