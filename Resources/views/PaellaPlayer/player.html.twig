@@ -110,8 +110,10 @@
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
-                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")) {
-                    setTimeout(function () {
+                if ((!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")) &&
+                    !(base.userAgent.system.MacOS && base.userAgent.system.Version.minor>=13 && base.userAgent.browser.Safari) &&
+                    !(base.userAgent.browser.Chrome && base.userAgent.browser.Version.major>=64)) {
+                        setTimeout(function () {
                         paella.player.play();
                     }, 300);
                 }
