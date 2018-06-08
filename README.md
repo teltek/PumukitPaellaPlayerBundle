@@ -17,7 +17,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require teltek/pmk2-paella-player-bundle
+$ composer require teltek/pmk2-paella-player-bundle 1.3.x-dev
 ```
 
 ### Step 2: Uninstall the default JW Player Bundle
