@@ -52,7 +52,7 @@
             "trimming": "MHAnnotationServiceTrimmingDataDelegate",
             "userInfo": "UserDataDelegate",
             "visualAnnotations": "VisualAnnotationsDataDelegate",
-            "footprints" : "MHFootPrintsDataDelegate"
+            "footprints" : "FootprintsDataDelegate"
         }
     },
     "folders": {

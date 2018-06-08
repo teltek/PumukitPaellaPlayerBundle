@@ -397,3 +397,34 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 		);
 	}
 });
+
+paella.dataDelegates.FootprintsDataDelegate = Class.create(paella.DataDelegate,{
+    _intervalTime: 0,
+    _intervals: [],
+
+    initialize:function() {},
+
+    write:function(context, id, params) {
+
+        var that = this;
+        paella.player.videoContainer.duration().then(function(d) {
+
+            var seconds = Math.floor(d/20)
+            var portions =  (seconds > 120) ? 120 : seconds;
+
+            that._intervalTime+= (params.out-params.in);
+
+            that._intervals.push({'in':params.in, 'out': params.out});
+
+            if (that._intervalTime >= portions){
+
+                base.ajax.post({url: "/paella/save_group/"+id.id, params:{"intervals": that._intervals, "isLive": paella.player.isLiveStream()}},
+                               function(data,contentType,code) {
+                                   that._intervalTime = 0;
+                                   that._intervals = [];
+                               }
+                              );
+            }
+        })
+    }
+});
