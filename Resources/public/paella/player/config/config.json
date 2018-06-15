@@ -41,9 +41,6 @@
             "color":"gray"
         }
     },
-    "editor":{
-        "enabled":false
-    },
     "defaultProfile":"slide_professor",
     "data":{
         "enabled":true,
