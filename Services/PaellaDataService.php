@@ -177,15 +177,16 @@ class PaellaDataService
 
         if ($trackId) {
             $track = $mmobj->getTrackById($trackId);
-            if ($track->containsAnyTag(array('display', 'presenter/delivery', 'presentation/delivery')) && in_array($track->getVcodec(), $availableCodecs)) {
-                $tracks['display'][] = $track;
-            }
+            if ($track) {
+                if ($track->containsAnyTag(array('display', 'presenter/delivery', 'presentation/delivery')) && in_array($track->getVcodec(), $availableCodecs)) {
+                    $tracks['display'][] = $track;
+                }
+                if ($track->isOnlyAudio()) {
+                    $tracks['display'][] = $track;
+                }
 
-            if ($track->isOnlyAudio()) {
-                $tracks['display'][] = $track;
+                return $tracks;
             }
-
-            return $tracks;
         }
 
         $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
