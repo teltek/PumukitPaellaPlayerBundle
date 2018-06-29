@@ -1,0 +1,149 @@
+<script type="text/javascript">
+    "use strict";
+    localStorage.setItem('opencast_host', "{{ opencast_host }}");
+    var isOpencast = "{{ multimediaObject.getProperty('opencast') }}";
+    if(isOpencast) {
+        localStorage.setItem('opencastId',"{{ multimediaObject.getProperty('opencast') }}");
+    } else {
+        localStorage.removeItem('opencastId');
+    }
+
+    {% if 'on_play' == when_dispatch_view_event|default('') %}
+    $(document).bind(paella.events.play, function (event, params) {
+        if (!window.notifyVideoPlayedReq) {
+            window.notifyVideoPlayedReq = $.post('{{ path('pumukit_trackplayed_index', {id: tracks[0].id}) }}');
+        }
+    });
+    {% endif %}
+
+    $(document).bind(paella.events.loadComplete, function (event, params) {
+        if(base.userAgent.browser.Safari) {
+            console.log('userAgent Safari test');
+            paella.player.videoContainer.setVolume(0);
+        }
+
+        {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/')) or (autostart is defined and autostart == 'true') %}
+            if ((!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")) &&
+                !(base.userAgent.system.MacOS && base.userAgent.system.Version.minor>=13 && base.userAgent.browser.Safari) &&
+                !(base.userAgent.browser.Chrome && base.userAgent.browser.Version.major>=64)) {
+                setTimeout(function () {
+                    paella.player.play();
+                }, 300);
+            } else if(base.userAgent.browser.Chrome || base.userAgent.browser.IsMobileVersion || base.userAgent.browser.Safari) {
+                setTimeout(function () {
+                    paella.player.videoContainer.setVolume(0);
+                    paella.player.play();
+                }, 300);
+            }
+        {% endif %}
+
+        setTimeout(function () {
+            setPaellaProfile("{{ getPaellaLayout(multimediaObject, app.request) }}");
+        }, 300);
+
+    });
+
+    {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+        var container= document.querySelector("#playerContainer");
+        var intro = document.createElement("video");
+        var introContainer = document.createElement("div");
+        var skipContainer = document.createElement("div");
+        var overlay = document.createElement("overlay");
+
+        intro.src = "{{ asset(intro, absolute=true) }}";
+        intro.poster = "{{ multimediaObject|first_url_pic(true) }}";
+        intro.id = "intro";
+        intro.addEventListener('ended', onEndedVideo);
+        intro.autoplay = "{{ autostart != 'false' }}";
+        intro.muted= base.userAgent.browser.IsMobileVersion;
+
+        skipContainer.id = "skipContainer";
+        introContainer.id = "introContainer";
+        overlay.id = "overlay";
+        skipContainer.addEventListener("click", onEndedVideo);
+
+        skipContainer.innerHTML = '{{ "Next Up" | trans}}';
+
+        introContainer.appendChild(intro);
+        introContainer.appendChild(skipContainer);
+        introContainer.appendChild(overlay);
+        container.appendChild(introContainer);
+
+        playPauseCanvas(overlay, intro);
+        loadPaella('playerContainer', '{{ multimediaObject.id }}');
+
+        function onEndedVideo() {
+            container.removeChild(introContainer);
+            if(paella.player.videoLoader.loadStatus){
+                setTimeout(function () {
+                    paella.player.play();
+                }, 300);
+            }
+        }
+
+        function playPauseCanvas(mainContainer, video){
+            var icon = document.createElement('canvas');
+            icon.className = 'playButtonOnScreenIcon';
+            icon.style.display = "{{ autostart != 'false' ? 'none' : 'block' }}";
+            if(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+                icon.style.display = 'block';
+            }
+
+            mainContainer.appendChild(icon);
+
+            setTimeout(function(){
+                var width = jQuery(mainContainer).innerWidth();
+                var height = jQuery(mainContainer).innerHeight();
+
+                icon.width = width;
+                icon.height = height;
+
+                var iconSize = (width<height) ? width/3 : height/3;
+
+                var ctx = icon.getContext('2d');
+
+                ctx.translate((width-iconSize)/2, (height-iconSize)/2);
+
+                ctx.beginPath();
+                ctx.arc(iconSize/2, iconSize/2 ,iconSize/2, 0, 2*Math.PI, true);
+                ctx.closePath();
+
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 10;
+                ctx.stroke();
+                ctx.fillStyle = '#8f8f8f';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(iconSize/3, iconSize/4);
+                ctx.lineTo(3*iconSize/4, iconSize/2);
+                ctx.lineTo(iconSize/3, 3*iconSize/4);
+                ctx.lineTo(iconSize/3, iconSize/4);
+                ctx.closePath();
+                ctx.fillStyle = 'white';
+                ctx.fill();
+
+                ctx.stroke();
+            }, 100);
+
+            $(mainContainer).bind('click', function () {
+                if(video.paused){
+                    icon.style.display = 'none';
+                    video.play();
+                }else{
+                    icon.style.display = 'block';
+                    video.pause();
+                }
+            });
+        }
+    {% else %}
+        loadPaella('playerContainer', '{{ multimediaObject.id }}');
+    {% endif %}
+
+    function setPaellaProfile(profileName) {
+        $('.viewModeItemButton').removeClass('selected');
+        $('.viewModeItemButton.' + profileName).addClass('selected');
+        paella.player.setProfile(profileName);
+        base.cookies.set("lastProfile", profileName);
+    }
+</script>
