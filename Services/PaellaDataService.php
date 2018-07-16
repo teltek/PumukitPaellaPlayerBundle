@@ -310,6 +310,11 @@ class PaellaDataService
             //$format = explode('/', $mimeType)[1] ?? 'mp4'; // FOR PHP 7
             $format = isset(explode('/', $mimeType)[1]) ? explode('/', $mimeType)[1] : 'mp4';
 
+            // Hotfix use mp4 when mp3. See https://github.com/polimediaupv/paella/pull/347
+            if ('mpeg' == $format && $track->isOnlyAudio()) {
+                $format = 'mp4';
+            }
+
             if (!isset($sources[$format])) {
                 $sources[$format] = array();
             }
