@@ -3472,6 +3472,29 @@ input[type=range]:focus::-ms-fill-upper {
 .buttonPlugin.AirPlayButton.not-available {
   opacity: 0.4;
 }
+.buttonPlugin.legal {
+  pointer-events: all;
+  padding-right: 5px;
+  height: 20px;
+  text-align: right;
+  padding: 1px;
+  margin: 1px;
+  margin-right: 12px;
+  margin-top: -7px;
+  margin-bottom: 4px;
+  width: auto;
+}
+.buttonPlugin.legal a {
+  color: lightgrey !important;
+  text-decoration: underline !important;
+}
+.buttonPlugin.legal a:hover {
+  background-color: transparent !important;
+  font-weight: bold !important;
+}
+.buttonPlugin.legal:hover {
+  background-color: transparent !important;
+}
 .buttonPlugin.PIPModeButton {
   background-position: -1000% -100%;
 }
@@ -3486,6 +3509,9 @@ input[type=range]:focus::-ms-fill-upper {
 .buttonPlugin.right.videoZoomToolbar i.button-icon.icon-mini-zoom-in {
   font-size: 29px;
   margin-left: -6px;
+}
+.autoTrackingActivated {
+  color: red !important;
 }
 html {
   margin: 0px;

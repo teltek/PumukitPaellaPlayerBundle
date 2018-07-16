@@ -107,7 +107,12 @@
                     "localhost:8000"
                 ]
             },
-
+            "es.upv.paella.legalPlugin": {
+              "enabled": false,
+              "label": "Legal info",
+              "position": "right",
+              "legalUrl": "https://en.wikipedia.org/wiki/General_Data_Protection_Regulation"
+            },
             "//****": "TabBar Plugins",
             "es.upv.paella.commentsPlugin": {"enabled": false},
             "es.upv.paella.test.tabBarExamplePlugin": {"enabled": false},
