@@ -198,7 +198,7 @@ class PaellaDataService
 
         $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
         $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
-        $sbsTrack = $mmobj->getFilteredTrackWithTags(array('sbs'));
+        $sbsTrack = $mmobj->getTrackWithTags(array('sbs'));
 
         foreach ($presenterTracks as $track) {
             if (in_array($track->getVcodec(), $availableCodecs)) {
