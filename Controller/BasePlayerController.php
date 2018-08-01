@@ -39,7 +39,7 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         if (!$track && $multimediaObject->isMultistream()) {
-            $tracks = $presenterTracks = $this->getFilteredTracksWithTags(array('presenter/delivery'));
+            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery'));
         } else {
             $tracks = array($track);
         }
