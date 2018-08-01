@@ -38,9 +38,11 @@ class BasePlayerController extends BasePlayerControllero
             return $this->redirect($url);
         }
 
-        //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
-        //Then just return several tracks.
-        $tracks = array($track);
+        if (!$track && $multimediaObject->isMultistream()) {
+            $tracks = $presenterTracks = $this->getFilteredTracksWithTags(array('presenter/delivery'));
+        } else {
+            $tracks = array($track);
+        }
 
         return array(
             'autostart' => $this->getAutoStart($request),
