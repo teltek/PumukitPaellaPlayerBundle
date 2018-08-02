@@ -39,7 +39,7 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         if (!$track && $multimediaObject->isMultistream()) {
-            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery'));
+            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery', 'presentation/delivery'));
         } else {
             $tracks = array($track);
         }
@@ -83,9 +83,11 @@ class BasePlayerController extends BasePlayerControllero
             return $this->redirect($url);
         }
 
-        //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
-        //Then just return several tracks.
-        $tracks = array($track);
+        if (!$track && $multimediaObject->isMultistream()) {
+            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery', 'presentation/delivery'));
+        } else {
+            $tracks = array($track);
+        }
 
         return array(
             'autostart' => $this->getAutoStart($request),
