@@ -112,7 +112,6 @@
                 or (autostart is defined and autostart == 'true') %}
                 if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
-                        console.log("Nooooo")
                         paella.player.play().catch(function(err) {
                             paella.player.videoContainer.setVolume(0);
                             paella.player.play();
