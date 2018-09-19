@@ -46,7 +46,7 @@ class BasePlayerController extends BasePlayerControllero
 
         return array(
             'autostart' => $this->getAutoStart($request),
-            'intro' => $this->getIntro($request->query->get('intro')),
+            'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
@@ -91,7 +91,7 @@ class BasePlayerController extends BasePlayerControllero
 
         return array(
             'autostart' => $this->getAutoStart($request),
-            'intro' => $this->getIntro($request->query->get('intro')),
+            'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
@@ -122,5 +122,22 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         return $default;
+    }
+
+    /**
+     * @deprecated: compatibility layer. Remove with PuMuKIT version 2.5.x
+     */
+    private function getIntroForMultimediaObject($introProperty = null, $introParameter = null)
+    {
+        if (!$this->has('pumukit_baseplayer.intro')) {
+            return $this->getIntro($introParameter);
+        }
+
+        $service = $this->get('pumukit_baseplayer.intro');
+        if (method_exists($service, 'getIntroForMultimediaObject')) {
+            return $service->getIntroForMultimediaObject($introProperty, $introParameter);
+        }
+
+        return $this->get('pumukit_baseplayer.intro')->getIntro($introParameter);
     }
 }
