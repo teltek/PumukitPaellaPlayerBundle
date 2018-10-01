@@ -14,7 +14,7 @@ var MyAccessControl = Class.create(paella.AccessControl,{
 
   userData:function() {
     var self = this;
-    return new Promise((resolve, reject)=>{
+    return new Promise(function(resolve, reject){
       if (self._userData) {
         resolve(self._userData);
       }
