@@ -378,7 +378,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 		var episodeId = localStorage.getItem('opencastId');
 		var domain = localStorage.getItem('opencast_host');
 
-		if (!value.in) {
+		if (typeof value.in === "undefined") {
 			if (onSuccess) { onSuccess({}, false); }
 			return;
 		}
