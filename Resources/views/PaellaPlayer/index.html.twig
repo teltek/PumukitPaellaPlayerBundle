@@ -61,6 +61,25 @@
             background: linear-gradient(to bottom, rgb(255, 204, 0) 0%, rgb(255, 204, 0) 100%) !important;
         }
 
+        .playbackRateItem {
+            text-align: center !important;
+            padding:7px !important;
+        }
+
+        .playbackRateItem.selected {
+            color: #FFFFFF !important;
+            background-color: #cc0000 !important;
+        }
+
+        #playerContainer_controls_playback_popUpPluginContainer {
+            left: 129px !important;
+            top: -9px !important;
+        }
+
+        #playerContainer_controls_playback_popUpPluginContainer .buttonPluginPopUp {
+            border: 1px solid #EAEAEA !important;
+        }
+
         {% if object.isMultistream() %}
 
             {# Added while waiting for paella fix TTK-16366 #}
