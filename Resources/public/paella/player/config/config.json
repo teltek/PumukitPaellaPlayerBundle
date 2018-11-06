@@ -69,6 +69,7 @@
       "edu.harvard.dce.paella.flexSkipForwardPlugin": {"enabled":true, "direction": "Forward", "seconds": 30},
       "es.teltek.paella.integratedDurationPlugin": {"enabled":true},
       "es.teltek.paella.simpleSoundControlPlugin": {"enabled":true},
+      "es.teltek.paella.advanceViewModePlugin": {"enabled":true},
       "es.upv.paella.captionsPlugin": {"enabled":true, "searchOnCaptions":true},
       "es.upv.paella.extendedTabAdapterPlugin": {"enabled":true},
       "es.upv.paella.footprintsPlugin": {"enabled":false},

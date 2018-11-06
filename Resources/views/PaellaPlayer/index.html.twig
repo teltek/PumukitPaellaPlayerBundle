@@ -42,25 +42,24 @@
             margin-left: 10px !important;
         }
 
-        #playerContainer_controls_playback {
-            height: 40px !important;
-        }
-
-        #playerContainer_controls_playback_playbackBar {
-            height: 4px !important;
-            background-color: #808080 !important;
-        }
-
-        .timeControl {
-            display: none !important;
-        }
-
         .playbackBarFull {
-            height: 2px !important;
-            background-color: rgb(255, 204, 0) !important;
-            background: linear-gradient(to bottom, rgb(255, 204, 0) 0%, rgb(255, 204, 0) 100%) !important;
+            top: -9px !important;
         }
 
+        .fullscreen_button {
+            position:absolute;
+            right: 35px !important;
+
+            background: none !important;
+            border: none !important;
+        }
+        .layout_button {
+            position:absolute;
+            right: 5px !important;
+
+            background: none !important;
+            border: none !important;
+        }
         {% if object.isMultistream() %}
 
             {# Added while waiting for paella fix TTK-16366 #}
@@ -90,18 +89,16 @@
             }
 
             #playerContainer_controls_playback_timelinePluginContainer {
-                height: 15px !important;
-                bottom: 40px !important;
-                border-top: 1px solid #EAEAEA;
+                bottom: 55px !important;
             }
 
             .footPrints, .captionsPluginButton {
                 display: none !important;
             }
 
-            .frameControl {
+            #buttonPlugin8_timeline {
                 display: block !important;
-                bottom:15px !important;
+                bottom: 5px !important;
                 height: 60px;
                 border-top: 1px solid #EAEAEA;
             }
