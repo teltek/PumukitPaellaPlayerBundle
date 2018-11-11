@@ -27,6 +27,9 @@ class ConfController extends Controller
         if ($mmobj->getProperty('personalrecorder')) {
             $folders_profiles = 'config/profiles/pr';
         }
+        if ($request->get('advanced')) {
+            $folders_profiles = 'config/profiles/advanced';            
+        }
 
         $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth, 'access_control_class' => $accessControlClass, 'footprints' => $footprints, 'folders_profiles' => $folders_profiles));
 
