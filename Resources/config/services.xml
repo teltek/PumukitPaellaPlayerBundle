@@ -8,6 +8,7 @@
 
     <service id="pumukitpaellaplayer.paelladata" class="Pumukit\PaellaPlayerBundle\Services\PaellaDataService">
       <!--<argument type="service" id="request_stack" />-->
+      <argument type="service" id="doctrine_mongodb.odm.document_manager"/>
       <argument type="service" id="pumukitschema.pic" />
       <argument type="service" id="pumukit_baseplayer.trackurl" />
       <argument type="service" id="pumukit_baseplayer.seriesplaylist" />
