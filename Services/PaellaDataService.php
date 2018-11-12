@@ -2,6 +2,7 @@
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Services\PicService;
@@ -20,8 +21,13 @@ class PaellaDataService
     private $opencastClient = null;
     private $mobileDetectorService;
     private $userAgentParserService;
+    private $dm;
+    private $playlistService;
+    private $materialService;
+    private $urlGenerator;
+    private $forceDual;
 
-    public function __construct(PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService, $forceDual)
+    public function __construct(DocumentManager $dm, PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService, $forceDual)
     {
         $this->picService = $picService;
         $this->trackService = $trackService;
@@ -32,6 +38,7 @@ class PaellaDataService
         $this->mobileDetectorService = $mobileDetectorService;
         $this->userAgentParserService = $userAgentParserService;
         $this->forceDual = $forceDual;
+        $this->dm = $dm;
     }
 
     public function setOpencastClient($opencastClient)
@@ -46,7 +53,14 @@ class PaellaDataService
      */
     public function getPaellaPlaylistData(Series $series, Request $request, $criteria = array())
     {
-        $mmobjs = $this->playlistService->getPlaylistMmobjs($series, $criteria);
+        if (!$series->isPlaylist()) {
+            $criteria['series'] = new \MongoId($series->getId());
+            $criteria['islive'] = false;
+            $criteria['status'] = array('$ne' => MultimediaObject::STATUS_PROTOTYPE);
+            $mmobjs = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findBy($criteria, array('rank' => 'asc'));
+        } else {
+            $mmobjs = $this->playlistService->getPlaylistMmobjs($series, $criteria);
+        }
 
         $data = array();
         foreach ($mmobjs as $pos => $mmobj) {

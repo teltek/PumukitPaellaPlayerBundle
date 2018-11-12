@@ -50,7 +50,13 @@ class PlaylistController extends BasePlaylistController
 
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
-        $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
+        if (!$series->isPlaylist()) {
+            $dm = $this->get('doctrine_mongodb')->getManager();
+            $criteria = array('series' => new \MongoId($series->getId()), 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC, 'islive' => false);
+            $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
+        } else {
+            $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
+        }
 
         if (!$mmobj) {
             return $this->return404Response("No playable multimedia object found with id: $mmobjId belonging to this playlist. ({$series->getTitle()})");
@@ -81,7 +87,14 @@ class PlaylistController extends BasePlaylistController
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         if (!$mmobjId) {
             $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
-            $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
+            if (!$series->isPlaylist()) {
+                $dm = $this->get('doctrine_mongodb')->getManager();
+                $criteria = array('series' => new \MongoId($series->getId()), 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC, 'islive' => false);
+                $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
+            } else {
+                $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
+            }
+
             if (!$mmobj) {
                 return $this->return404Response('This playlist does not have any playable multimedia objects.');
             }
