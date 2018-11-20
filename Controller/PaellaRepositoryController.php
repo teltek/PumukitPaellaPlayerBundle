@@ -23,7 +23,10 @@ class PaellaRepositoryController extends Controller implements PersonalControlle
     {
         $serializer = $this->get('serializer');
         $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
-        $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+        $criteria = array(
+            'embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC),
+            'tracks.tags' => 'display',
+        );
         $data = $paellaDataService->getPaellaMmobjData($mmobj, $request, $criteria);
         $response = $serializer->serialize($data, $request->getRequestFormat());
 
@@ -39,7 +42,10 @@ class PaellaRepositoryController extends Controller implements PersonalControlle
     {
         $serializer = $this->get('serializer');
         $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
-        $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+        $criteria = array(
+            'embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC),
+            'tracks.tags' => 'display',
+        );
         $data = $paellaDataService->getPaellaPlaylistData($series, $request, $criteria);
         $response = $serializer->serialize($data, $request->getRequestFormat());
 

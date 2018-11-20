@@ -64,7 +64,12 @@ class BasePlaylistController extends BasePlaylistControllero
         $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
         if (!$series->isPlaylist()) {
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $criteria = array('series' => new \MongoId($series->getId()), 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC, 'islive' => false);
+            $criteria = array(
+                'series' => new \MongoId($series->getId()),
+                'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
+                'islive' => false,
+                'tracks.tags' => 'display',
+            );
             $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
         } else {
             $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
@@ -108,7 +113,12 @@ class BasePlaylistController extends BasePlaylistControllero
             $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
             if (!$series->isPlaylist()) {
                 $dm = $this->get('doctrine_mongodb')->getManager();
-                $criteria = array('series' => new \MongoId($series->getId()), 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC, 'islive' => false);
+                $criteria = array(
+                    'series' => new \MongoId($series->getId()),
+                    'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
+                    'islive' => false,
+                    'tracks.tags' => 'display',
+                );
                 $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
             } else {
                 $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
