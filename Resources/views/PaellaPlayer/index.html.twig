@@ -57,8 +57,8 @@
     touch-action: auto !important;
   }
 
-   {% if 'advanced' in app.request.query.get('referer') %}
-       {{ include('PumukitBasePlayerBundle:PaellaPlayer:advance.css.twig') }}
+   {% if app.request.query.has('advanced') %}
+       {% include('PumukitPaellaPlayerBundle:PaellaPlayer:advance.css.twig') %}
    {% endif %}
 
   </style>
