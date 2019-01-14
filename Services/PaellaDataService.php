@@ -272,12 +272,17 @@ class PaellaDataService
                 $id = 'frame_'.$time;
                 $mimeType = 'image/jpeg';
 
+                $url = '';
+                if (isset($segment['previews']['preview']['$'])) {
+                    $url = $segment['previews']['preview']['$'];
+                }
+
                 $images[] = array(
                     'id' => $id,
                     'mimetype' => $mimeType,
                     'time' => $time,
-                    'url' => $segment['previews']['preview']['$'],
-                    'thumb' => $segment['previews']['preview']['$'],
+                    'url' => $url,
+                    'thumb' => $url,
                     'caption' => $segment['text'],
                 );
             }
