@@ -2,7 +2,7 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
-use Pumukit\BasePlayerBundle\Controller\BasePlaylistController;
+use Pumukit\BasePlayerBundle\Controller\BasePlaylistController as BasePlaylistControllero;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\Series;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -10,13 +10,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class PlaylistController extends BasePlaylistController
+class BasePlaylistController extends BasePlaylistControllero
 {
     /**
      * @Route("/playlist/{id}", name="pumukit_playlistplayer_index", defaults={"no_channels": true} )
      * @Route("/playlist/magic/{secret}", name="pumukit_playlistplayer_magicindex", defaults={"show_hide": true, "no_channels": true} )
      *
      * Added default indexAction and redirect to the paella route.
+     *
+     * @param Series  $series
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function indexAction(Series $series, Request $request)
     {
@@ -31,6 +36,13 @@ class PlaylistController extends BasePlaylistController
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
      *
      * In order to make things easier on the paella side, we drop the symfony custom urls.
+     *
+     * @param Request $request
+     *
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
+     * @throws \Doctrine\ODM\MongoDB\LockException
+     * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
      */
     public function paellaIndexAction(Request $request)
     {
@@ -52,7 +64,12 @@ class PlaylistController extends BasePlaylistController
         $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
         if (!$series->isPlaylist()) {
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $criteria = array('series' => new \MongoId($series->getId()), 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC, 'islive' => false);
+            $criteria = array(
+                'series' => new \MongoId($series->getId()),
+                'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
+                'islive' => false,
+                'tracks.tags' => 'display',
+            );
             $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
         } else {
             $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
@@ -81,6 +98,13 @@ class PlaylistController extends BasePlaylistController
 
     /**
      * Helper function to used to redirect when the mmobj id is not specified in the request.
+     *
+     * @param Series  $series
+     * @param Request $request
+     * @param null    $mmobjId
+     * @param null    $videoPos
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $videoPos = null)
     {
@@ -89,7 +113,12 @@ class PlaylistController extends BasePlaylistController
             $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
             if (!$series->isPlaylist()) {
                 $dm = $this->get('doctrine_mongodb')->getManager();
-                $criteria = array('series' => new \MongoId($series->getId()), 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC, 'islive' => false);
+                $criteria = array(
+                    'series' => new \MongoId($series->getId()),
+                    'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
+                    'islive' => false,
+                    'tracks.tags' => 'display',
+                );
                 $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
             } else {
                 $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
@@ -125,11 +154,14 @@ class PlaylistController extends BasePlaylistController
         );
 
         return new Response($template, 404);
-        throw $this->createNotFoundException($message);
     }
 
     /**
      * Use IntroService in the new version 1.3.x.
+     *
+     * @param null $introParameter
+     *
+     * @return bool|mixed
      */
     protected function getIntro($introParameter = null)
     {
