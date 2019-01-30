@@ -7,11 +7,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class ConfController.
+ */
 class ConfController extends Controller
 {
     /**
-     * @return JsonResponse
      * @Route("/paella/config.json", name="paella_player_config")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function confAction(Request $request)
     {
@@ -22,13 +28,27 @@ class ConfController extends Controller
 
         $id = $request->get('id');
         $dm = $this->container->get('doctrine_mongodb')->getManager();
-        $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(array('_id' => new \MongoId($id)));
         $folders_profiles = 'config/profiles';
-        if ($mmobj->getProperty('personalrecorder')) {
-            $folders_profiles = 'config/profiles/pr';
+        if ($id && preg_match('/^[0-9a-z]{24}$/', $id)) {
+            $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(
+                array('_id' => new \MongoId($id))
+            );
+
+            if ($mmobj->getProperty('personalrecorder')) {
+                $folders_profiles = 'config/profiles/pr';
+            }
         }
 
-        $jsonData = $this->renderView('PumukitBasePlayerBundle:Conf:conf.json.twig', array('xapi_endpoint' => $endpoint, 'xapi_auth' => $auth, 'access_control_class' => $accessControlClass, 'footprints' => $footprints, 'folders_profiles' => $folders_profiles));
+        $jsonData = $this->renderView(
+            'PumukitPaellaPlayerBundle:Conf:conf.json.twig',
+            array(
+                'xapi_endpoint' => $endpoint,
+                'xapi_auth' => $auth,
+                'access_control_class' => $accessControlClass,
+                'footprints' => $footprints,
+                'folders_profiles' => $folders_profiles,
+            )
+        );
 
         return new Response($jsonData, 200, array('Content-Type' => 'application/json'));
     }
