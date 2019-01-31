@@ -49,7 +49,7 @@
             "trimming": "MHAnnotationServiceTrimmingDataDelegate",
             "userInfo": "UserDataDelegate",
             "visualAnnotations": "VisualAnnotationsDataDelegate",
-            "footprints" : "FootprintsDataDelegate",
+            "footprints" : "PaellaFootPrintsDataDelegate",
             "metadata":"VideoManifestMetadataDataDelegate",
             "cameraTrack":"TrackCameraDataDelegate"
         }
