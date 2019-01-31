@@ -43,7 +43,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->scalarNode('footprints')
               ->defaultValue("MHFootPrintsDataDelegate")
-              ->info('Paella footprints')
+              ->info('Paella footprints MHFootPrintsDataDelegate or PaellaFootPrintsDataDelegate')
             ->end()
           ->end();
 

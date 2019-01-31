@@ -402,7 +402,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 	}
 });
 
-paella.dataDelegates.FootprintsDataDelegate = Class.create(paella.DataDelegate,{
+paella.dataDelegates.PaellaFootPrintsDataDelegate = Class.create(paella.DataDelegate,{
 	_intervalTime: 0,
 	_intervals: [],
 
