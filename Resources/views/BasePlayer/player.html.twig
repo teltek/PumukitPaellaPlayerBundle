@@ -1,0 +1,65 @@
+{% extends 'PumukitWebTVBundle::layout.html.twig' %}
+{% set hide_slidebar = true %}
+
+{% block stylesheets %}
+    <style>
+        body {margin:0px;}
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {% if 'on_play' == when_dispatch_view_event %}
+        <script>
+            window.onplay = function(e, track_id){
+                if (track_id && !window.notifyVideoPlayedReq) {
+                    window.notifyVideoPlayedReq = new XMLHttpRequest();
+                    var url = '{{ path('pumukit_trackplayed_index', {id: '__id__'})|raw }}';
+                    window.notifyVideoPlayedReq.open('POST', url.replace('__id__', track_id), true);
+                    window.notifyVideoPlayedReq.send();
+                }
+            };
+        </script>
+    {% endif %}
+{% endblock %}
+
+{% block title %}{{ parent() }} - {{ multimediaObject.title }}{% endblock %}
+{% block keywords %}{{ parent() }} - {{ multimediaObject.keyword }}{% endblock %}
+
+
+{% block body_base %}
+    <div id="playerContainer" style="display:block;">
+        <video style="width:100%; height: 100%; " controls controlsList="nodownload"
+             poster="{{ multimediaObject|first_url_pic(true) }}"
+             {{ autostart|default("true") ? "autoplay" }}
+             {% if 'on_play' == when_dispatch_view_event %}
+               onplay="window.onplay(event,  '{{ track.id|default(multimediaObject.getFilteredTrackWithTags(['sbs'], [], [], [], false).id|default('--')) }}');"
+             {% endif %}
+             >
+            {% if multimediaObject.isMultistream() %}
+                {% set tracksbs = multimediaObject.getFilteredTrackWithTags(['sbs'], [], [], [], false) %}
+                {% if tracksbs %}
+                    <source src="{{ asset(track_url(tracksbs), absolute=true) }}" type="{{ tracksbs.getMimeType() }}" data-id="{{ tracksbs.id }}">
+                {% endif %}
+
+                {% set trackpresenter = multimediaObject.getFilteredTrackWithTags(['presenter/delivery']) %}
+                {% if trackpresenter %}
+                    <source src="{{ asset(track_url(trackpresenter), absolute=true) }}" type="{{ trackpresenter.getMimeType() }}" data-id="{{ trackpresenter.id }}>
+                {% endif %}
+
+                {% set trackpresentation = multimediaObject.getFilteredTrackWithTags(['presentation/delivery']) %}
+                {% if trackpresentation %}
+                    <source src="{{ asset(track_url(trackpresentation), absolute=true) }}" type="{{ trackpresentation.getMimeType() }}" data-id="{{ trackpresentation.id }}>
+                {% endif %}
+
+            {% elseif track %}
+                <source src="{{ asset(track_url(track), absolute=true) }}" type="{{ track.getMimeType() }}" data-id="{{ track.id }}>
+            {% endif %}
+
+            {% set captions = captions(multimediaObject) %}
+            {% for caption in captions %}
+                <track label="{{ caption.language|language_name }}" kind="subtitles" srclang="{{ caption.language }}" src="{{ asset(caption.url, absolute=true) }}">
+            {% endfor %}
+             Sorry, no public tracks or your browser doesn't support embedded videos.
+        </video>
+    </div>
+{% endblock %}
