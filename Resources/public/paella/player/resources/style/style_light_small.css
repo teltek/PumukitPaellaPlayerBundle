@@ -2332,6 +2332,7 @@ a.btn {
 .range input[type=range] {
   display: block;
   margin: 13px 0;
+  max-height: 4px;
 }
 /* Scrollbar - Google Chrome */
 input[type=range]::-webkit-slider-runnable-track {
