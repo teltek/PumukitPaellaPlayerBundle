@@ -2,66 +2,76 @@
 {% set hide_slidebar = true %}
 
 {% block meta %}
-  <meta name = "viewport" content = "user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
-  {# THIS IS WHAT MAKES PAELLA WORK #}
-  <base href="/bundles/pumukitpaellaplayer/paella/player/">
-  {{ parent() }}
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
+    {# THIS IS WHAT MAKES PAELLA WORK #}
+    <base href="/bundles/pumukitpaellaplayer/paella/player/">
+    {{ parent() }}
 
 {% endblock %}
 {% block javascripts %}
-   <script type="text/javascript" src="javascript/swfobject.js"></script>
-   <script type="text/javascript" src="javascript/base.js"></script>
-   <script type="text/javascript" src="javascript/traceur-runtime.min.js"></script>
-   <script type="text/javascript" src="javascript/jquery.js"></script>
-   <script type="text/javascript" src="javascript/lunr.min.js"></script>
-   <script type="text/javascript" src="javascript/require.js"></script>
-   <script type="text/javascript" src="javascript/paella_player.js"></script>
-   <script type="text/javascript" src="../../assets/paella_start.js"></script>
-   <script type="text/javascript" src="../../assets/datadelegates.js"></script>
-   <script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascript/swfobject.js"></script>
+    <script type="text/javascript" src="javascript/base.js"></script>
+    <script type="text/javascript" src="javascript/traceur-runtime.min.js"></script>
+    <script type="text/javascript" src="javascript/jquery.js"></script>
+    <script type="text/javascript" src="javascript/lunr.min.js"></script>
+    <script type="text/javascript" src="javascript/require.js"></script>
+    <script type="text/javascript" src="javascript/paella_player.js"></script>
+    <script type="text/javascript" src="../../assets/paella_start.js"></script>
+    <script type="text/javascript" src="../../assets/datadelegates.js"></script>
+    <script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
 
-{% endblock%}
+{% endblock %}
 {% block stylesheets %}
 
-  <link rel="stylesheet" href="{{ asset('bundles/pumukitpaellaplayer/paella/player/resources/bootstrap/css/bootstrap.min.css') }}" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="{{ asset('bundles/pumukitpaellaplayer/paella/player/resources/bootstrap/css/bootstrap.min.css') }}" type="text/css" media="screen" charset="utf-8">
 
-  <style>
-   {# Added while waiting for paella upstream #}
-   video {
-       background: black;
-       box-shadow: 0px 0px 6px #000;
-   }
+    <style>
+        {# Added while waiting for paella upstream #}
+        video {
+            background: black;
+            box-shadow: 0px 0px 6px #000;
+        }
 
-   {# Added while waiting for paella fix TTK-16366 #}
-   .captionsBar .editorButton {
-       display: none !important;
-   }
-   .captionsBar select {
-       width: 49% !important;
-   }
+        {# Added while waiting for paella fix TTK-16366 #}
+        .captionsBar .editorButton {
+            display: none !important;
+        }
 
-   {# Teltek custom design #}
-   .footPrintsContainer {
-     height: 60px !important;
-   }
+        .captionsBar select {
+            width: 49% !important;
+        }
 
-   {# Added while waiting for paella fix TTK-16763 #}
-   .captionsPluginContainer {
-     max-width: 400px;
-     min-width: 200px;
-     width: 30vw !important;
-   }
+        {# Teltek custom design #}
+        .footPrintsContainer {
+            height: 60px !important;
+        }
 
-  {# touch scroll #305 and TTK-16059#}
-  body {
-    touch-action: auto !important;
-  }
+        {# Added while waiting for paella fix TTK-16763 #}
+        .captionsPluginContainer {
+            max-width: 400px;
+            min-width: 200px;
+            width: 30vw !important;
+        }
 
-   {% if app.request.query.has('advanced') %}
-       {% include('PumukitPaellaPlayerBundle:PaellaPlayer:advance.css.twig') %}
-   {% endif %}
+        {# touch scroll #305 and TTK-16059#}
+        body {
+            touch-action: auto !important;
+        }
 
-  </style>
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            .range input[type=range] {
+                margin: 0 !important;
+                max-height: 100% !important;
+                padding-top: 0;
+            }
+        }
+
+
+        {% if app.request.query.has('advanced') %}
+        {% include('PumukitPaellaPlayerBundle:PaellaPlayer:advance.css.twig') %}
+        {% endif %}
+
+    </style>
 {% endblock %}
 
 {% block title %}{{ parent() }} - {{ object.title }}{% endblock %}
