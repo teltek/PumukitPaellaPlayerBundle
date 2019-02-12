@@ -63,6 +63,7 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
                     }
                     that.streams = data.streams;
                     that.frameList = data.frameList;
+                    that.metadata = data.metadata;
                     that.loadStatus = that.streams.length>0;
                     onSuccess();
                 })
@@ -119,7 +120,7 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
 });
 
 function loadPaella(containerId, videoId) {
-    var initDelegate = new paella.MyInitDelegate({accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
+    var initDelegate = new paella.MyInitDelegate({configUrl: "/paella/config.json?id=" + videoId, accessControl:new MyAccessControl(),videoLoader:new MyVideoLoader()});
     initPaellaEngage(containerId,initDelegate);
 }
 

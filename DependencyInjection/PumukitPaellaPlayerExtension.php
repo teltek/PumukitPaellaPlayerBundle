@@ -26,5 +26,8 @@ class PumukitPaellaPlayerExtension extends Extension
         $loader->load('services.xml');
 
         $container->setParameter('pumukitpaella.custom_css_url', $config['custom_css_url']);
+        $container->setParameter('pumukitpaella.logo', $config['logo']);
+        $container->setParameter('pumukitpaella.xapi_endpoint', $config['xapi_endpoint']);
+        $container->setParameter('pumukitpaella.xapi_auth', $config['xapi_auth']);
     }
 }

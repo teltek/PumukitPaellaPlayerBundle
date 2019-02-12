@@ -21,6 +21,18 @@ class Configuration implements ConfigurationInterface
               ->defaultValue(null)
               ->info('Custom CSS URL')
             ->end()
+            ->scalarNode('logo')
+              ->defaultValue(null)
+              ->info('Custom logo URL')
+            ->end()
+            ->scalarNode('xapi_endpoint')
+              ->defaultValue(null)
+              ->info('LRS endpoint for xAPI')
+            ->end()
+            ->scalarNode('xapi_auth')
+              ->defaultValue(null)
+              ->info('LRS auth token for xAPI')
+            ->end()
           ->end();
 
         return $treeBuilder;

@@ -33,10 +33,23 @@
        box-shadow: 0px 0px 6px #000;
    }
 
+   {# Added while waiting for paella fix TTK-16366 #}
+   .captionsBar .editorButton {
+       display: none !important;
+   }
+   .captionsBar select {
+       width: 49% !important;
+   }
+
    {# Teltek custom design #}
    .footPrintsContainer {
      height: 60px !important;
    }
+
+  {# touch scroll #305 and TTK-16059#}
+  body {
+    touch-action: auto !important;
+  }
   </style>
 {% endblock %}
 

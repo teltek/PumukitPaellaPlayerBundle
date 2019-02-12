@@ -99,7 +99,7 @@ class PaellaDataService
 
             if ($track) {
                 $dataStream = $this->buildDataStream($track, $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
             }
@@ -109,13 +109,13 @@ class PaellaDataService
             } elseif ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
             }
-            $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+            $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
             $dataStream['preview'] = $pic;
             $data['streams'][] = $dataStream;
         } else {
             if ($tracks['display']) {
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
-                $pic = $this->picService->getFirstUrlPic($mmobj, true, false);
+                $pic = $this->picService->getFirstUrlPic($mmobj, true, true);
                 $dataStream['preview'] = $pic;
                 $data['streams'][] = $dataStream;
             }
@@ -177,6 +177,10 @@ class PaellaDataService
                 $tracks['display'] = $track;
             }
 
+            if ($track->isOnlyAudio()) {
+                $tracks['display'] = $track;
+            }
+
             return $tracks;
         }
 
@@ -203,7 +207,7 @@ class PaellaDataService
 
         if (!$tracks['display'] && !$tracks['presentation']) {
             $track = $mmobj->getDisplayTrack();
-            if (in_array($track->getVcodec(), $availableCodecs)) {
+            if ($track && in_array($track->getVcodec(), $availableCodecs)) {
                 $tracks['display'] = $track;
             }
         }
@@ -232,7 +236,14 @@ class PaellaDataService
                 return array();
             }
 
-            foreach ($mediaPackage['segments']['segment'] as $segment) {
+            //Fix Opencast one-result behavior
+            if (isset($mediaPackage['segments']['segment']['time'])) {
+                $segments = array($mediaPackage['segments']['segment']);
+            } else {
+                $segments = $mediaPackage['segments']['segment'];
+            }
+
+            foreach ($segments as $segment) {
                 $time = intval($segment['time'] / 1000);
                 $id = 'frame_'.$time;
                 $mimeType = 'image/jpeg';
