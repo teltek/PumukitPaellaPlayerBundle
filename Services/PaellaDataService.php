@@ -303,6 +303,10 @@ class PaellaDataService
      */
     private function getFrameListFromPumukit(MultimediaObject $multimediaObject)
     {
+        if (!method_exists($multimediaObject, 'getEmbeddedSegments')) {
+            return null;
+        }
+
         $segments = $multimediaObject->getEmbeddedSegments();
         if (!$segments) {
             return null;
