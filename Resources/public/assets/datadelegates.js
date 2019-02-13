@@ -416,9 +416,7 @@ paella.dataDelegates.PaellaFootPrintsDataDelegate = Class.create(paella.DataDele
 			var seconds = Math.floor(d/20)
 			var portions =  (seconds > 120) ? 120 : seconds;
 			
-			if ((typeof params.in !== 'undefined') && (typeof params.out !== 'undefined')){
-				that._intervalTime += (params.out-params.in);
-			}
+			that._intervalTime+= (params.out-params.in);
 			
 			that._intervals.push({'in':params.in, 'out': params.out});
 			

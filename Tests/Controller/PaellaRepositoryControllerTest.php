@@ -50,29 +50,55 @@ class PaellaRepositoryControllerTest extends WebTestCase
         return $response;
     }
 
-    private function makePaellaData($mmobj, $tracks = [])
+    private function makePaellaData($mmobj, $trackLists = [])
     {
         $paellaData = [
             'streams' => [],
             'metadata' => [
                 'title' => $mmobj->getTitle(),
                 'description' => $mmobj->getDescription(),
-                'duration' => 0, // $mmobj->getDuration() (The service ALWAYS returns 0)
+                'duration' =>  $mmobj->getDuration(),
+                'i18nTitle' => $mmobj->getI18nTitle(),
+                'i18nDescription' => $mmobj->getI18nDescription(),
             ],
         ];
-        foreach ($tracks as $id => $track) {
-            $paellaData['streams'][$id] = [
-                'sources' => [
-                    'mp4' => [
-                        0 => [
-                            'src' => $this->trackUrlService->generateTrackFileUrl($track, true),
-                        ],
-                    ],
-                ],
-            ];
-            if ($track->containsAnyTag(['display', 'presenter/delivery'])) {
-                $paellaData['streams'][$id]['preview'] = $this->picService->getFirstUrlPic($mmobj, true, false);
+        foreach ($trackLists as $id => $tracks) {
+            if (!is_array($tracks)) {
+                $tracks = [$tracks];
             }
+            $sources = array();
+            foreach($tracks as $track){
+                $mimeType = $track->getMimetype();
+                $src = $this->trackUrlService->generateTrackFileUrl($track, true);
+                //$src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
+
+                $dataStreamTrack = array(
+                    'src' => $src,
+                    'mimetype' => $mimeType,
+                );
+
+                // If pumukit doesn't know the resolution, paella can guess it.
+                if ($track->getWidth() && $track->getHeight()) {
+                    $dataStreamTrack['res'] = array('w' => $track->getWidth(), 'h' => $track->getHeight());
+                }
+
+                $type = explode('/', $mimeType)[1];
+                if (!isset($sources[$type])) {
+                    $sources[$type] = array();
+                }
+                $sources[$type][] = $dataStreamTrack;
+
+                if ($track->containsAnyTag(['display', 'presenter/delivery']) && !isset($preview)) {
+                    $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
+                }
+            }
+            $paellaData['streams'][$id] = array('sources' => $sources, 'language' => $tracks[0]->getLanguage());
+
+            if($preview) {
+                $paellaData['streams'][$id]['preview'] = $preview;
+                $preview = false;
+            }
+
         }
 
         return $paellaData;
@@ -92,6 +118,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
 
         $trackPresenter = new Track();
         $trackPresenter->setDuration(2);
+        $trackPresenter->setMimetype('video/mp4');
         $trackPresenter->setTags(array('display', 'presenter/delivery'));
 
         $mmobj->addTrack($trackPresenter);
@@ -119,15 +146,18 @@ class PaellaRepositoryControllerTest extends WebTestCase
         //Should return presenter
         $response = $this->callRepo($mmobj);
         $responseData = json_decode($response->getContent(), true);
+
         $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
         $trackPresentation = new Track();
         $trackPresentation->setDuration(2);
+        $trackPresentation->setMimetype('video/mp4');
         $trackPresentation->setTags(array('presentation/delivery'));
         $trackPresentation->setVcodec('h264');
 
         $trackSBS = new Track();
         $trackSBS->setDuration(2);
+        $trackSBS->setMimetype('video/mp4');
         $trackSBS->setTags(array('sbs'));
 
         $mmobj->addTrack($trackPresentation);
@@ -176,12 +206,14 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $trackPresenter2 = new Track();
         $trackPresenter2->setVcodec('vp8');
         $trackPresenter2->setDuration(2);
+        $trackPresenter2->setMimetype('video/webm');
         $trackPresenter2->setTags(array('presenter/delivery'));
         $mmobj->addTrack($trackPresenter2);
 
         $trackPresenter3 = new Track();
         $trackPresenter3->setVcodec('vp8');
         $trackPresenter3->setDuration(2);
+        $trackPresenter3->setMimetype('video/webm');
         $trackPresenter3->setTags(array('presenter/delivery'));
         $mmobj->addTrack($trackPresenter3);
 
@@ -191,7 +223,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         //Should return presentation & presenter (not Dup)
         $response = $this->callRepo($mmobj);
         $responseData = json_decode($response->getContent(), true);
-        $this->assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
+        $this->assertEquals($this->makePaellaData($mmobj, [[$trackPresenter, $trackPresenter2, $trackPresenter3], $trackPresentation]), $responseData);
 
         //Should return presenterDup
         $response = $this->callRepo($mmobj, $trackPresenter3);
@@ -205,6 +237,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
 
         $trackAudio = new Track();
         $trackAudio->setDuration(2);
+        $trackAudio->setMimetype('audio/mp3');
         $trackAudio->setTags(array('audio', 'display'));
         $trackAudio->setOnlyAudio(true);
 
@@ -228,6 +261,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $track = new Track();
         $track->setDuration(2);
         $track->setOnlyAudio(true);
+        $track->setMimetype('audio/mp3');
         $track->setTags(array('display'));
         $mmobj->addTrack($track);
         $mmobj->setType(MultimediaObject::TYPE_AUDIO);
@@ -244,7 +278,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
 
         $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track, true),
-                            $responseData['streams'][0]['sources']['mp4'][0]['src']);
+                            $responseData['streams'][0]['sources']['mp3'][0]['src']);
     }
 
     public function testMultipleAudioPaellaRepository()

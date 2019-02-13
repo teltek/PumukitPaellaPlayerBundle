@@ -1,6 +1,6 @@
 {
     "player":{
-        "accessControlClass":"paella.AccessControl",
+        "accessControlClass":"{{ access_control_class }}",
         "profileFrameStrategy": "paella.ProfileFrameStrategy",
         "videoQualityStrategy": "paella.LimitedBestFitVideoQualityStrategy",
         "videoQualityStrategyParams":{ "maxAutoQualityRes":720 },
@@ -52,11 +52,13 @@
             "trimming": "MHAnnotationServiceTrimmingDataDelegate",
             "userInfo": "UserDataDelegate",
             "visualAnnotations": "VisualAnnotationsDataDelegate",
-            "footprints" : "MHFootPrintsDataDelegate"
+            "footprints" : "{{ footprints }}",
+            "metadata":"VideoManifestMetadataDataDelegate",
+            "cameraTrack":"TrackCameraDataDelegate"
         }
     },
     "folders": {
-        "profiles": "config/profiles",
+        "profiles": "{{ folders_profiles }}",
         "resources": "resources",
         "skins": "resources/style"
     },
@@ -72,10 +74,13 @@
             "edu.harvard.dce.paella.flexSkipPlugin": {"enabled":true, "direction": "Rewind", "seconds": 10},
             "edu.harvard.dce.paella.flexSkipForwardPlugin": {"enabled":true, "direction": "Forward", "seconds": 30},
             "es.teltek.paella.playlistPlugin":  {"enabled":true, "playlistApi":"/paellaplaylist"},
+            "es.teltek.paella.integratedDurationPlugin": {"enabled":true},
+            "es.teltek.paella.simpleSoundControlPlugin": {"enabled":true},
+            "es.teltek.paella.advanceViewModePlugin": {"enabled": {{ 'advanced' in app.request.headers.get('referer') ? 'true': 'false'}} },
             "es.upv.paella.captionsPlugin": {"enabled":true, "searchOnCaptions":true},
             "es.upv.paella.extendedTabAdapterPlugin": {"enabled":false},
             "es.upv.paella.footprintsPlugin": {"enabled":true, "skin":"custom", "fillStyle": "green", "strokeStyle": "green"},
-            "es.upv.paella.frameControlPlugin":  {"enabled": true, "showFullPreview": "auto"},
+            "es.upv.paella.frameControlPlugin":  {"enabled": true, "showFullPreview": "auto", "showCaptions":false},
             "es.upv.paella.fullScreenButtonPlugin": {"enabled":true, "reloadOnFullscreen":{ "enabled":true, "keepUserSelection":true }},
             "es.upv.paella.helpPlugin": {"enabled":false, "langs":["en","es"]},
             "es.upv.paella.multipleQualitiesPlugin": {"enabled":true, "showWidthRes":true},
@@ -85,12 +90,14 @@
             "es.upv.paella.socialPlugin": {"enabled":false},
             "es.upv.paella.themeChooserPlugin":  {"enabled":false},
             "es.upv.paella.viewModePlugin": { "enabled": true },
-            "es.upv.paella.volumeRangePlugin":{"enabled":true, "showMasterVolume": true, "showSlaveVolume": false },
+            "es.upv.paella.volumeRangePlugin":{"enabled":false, "showMasterVolume": true, "showSlaveVolume": false },
             "es.upv.paella.pipModePlugin": { "enabled":true },
             "es.upv.paella.ratePlugin": { "enabled":false },
             "es.upv.paella.videoZoomPlugin": { "enabled":false },
             "es.upv.paella.audioLanguage": { "enabled":false },
             "es.upv.paella.videoZoomToolbarPlugin": { "enabled":false, "targetStreamIndex":0 },
+            "es.upv.paella.videoZoomTrack4kPlugin": { "enabled":false, "targetStreamIndex":0, "autoModeByDefault":false },
+            "es.upv.paella.airPlayPlugin": { "enabled":false },
 
             "//****": "Video Overlay Button Plugins",
             "es.upv.paella.liveStreamingIndicatorPlugin":  { "enabled": false },
@@ -120,6 +127,7 @@
             "es.upv.paella.trimmingPlayerPlugin": {"enabled":true},
             "es.upv.paella.zoomPlugin": {"enabled": false},
             "es.upv.paella.windowTitlePlugin": {"enabled": false},
+            "es.upv.paella.track4kPlugin": { "enabled":false },
 
             "//****": "Captions Parser Plugins",
             "es.upv.paella.captions.DFXPParserPlugin": {"enabled":true},
@@ -130,6 +138,8 @@
             "es.upv.paella.frameCaptionsSearchPlugin": {"enabled":true},
 
             "//****": "User Tracking Saver Plugins",
+            "es.upv.paella.usertracking.piwikSaverPlugIn": { "enabled": false, "tracker":"http://localhost/piwik/", "siteId": "1" },
+            "org.opencast.usertracking.MatomoSaverPlugIn": { "enabled": false, "server": "http://localhost/piwik/", "site_id": 1, "heartbeat": 30, "client_id": "Paella Player" },
             {% if xapi_endpoint and xapi_auth %}
                  "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint": "{{ xapi_endpoint }}", "auth":"{{ xapi_auth }}"},
             {% endif %}
@@ -141,5 +151,13 @@
     },
     "standalone" : {
         "repository": "../repository/"
+    },
+    "skin": {
+      "available": [
+        "dark",
+        "dark_small",
+        "light",
+        "light_small"
+      ]
     }
 }

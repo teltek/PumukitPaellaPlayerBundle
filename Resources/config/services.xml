@@ -4,7 +4,6 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-
   <parameters>
     <parameter key="pumukit_paella">false</parameter>
   </parameters>
@@ -13,6 +12,7 @@
 
     <service id="pumukitpaellaplayer.paelladata" class="Pumukit\PaellaPlayerBundle\Services\PaellaDataService">
       <!--<argument type="service" id="request_stack" />-->
+      <argument type="service" id="doctrine_mongodb.odm.document_manager"/>
       <argument type="service" id="pumukitschema.pic" />
       <argument type="service" id="pumukit_baseplayer.trackurl" />
       <argument type="service" id="pumukit_baseplayer.seriesplaylist" />
@@ -20,6 +20,7 @@
       <argument type="service" id="router" />
       <argument type="service" id="mobile_detect.mobile_detector" />
       <argument type="service" id="pumukit_web_tv.useragent_parser" />
+      <argument>%pumukitpaella.force_dual%</argument>
       <call method="setOpencastClient">
         <argument type="service" id="pumukit_opencast.client" on-invalid="ignore"/>
       </call>

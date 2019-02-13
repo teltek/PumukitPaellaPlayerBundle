@@ -51,6 +51,10 @@
 	"You are using Firefox version, and some required video playback capabilities are not available until Firefox min_version. Please, update your browser and try again.": "Estás utilizando Firefox version, y algunas capacidades de vídeo necesarias no están disponibles hasta Firefox min_version. Por favor, actualiza tu navegador y prueba otra vez.",
 	"This video is not compatible with any codec installed in your system": "Este vídeo no es compatible con ningún codec instalado en su sistema",
 	"Could not load the video": "No se ha podido cargar el vídeo",
+	"Error! Captions format not supported.": "Error! El formato de los subtitulos no está soportado.",
+	"Duration": "Duración",
+	"Playlist": "Lista de reproducción",
+	"Volume": "Volumen",
 	"Trimming": "Ajuste de inicio y fin",
 	"Breaks": "Descansos",
 	"Break": "Descanso",
@@ -90,6 +94,5 @@
 	"Continue editing the transcriptions anonymously": "Editar las transcripciones de forma anónima",
 	"Log in and edit the transcriptions": "Identificarse y editar las transcripciones",
 	"Under review": "Revisando",
-	"Change video layout": "Modificar el diseño del video",
-	"Volume": "Volumen"
+	"Change video layout": "Modificar el diseño del video"
 }
