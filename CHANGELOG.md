@@ -4,6 +4,17 @@ To get the diff for a specific change, go to https://github.com/teltek/PuMuKIT2-
 To get the diff between two versions, go to https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/2.0.0...2.1.0-rc1
 
 
+## [1.4.0][1.4.0] (2018-10-10)
+- Update paella to paella 5.3
+- xAPI support
+- Enabled MMO property to force custom paella layout 
+- Custom layouts for PR recordings added
+- Added OCR plugin for Opencast videos 
+- Added Footprints plugin for Opencast videos 
+- Custom css URL added 
+- Configuration for accessControlClass added 
+- Bugfixing and performance improvements 
+
 ## [1.2.4][1.2.4] (2017-10-19)
 - Update paella to paella 5.2.4
 - Add OCR plugin for Opencast videos
@@ -41,6 +52,7 @@ To get the diff between two versions, go to https://github.com/teltek/PuMuKIT2-p
 ## 1.0.0 (2016-03-03)
 - Initial version
 
+[1.4.0]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.0...1.4.0
 [1.2.4]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.3...1.2.4
 [1.2.3]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.2...1.2.3
 [1.2.2]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.1...1.2.2
