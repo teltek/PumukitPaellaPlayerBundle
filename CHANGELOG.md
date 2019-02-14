@@ -52,6 +52,7 @@ To get the diff between two versions, go to https://github.com/teltek/PuMuKIT2-p
 ## 1.0.0 (2016-03-03)
 - Initial version
 
+[1.4.0]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.0...1.4.0
 [1.2.4]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.3...1.2.4
 [1.2.3]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.2...1.2.3
 [1.2.2]:https://github.com/teltek/PuMuKIT2-paella-player-bundle/compare/1.2.1...1.2.2
