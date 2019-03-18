@@ -9,7 +9,7 @@ use Pumukit\SchemaBundle\Services\PicService;
 use Pumukit\SchemaBundle\Services\MaterialService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
 use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
-use Pumukit\WebTVBundle\Services\UserAgentParserService;
+use Pumukit\BasePlayerBundle\Services\UserAgentParserService;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
