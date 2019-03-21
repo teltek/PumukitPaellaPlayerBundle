@@ -66,7 +66,9 @@ class PaellaRepositoryControllerTest extends WebTestCase
             if (!is_array($tracks)) {
                 $tracks = [$tracks];
             }
+
             $sources = array();
+            $preview = false;
             foreach ($tracks as $track) {
                 $mimeType = $track->getMimetype();
                 $src = $this->trackUrlService->generateTrackFileUrl($track, true);
