@@ -1,8 +1,8 @@
 # Paella Player Bundle
 
-Bundle based on [Symfony](http://symfony.com/) to work with the [PuMuKIT2 Video Platform](https://github.com/campusdomar/PuMuKIT2/blob/2.1.x/README.md).
+Bundle based on [Symfony](http://symfony.com/) to work with the [PuMuKIT Video Platform](https://github.com/campusdomar/PuMuKIT/blob/2.1.x/README.md).
 
-This bundle overrides the [PuMuKIT-2 BasePlayer Bundle](https://github.com/campusdomar/PuMuKIT2/tree/master/src/Pumukit/BasePlayerBundle). It adds a Paella Player to the WebTV Portal to be used instead of the default [JW Player Bundle](https://github.com/campusdomar/PuMuKIT2/tree/master/src/Pumukit/JWPlayerBundle)
+This bundle overrides the [Pumukit BasePlayer Bundle](https://github.com/campusdomar/PuMuKIT/tree/master/src/Pumukit/BasePlayerBundle). It adds a Paella Player to the WebTV Portal to be used instead of the default [JW Player Bundle](https://github.com/campusdomar/PuMuKIT/tree/master/src/Pumukit/JWPlayerBundle)
 
 ## Installation
 
@@ -17,7 +17,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require teltek/pmk2-paella-player-bundle 1.4.x-dev
+$ composer require teltek/pumukit-paella-player-bundle 2.0.x-dev
 ```
 
 ### Step 2: Uninstall the default JW Player Bundle
