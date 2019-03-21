@@ -38,24 +38,31 @@ class BasePlayerController extends BasePlayerControllero
             return $this->redirect($url);
         }
 
-        //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
-        //Then just return several tracks.
-        $tracks = array($track);
+        if ($request->query->has('raw')) {
+            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
+                'autostart' => $this->getAutoStart($request),
+                'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
+                'multimediaObject' => $multimediaObject,
+                'track' => $track,
+            ));
+        }
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
+        if (!$track && $multimediaObject->isMultistream()) {
+            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery', 'presentation/delivery'));
+        } else {
+            $tracks = array($track);
         }
 
         return array(
-            'autostart' => $request->query->get('autostart', 'false'),
-            'intro' => $this->getIntro($request->query->get('intro')),
+            'autostart' => $this->getAutoStart($request),
+            'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
-            'opencast_host' => $opencastHost,
+            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
         );
     }
 
@@ -66,6 +73,8 @@ class BasePlayerController extends BasePlayerControllero
      */
     public function indexAction(MultimediaObject $multimediaObject, Request $request)
     {
+        $request = $this->container->get('request_stack')->getMasterRequest();
+
         $response = $this->testBroadcast($multimediaObject, $request);
         if ($response instanceof Response) {
             return $response;
@@ -83,24 +92,71 @@ class BasePlayerController extends BasePlayerControllero
             return $this->redirect($url);
         }
 
-        //ADD LOGIC TO CHECK IF VIDEO IS MULTISTREAM (opencast)
-        //Then just return several tracks.
-        $tracks = array($track);
+        if ($request->query->has('raw')) {
+            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
+                'autostart' => $this->getAutoStart($request),
+                'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
+                'when_dispatch_view_event' => true,
+                'multimediaObject' => $multimediaObject,
+                'track' => $track,
+            ));
+        }
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
+        if (!$track && $multimediaObject->isMultistream()) {
+            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery', 'presentation/delivery'));
+        } else {
+            $tracks = array($track);
         }
 
         return array(
-            'autostart' => $request->query->get('autostart', 'false'),
-            'intro' => $this->getIntro($request->query->get('intro')),
+            'autostart' => $this->getAutoStart($request),
+            'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
             'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
-            'opencast_host' => $opencastHost,
+            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
         );
+    }
+
+    private function getAutoStart($request)
+    {
+        $autoStart = $request->query->get('autostart', 'false');
+        $userAgent = $request->headers->get('user-agent');
+        if (false !== strpos($userAgent, 'Safari')) {
+            if (false === strpos($userAgent, 'Chrome')) {
+                $autoStart = false;
+            }
+        }
+
+        return $autoStart;
+    }
+
+    private function getParameterWithDefaultValue($name, $default = null)
+    {
+        if ($this->container->hasParameter($name)) {
+            return $this->container->getParameter($name);
+        }
+
+        return $default;
+    }
+
+    /**
+     * @deprecated: compatibility layer. Remove with PuMuKIT version 2.5.x
+     */
+    private function getIntroForMultimediaObject($introProperty = null, $introParameter = null)
+    {
+        if (!$this->has('pumukit_baseplayer.intro')) {
+            return $this->getIntro($introParameter);
+        }
+
+        $service = $this->get('pumukit_baseplayer.intro');
+        if (method_exists($service, 'getIntroForMultimediaObject')) {
+            return $service->getIntroForMultimediaObject($introProperty, $introParameter);
+        }
+
+        return $this->get('pumukit_baseplayer.intro')->getIntro($introParameter);
     }
 }

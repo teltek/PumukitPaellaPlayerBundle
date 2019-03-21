@@ -96,12 +96,26 @@
             localStorage.removeItem('opencastId');
         }
 
+        var username = "{{ app.user.username|default('anonymous') }}";
+        var useremail = "{{ app.user.email|default('anonymous@pumukit.org') }}";
+
+        {% if 'on_play' == when_dispatch_view_event|default('') %}
+        $(document).bind(paella.events.play, function (event, params) {
+          if (!window.notifyVideoPlayedReq) {
+            window.notifyVideoPlayedReq = $.post('{{ path('pumukit_trackplayed_index', {id: tracks[0].id}) }}');
+          }
+        });
+        {% endif %}
+
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
-                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")) {
+                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
-                        paella.player.play();
+                        paella.player.play().catch(function(err) {
+                            paella.player.videoContainer.setVolume(0);
+                            paella.player.play();
+                        });
                     }, 300);
                 }
             {% endif %}
@@ -120,6 +134,7 @@
             const overlay = document.createElement("overlay");
 
             intro.src = "{{ asset(intro, absolute=true) }}";
+            intro.poster = "{{ multimediaObject|first_url_pic(true) }}";
             intro.id = "intro";
             intro.addEventListener('ended', onEndedVideo);
             intro.autoplay = "{{ autostart != 'false' }}";
@@ -137,7 +152,7 @@
             introContainer.appendChild(overlay);
             container.appendChild(introContainer);
 
-            
+
             playPauseCanvas(overlay, intro);
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
 
@@ -153,7 +168,11 @@
             function playPauseCanvas(mainContainer, video){
                 const icon = document.createElement('canvas');
                 icon.className = 'playButtonOnScreenIcon';
-                icon.style = "{{ autostart != 'false' ? 'display: none' : 'display: block' }}";
+                icon.style.display = "{{ autostart != 'false' ? 'none' : 'block' }}";
+                if(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+                    icon.style.display = 'block';
+                }
+
                 mainContainer.appendChild(icon);
 
                 setTimeout(function(){
@@ -193,10 +212,10 @@
 
                 $(mainContainer).bind('click', function () {
                     if(video.paused){
-                        icon.style = 'display: none';
+                        icon.style.display = 'none';
                         video.play();
                     }else{
-                        icon.style = 'display: block';
+                        icon.style.display = 'block';
                         video.pause();
                     }
                 });

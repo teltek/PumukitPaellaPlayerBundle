@@ -17,11 +17,6 @@ class PumukitExtension extends \Twig_Extension
         $container = $container;
     }
 
-    public function getName()
-    {
-        return 'pumukit_paellaplayer_extension';
-    }
-
     /**
      * Get functions.
      */
