@@ -96,7 +96,6 @@ class BasePlayerController extends BasePlayerControllero
             return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
                 'autostart' => $this->getAutoStart($request),
                 'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
-                'when_dispatch_view_event' => true,
                 'multimediaObject' => $multimediaObject,
                 'track' => $track,
             ));
