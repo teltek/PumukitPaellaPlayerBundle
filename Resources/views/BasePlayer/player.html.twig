@@ -51,12 +51,12 @@
              {% endif %}
              >
             {% if track %}
-                <source src="{{ asset(track_url(track), absolute=true) }}" type="{{ track.getMimeType() }}" data-id="{{ track.id }}">
+                <source src="{{ absolute_url(track_url(track)) }}" type="{{ track.getMimeType() }}" data-id="{{ track.id }}">
             {% endif %}
 
             {% set captions = captions(multimediaObject) %}
             {% for caption in captions %}
-                <track label="{{ caption.language|language_name }}" kind="subtitles" srclang="{{ caption.language }}" src="{{ asset(caption.url, absolute=true) }}">
+                <track label="{{ caption.language|language_name }}" kind="subtitles" srclang="{{ caption.language }}" src="{{ absolute_url(caption.url) }}">
             {% endfor %}
              Sorry, no public tracks or your browser doesn't support embedded videos.
         </video>
