@@ -38,11 +38,11 @@ class Configuration implements ConfigurationInterface
               ->info('LRS auth token for xAPI')
             ->end()
             ->scalarNode('access_control_class')
-              ->defaultValue("paella.AccessControl")
+              ->defaultValue('paella.AccessControl')
               ->info('Paella accessControlClass')
             ->end()
             ->scalarNode('footprints')
-              ->defaultValue("MHFootPrintsDataDelegate")
+              ->defaultValue('MHFootPrintsDataDelegate')
               ->info('Paella footprints MHFootPrintsDataDelegate or PaellaFootPrintsDataDelegate')
             ->end()
           ->end();

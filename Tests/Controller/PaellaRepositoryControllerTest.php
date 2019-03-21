@@ -57,7 +57,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
             'metadata' => [
                 'title' => $mmobj->getTitle(),
                 'description' => $mmobj->getDescription(),
-                'duration' =>  $mmobj->getDuration(),
+                'duration' => $mmobj->getDuration(),
                 'i18nTitle' => $mmobj->getI18nTitle(),
                 'i18nDescription' => $mmobj->getI18nDescription(),
             ],
@@ -67,7 +67,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
                 $tracks = [$tracks];
             }
             $sources = array();
-            foreach($tracks as $track){
+            foreach ($tracks as $track) {
                 $mimeType = $track->getMimetype();
                 $src = $this->trackUrlService->generateTrackFileUrl($track, true);
                 //$src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
@@ -94,11 +94,10 @@ class PaellaRepositoryControllerTest extends WebTestCase
             }
             $paellaData['streams'][$id] = array('sources' => $sources, 'language' => $tracks[0]->getLanguage());
 
-            if($preview) {
+            if ($preview) {
                 $paellaData['streams'][$id]['preview'] = $preview;
                 $preview = false;
             }
-
         }
 
         return $paellaData;
