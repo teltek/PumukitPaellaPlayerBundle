@@ -90,7 +90,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
                 }
                 $sources[$type][] = $dataStreamTrack;
 
-                if ($track->containsAnyTag(['display', 'presenter/delivery']) && !isset($preview)) {
+                if ($track->containsAnyTag(['display', 'presenter/delivery']) && !$preview) {
                     $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
                 }
             }
@@ -98,7 +98,6 @@ class PaellaRepositoryControllerTest extends WebTestCase
 
             if ($preview) {
                 $paellaData['streams'][$id]['preview'] = $preview;
-                $preview = false;
             }
         }
 
