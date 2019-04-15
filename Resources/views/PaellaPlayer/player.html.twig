@@ -113,8 +113,10 @@
                 if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
                         paella.player.play().catch(function(err) {
-                            paella.player.videoContainer.setVolume(0);
-                            paella.player.play();
+                            {% if autoplay_fallback == 'mute_fallback' %}
+                                paella.player.videoContainer.setVolume(0);
+                                paella.player.play();
+                            {% endif %}
                         });
                     }, 300);
                 }
