@@ -41,6 +41,7 @@ class BasePlayerController extends BasePlayerControllero
         if ($request->query->has('raw')) {
             return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
                 'autostart' => $this->getAutoStart($request),
+                'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
                 'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
                 'multimediaObject' => $multimediaObject,
                 'track' => $track,
@@ -55,6 +56,7 @@ class BasePlayerController extends BasePlayerControllero
 
         return array(
             'autostart' => $this->getAutoStart($request),
+            'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
             'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
@@ -95,6 +97,7 @@ class BasePlayerController extends BasePlayerControllero
         if ($request->query->has('raw')) {
             return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
                 'autostart' => $this->getAutoStart($request),
+                'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
                 'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
                 'multimediaObject' => $multimediaObject,
                 'track' => $track,
@@ -109,6 +112,7 @@ class BasePlayerController extends BasePlayerControllero
 
         return array(
             'autostart' => $this->getAutoStart($request),
+            'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
             'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
@@ -122,6 +126,10 @@ class BasePlayerController extends BasePlayerControllero
 
     private function getAutoStart($request)
     {
+        if ('disabled' === $this->container->getParameter('pumukitpaella.autoplay')) {
+            return false;
+        }
+
         $autoStart = $request->query->get('autostart', 'false');
         $userAgent = $request->headers->get('user-agent');
         if (false !== strpos($userAgent, 'Safari')) {
