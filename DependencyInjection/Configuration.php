@@ -45,6 +45,11 @@ class Configuration implements ConfigurationInterface
               ->defaultValue('MHFootPrintsDataDelegate')
               ->info('Paella footprints MHFootPrintsDataDelegate or PaellaFootPrintsDataDelegate')
             ->end()
+            ->enumNode('autoplay')
+              ->values(array('pause_fallback', 'mute_fallback', 'disabled'))
+              ->defaultValue('pause_fallback')
+              ->info('If "disabled", autoplay is disabled. Else with autoplay, the player behavior when the browser blocks autoplay can be: start playing muted ("mute_fallback") or pause the video ("pause_fallback").')
+            ->end()
           ->end();
 
         return $treeBuilder;
