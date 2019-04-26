@@ -165,7 +165,7 @@ class BasePlaylistController extends BasePlaylistControllero
      */
     protected function getIntro($introParameter = null)
     {
-        $hasIntro = $this->container->hasParameter('pumukit2.intro');
+        $hasIntro = $this->container->hasParameter('pumukit.intro');
 
         $showIntro = true;
         if (null !== $introParameter && false === filter_var($introParameter, FILTER_VALIDATE_BOOLEAN)) {
@@ -173,7 +173,7 @@ class BasePlaylistController extends BasePlaylistControllero
         }
 
         if ($hasIntro && $showIntro) {
-            return $this->container->getParameter('pumukit2.intro');
+            return $this->container->getParameter('pumukit.intro');
         }
 
         return false;
