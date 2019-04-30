@@ -475,7 +475,7 @@ class PaellaDataService
      * @param $absolute
      * @param $hd
      *
-     * @return null|string
+     * @return string|null
      */
     private function getPicForObject($mmobj, $absolute, $hd)
     {
