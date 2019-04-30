@@ -4,6 +4,7 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Pumukit\BasePlayerBundle\Controller\BasePlaylistController as BasePlaylistControllero;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
+use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -67,7 +68,7 @@ class BasePlaylistController extends BasePlaylistControllero
             $criteria = array(
                 'series' => new \MongoId($series->getId()),
                 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
-                'islive' => false,
+                'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
                 'tracks.tags' => 'display',
             );
             $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
@@ -116,7 +117,7 @@ class BasePlaylistController extends BasePlaylistControllero
                 $criteria = array(
                     'series' => new \MongoId($series->getId()),
                     'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
-                    'islive' => false,
+                    'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
                     'tracks.tags' => 'display',
                 );
                 $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
