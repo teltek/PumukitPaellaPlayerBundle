@@ -79,7 +79,7 @@ class PaellaDataService
     {
         if (!$series->isPlaylist()) {
             $criteria['series'] = new \MongoId($series->getId());
-            $criteria['islive'] = false;
+            $criteria['type'] = ['$ne' => MultimediaObject::TYPE_LIVE];
             $criteria['status'] = array('$ne' => MultimediaObject::STATUS_PROTOTYPE);
             $mmobjs = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findBy($criteria, array('rank' => 'asc'));
         } else {
