@@ -5,7 +5,7 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\CoreBundle\Controller\PersonalController;
+use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class PaellaRepositoryController.
  */
-class PaellaRepositoryController extends Controller implements PersonalController
+class PaellaRepositoryController extends Controller implements PersonalControllerInterface
 {
     /**
      * @Route("/paellarepository/{id}.{_format}", defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
