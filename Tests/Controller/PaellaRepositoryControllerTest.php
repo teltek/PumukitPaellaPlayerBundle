@@ -71,8 +71,8 @@ class PaellaRepositoryControllerTest extends WebTestCase
             $preview = false;
             foreach ($tracks as $track) {
                 $mimeType = $track->getMimetype();
-                $src = $this->trackUrlService->generateTrackFileUrl($track, true);
-                //$src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
+                $src = $this->trackUrlService->generateTrackFileUrl($track);
+                //$src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track));
 
                 $dataStreamTrack = array(
                     'src' => $src,
@@ -277,7 +277,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
 
-        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track, true),
+        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track),
                             $responseData['streams'][0]['sources']['mp3'][0]['src']);
     }
 
@@ -311,7 +311,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
-        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track, true),
+        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track),
                             $responseData['streams'][0]['sources']['mp4'][0]['src']);
 
         $response = $this->callRepo($mmobj, $track2);
@@ -319,7 +319,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
-        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track2, true),
+        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track2),
                             $responseData['streams'][0]['sources']['mp4'][0]['src']);
     }
 }

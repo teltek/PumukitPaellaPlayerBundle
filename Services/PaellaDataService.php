@@ -96,7 +96,7 @@ class PaellaDataService
                     'videoPos' => $pos,
                     'autostart' => 'true',
                 ),
-                true  //Makes the url absolute.
+                UrlGeneratorInterface::ABSOLUTE_URL  //Makes the url absolute.
             );
             $data[] = array(
                 'name' => $mmobj->getTitle(),
@@ -426,7 +426,7 @@ class PaellaDataService
         $sources = array();
         foreach ($tracks as $track) {
             $mimeType = $track->getMimetype();
-            $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track, true));
+            $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track));
 
             $dataStreamTrack = array(
                 'src' => $src,
