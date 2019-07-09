@@ -2,8 +2,8 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,7 +31,7 @@ class ConfController extends Controller
         $folders_profiles = 'config/profiles';
         if ($id && preg_match('/^[0-9a-z]{24}$/', $id)) {
             $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(
-                array('_id' => new \MongoId($id))
+                ['_id' => new \MongoId($id)]
             );
 
             if ($mmobj->getProperty('personalrecorder')) {
@@ -44,15 +44,15 @@ class ConfController extends Controller
 
         $jsonData = $this->renderView(
             'PumukitPaellaPlayerBundle:Conf:conf.json.twig',
-            array(
+            [
                 'xapi_endpoint' => $endpoint,
                 'xapi_auth' => $auth,
                 'access_control_class' => $accessControlClass,
                 'footprints' => $footprints,
                 'folders_profiles' => $folders_profiles,
-            )
+            ]
         );
 
-        return new Response($jsonData, 200, array('Content-Type' => 'application/json'));
+        return new Response($jsonData, 200, ['Content-Type' => 'application/json']);
     }
 }

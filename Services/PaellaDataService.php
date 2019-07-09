@@ -3,13 +3,13 @@
 namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
+use Pumukit\BasePlayerBundle\Services\TrackUrlService;
+use Pumukit\BasePlayerBundle\Services\UserAgentParserService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\SchemaBundle\Services\PicService;
 use Pumukit\SchemaBundle\Services\MaterialService;
-use Pumukit\BasePlayerBundle\Services\TrackUrlService;
-use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
-use Pumukit\BasePlayerBundle\Services\UserAgentParserService;
+use Pumukit\SchemaBundle\Services\PicService;
 use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -21,7 +21,7 @@ class PaellaDataService
 {
     private $picService;
     private $trackService;
-    private $opencastClient = null;
+    private $opencastClient;
     private $mobileDetectorService;
     private $userAgentParserService;
     private $dm;
@@ -75,35 +75,35 @@ class PaellaDataService
      *
      * @return array
      */
-    public function getPaellaPlaylistData(Series $series, $criteria = array())
+    public function getPaellaPlaylistData(Series $series, $criteria = [])
     {
         if (!$series->isPlaylist()) {
             $criteria['series'] = new \MongoId($series->getId());
             $criteria['type'] = ['$ne' => MultimediaObject::TYPE_LIVE];
-            $criteria['status'] = array('$ne' => MultimediaObject::STATUS_PROTOTYPE);
-            $mmobjs = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findBy($criteria, array('rank' => 'asc'));
+            $criteria['status'] = ['$ne' => MultimediaObject::STATUS_PROTOTYPE];
+            $mmobjs = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findBy($criteria, ['rank' => 'asc']);
         } else {
             $mmobjs = $this->playlistService->getPlaylistMmobjs($series, $criteria);
         }
 
-        $data = array();
+        $data = [];
         foreach ($mmobjs as $pos => $mmobj) {
             $url = $this->urlGenerator->generate(
                 'pumukit_playlistplayer_paellaindex',
-                array(
+                [
                     'playlistId' => $series->getId(),
                     'videoId' => $mmobj->getId(),
                     'videoPos' => $pos,
                     'autostart' => 'true',
-                ),
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL  //Makes the url absolute.
             );
-            $data[] = array(
+            $data[] = [
                 'name' => $mmobj->getTitle(),
                 'id' => $mmobj->getId(),
                 'pos' => $pos,
                 'url' => $url,
-            );
+            ];
         }
 
         return $data;
@@ -129,8 +129,8 @@ class PaellaDataService
             $isMobile = false;
         }
 
-        $data = array();
-        $data['streams'] = array();
+        $data = [];
+        $data['streams'] = [];
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
 
         if ($mmobj->isOnlyAudio()) {
@@ -176,13 +176,13 @@ class PaellaDataService
                 $data['streams'][] = $dataStream;
             }
         }
-        $data['metadata'] = array(
+        $data['metadata'] = [
             'title' => $mmobj->getTitle(),
             'description' => $mmobj->getDescription(),
             'duration' => $mmobj->getDuration(),
             'i18nTitle' => $mmobj->getI18nTitle(),
             'i18nDescription' => $mmobj->getI18nDescription(),
-        );
+        ];
 
         $frameList = $this->getOpencastFrameList($mmobj);
         if ($frameList) {
@@ -228,17 +228,17 @@ class PaellaDataService
      */
     private function getMmobjTracks(MultimediaObject $mmobj, $trackId)
     {
-        $tracks = array(
-            'display' => array(),
-            'presentation' => array(),
-            'sbs' => array(),
-        );
-        $availableCodecs = array('h264', 'vp8', 'vp9');
+        $tracks = [
+            'display' => [],
+            'presentation' => [],
+            'sbs' => [],
+        ];
+        $availableCodecs = ['h264', 'vp8', 'vp9'];
 
         if ($trackId) {
             $track = $mmobj->getTrackById($trackId);
             if ($track) {
-                if ($track->containsAnyTag(array('display', 'presenter/delivery', 'presentation/delivery')) && in_array($track->getVcodec(), $availableCodecs)) {
+                if ($track->containsAnyTag(['display', 'presenter/delivery', 'presentation/delivery']) && in_array($track->getVcodec(), $availableCodecs)) {
                     $tracks['display'][] = $track;
                 }
                 if ($track->isOnlyAudio()) {
@@ -249,8 +249,8 @@ class PaellaDataService
             }
         }
 
-        $presenterTracks = $mmobj->getFilteredTracksWithTags(array('presenter/delivery'));
-        $presentationTracks = $mmobj->getFilteredTracksWithTags(array('presentation/delivery'));
+        $presenterTracks = $mmobj->getFilteredTracksWithTags(['presenter/delivery']);
+        $presentationTracks = $mmobj->getFilteredTracksWithTags(['presentation/delivery']);
         $sbsTrack = $mmobj->getTrackWithTag('sbs');
 
         foreach ($presenterTracks as $track) {
@@ -283,7 +283,7 @@ class PaellaDataService
      *
      * @param MultimediaObject $mmobj
      *
-     * @return array|null
+     * @return null|array
      */
     private function getOpencastFrameList(MultimediaObject $mmobj)
     {
@@ -299,7 +299,7 @@ class PaellaDataService
     /**
      * @param MultimediaObject $multimediaObject
      *
-     * @return array|null
+     * @return null|array
      */
     private function getFrameListFromPumukit(MultimediaObject $multimediaObject)
     {
@@ -312,20 +312,20 @@ class PaellaDataService
             return null;
         }
 
-        $images = array();
+        $images = [];
         foreach ($segments as $segment) {
-            $time = intval($segment->getTime() / 1000);
+            $time = (int) ($segment->getTime() / 1000);
             $id = 'frame_'.$time;
             $mimeType = 'image/jpeg';
 
-            $images[] = array(
+            $images[] = [
                 'id' => $id,
                 'mimetype' => $mimeType,
                 'time' => $time,
                 'url' => $segment->getPreview(),
                 'thumb' => $segment->getPreview(),
                 'caption' => $segment->getText(),
-            );
+            ];
         }
 
         return $images;
@@ -339,12 +339,13 @@ class PaellaDataService
     private function getFrameListFromOpencast(MultimediaObject $multimediaObject)
     {
         if (!$this->opencastClient) {
-            return array();
+            return [];
         }
 
-        $images = array();
+        $images = [];
         if ($opencastId = $multimediaObject->getProperty('opencast')) {
             $mediaPackage = null;
+
             try {
                 $mediaPackage = $this->opencastClient->getFullMediaPackage($opencastId);
             } catch (\Exception $e) {
@@ -352,18 +353,18 @@ class PaellaDataService
             }
 
             if (!isset($mediaPackage['segments']['segment'])) {
-                return array();
+                return [];
             }
 
             //Fix Opencast one-result behavior
             if (isset($mediaPackage['segments']['segment']['time'])) {
-                $segments = array($mediaPackage['segments']['segment']);
+                $segments = [$mediaPackage['segments']['segment']];
             } else {
                 $segments = $mediaPackage['segments']['segment'];
             }
 
             foreach ($segments as $segment) {
-                $time = intval($segment['time'] / 1000);
+                $time = (int) ($segment['time'] / 1000);
                 $id = 'frame_'.$time;
                 $mimeType = 'image/jpeg';
 
@@ -372,14 +373,14 @@ class PaellaDataService
                     $url = $segment['previews']['preview']['$'];
                 }
 
-                $images[] = array(
+                $images[] = [
                     'id' => $id,
                     'mimetype' => $mimeType,
                     'time' => $time,
                     'url' => $url,
                     'thumb' => $url,
                     'caption' => $segment['text'],
-                );
+                ];
             }
         }
 
@@ -400,12 +401,12 @@ class PaellaDataService
 
         $captionsMapped = array_map(
             function ($material) use ($request) {
-                return array(
+                return [
                     'lang' => $material->getLanguage(),
                     'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
                     'format' => $material->getMimeType(),
                     'url' => $this->getAbsoluteUrl($request, $material->getUrl()),
-                );
+                ];
             },
             $captions->toArray()
         );
@@ -423,19 +424,19 @@ class PaellaDataService
      */
     private function buildDataStream(array $tracks, Request $request)
     {
-        $sources = array();
+        $sources = [];
         foreach ($tracks as $track) {
             $mimeType = $track->getMimetype();
             $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track));
 
-            $dataStreamTrack = array(
+            $dataStreamTrack = [
                 'src' => $src,
                 'mimetype' => $mimeType,
-            );
+            ];
 
             // If pumukit doesn't know the resolution, paella can guess it.
             if ($track->getWidth() && $track->getHeight()) {
-                $dataStreamTrack['res'] = array('w' => $track->getWidth(), 'h' => $track->getHeight());
+                $dataStreamTrack['res'] = ['w' => $track->getWidth(), 'h' => $track->getHeight()];
             }
 
             $format = explode('/', $mimeType)[1] ?? 'mp4';
@@ -446,7 +447,7 @@ class PaellaDataService
             }
 
             if (!isset($sources[$format])) {
-                $sources[$format] = array();
+                $sources[$format] = [];
             }
             $sources[$format][] = $dataStreamTrack;
         }
@@ -474,7 +475,7 @@ class PaellaDataService
      * @param $absolute
      * @param $hd
      *
-     * @return string|null
+     * @return null|string
      */
     private function getPicForObject($mmobj, $absolute, $hd)
     {
