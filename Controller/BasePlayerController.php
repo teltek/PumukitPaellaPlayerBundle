@@ -35,7 +35,9 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         if ($url = $multimediaObject->getProperty('externalplayer')) {
-            return $this->redirect($url);
+            if(!$track) {
+                return $this->redirect($url);
+            }
         }
 
         if ($request->query->has('raw')) {
@@ -91,7 +93,9 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         if ($url = $multimediaObject->getProperty('externalplayer')) {
-            return $this->redirect($url);
+            if(!$track) {
+                return $this->redirect($url);
+            }
         }
 
         if ($request->query->has('raw')) {
