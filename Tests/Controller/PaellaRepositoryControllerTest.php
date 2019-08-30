@@ -277,8 +277,10 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
 
-        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track),
-                            $responseData['streams'][0]['sources']['mp3'][0]['src']);
+        $this->assertEquals(
+            $this->trackUrlService->generateTrackFileUrl($track),
+            $responseData['streams'][0]['sources']['mp3'][0]['src']
+        );
     }
 
     public function testMultipleAudioPaellaRepository()
@@ -311,15 +313,19 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
-        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track),
-                            $responseData['streams'][0]['sources']['mp4'][0]['src']);
+        $this->assertEquals(
+            $this->trackUrlService->generateTrackFileUrl($track),
+            $responseData['streams'][0]['sources']['mp4'][0]['src']
+        );
 
         $response = $this->callRepo($mmobj, $track2);
         $this->assertEquals(200, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals(count($responseData['streams']), 1);
         $this->assertEquals(count($responseData['streams'][0]['sources']), 1);
-        $this->assertEquals($this->trackUrlService->generateTrackFileUrl($track2),
-                            $responseData['streams'][0]['sources']['mp4'][0]['src']);
+        $this->assertEquals(
+            $this->trackUrlService->generateTrackFileUrl($track2),
+            $responseData['streams'][0]['sources']['mp4'][0]['src']
+        );
     }
 }
