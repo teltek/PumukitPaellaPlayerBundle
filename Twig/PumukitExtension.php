@@ -2,8 +2,8 @@
 
 namespace Pumukit\PaellaPlayerBundle\Twig;
 
-use Symfony\Component\Routing\RequestContext;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
+use Symfony\Component\Routing\RequestContext;
 
 class PumukitExtension extends \Twig_Extension
 {
@@ -22,13 +22,14 @@ class PumukitExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('getPaellaLayout', array($this, 'getPaellaLayout', ['needs_environment' => true])),
-        );
+        return [
+            new \Twig_SimpleFunction('getPaellaLayout', [$this, 'getPaellaLayout', ['needs_environment' => true]]),
+        ];
     }
 
     /**
-     * @param MultimediaObject $mmobj Multimedia object to get the paella layout from
+     * @param MultimediaObject $mmobj   Multimedia object to get the paella layout from
+     * @param mixed            $request
      *
      * @return string
      */
@@ -44,8 +45,6 @@ class PumukitExtension extends \Twig_Extension
             $paellaLayout = $mmobj->getProperty('paellalayout');
         }
 
-        $paellaLayout = $request->query->get('paella_layout', $paellaLayout);
-
-        return $paellaLayout;
+        return $request->query->get('paella_layout', $paellaLayout);
     }
 }

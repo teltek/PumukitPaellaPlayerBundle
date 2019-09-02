@@ -2,12 +2,12 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
+use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,10 +51,10 @@ class PaellaRepositoryController extends Controller implements PersonalControlle
     {
         $serializer = $this->get('jms_serializer');
         $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
-        $criteria = array(
-            'embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC),
-            'tracks' => array('$elemMatch' => array('tags' => 'display', 'hide' => false)),
-        );
+        $criteria = [
+            'embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC],
+            'tracks' => ['$elemMatch' => ['tags' => 'display', 'hide' => false]],
+        ];
         $data = $paellaDataService->getPaellaPlaylistData($series, $criteria);
         $response = $serializer->serialize($data, $request->getRequestFormat());
 

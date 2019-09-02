@@ -2,12 +2,12 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
+use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerControllero;
+use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerControllero;
 
 class BasePlayerController extends BasePlayerControllero
 {
@@ -18,7 +18,7 @@ class BasePlayerController extends BasePlayerControllero
     public function magicAction(MultimediaObject $multimediaObject, Request $request)
     {
         if (!$request->query->has('secret')) {
-            return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', array('id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret())).'&secret='.$multimediaObject->getSecret());
+            return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', ['id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret()]).'&secret='.$multimediaObject->getSecret());
         }
 
         $response = $this->testBroadcast($multimediaObject, $request);
@@ -35,26 +35,28 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         if ($url = $multimediaObject->getProperty('externalplayer')) {
-            return $this->redirect($url);
+            if (!$track) {
+                return $this->redirect($url);
+            }
         }
 
         if ($request->query->has('raw')) {
-            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
+            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', [
                 'autostart' => $this->getAutoStart($request),
                 'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
                 'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
                 'multimediaObject' => $multimediaObject,
                 'track' => $track,
-            ));
+            ]);
         }
 
         if (!$track && $multimediaObject->isMultistream()) {
-            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery', 'presentation/delivery'));
+            $tracks = $multimediaObject->getFilteredTracksWithTags(['presenter/delivery', 'presentation/delivery']);
         } else {
-            $tracks = array($track);
+            $tracks = [$track];
         }
 
-        return array(
+        return [
             'autostart' => $this->getAutoStart($request),
             'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
             'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
@@ -65,7 +67,7 @@ class BasePlayerController extends BasePlayerControllero
             'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
             'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
-        );
+        ];
     }
 
     /**
@@ -91,26 +93,28 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         if ($url = $multimediaObject->getProperty('externalplayer')) {
-            return $this->redirect($url);
+            if (!$track) {
+                return $this->redirect($url);
+            }
         }
 
         if ($request->query->has('raw')) {
-            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', array(
+            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', [
                 'autostart' => $this->getAutoStart($request),
                 'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
                 'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
                 'multimediaObject' => $multimediaObject,
                 'track' => $track,
-            ));
+            ]);
         }
 
         if (!$track && $multimediaObject->isMultistream()) {
-            $tracks = $multimediaObject->getFilteredTracksWithTags(array('presenter/delivery', 'presentation/delivery'));
+            $tracks = $multimediaObject->getFilteredTracksWithTags(['presenter/delivery', 'presentation/delivery']);
         } else {
-            $tracks = array($track);
+            $tracks = [$track];
         }
 
-        return array(
+        return [
             'autostart' => $this->getAutoStart($request),
             'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
             'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
@@ -121,7 +125,7 @@ class BasePlayerController extends BasePlayerControllero
             'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
             'tracks' => $tracks,
             'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
-        );
+        ];
     }
 
     private function getAutoStart($request)
@@ -152,6 +156,9 @@ class BasePlayerController extends BasePlayerControllero
 
     /**
      * @deprecated: compatibility layer. Remove with PuMuKIT version 2.5.x
+     *
+     * @param null|mixed $introProperty
+     * @param null|mixed $introParameter
      */
     private function getIntroForMultimediaObject($introProperty = null, $introParameter = null)
     {

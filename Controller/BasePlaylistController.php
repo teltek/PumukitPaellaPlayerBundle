@@ -22,7 +22,7 @@ class BasePlaylistController extends BasePlaylistControllero
      * @param Series  $series
      * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function indexAction(Series $series, Request $request)
     {
@@ -40,20 +40,21 @@ class BasePlaylistController extends BasePlaylistControllero
      *
      * @param Request $request
      *
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     *
      * @throws \Doctrine\ODM\MongoDB\LockException
      * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
+     *
+     * @return array|Response|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function paellaIndexAction(Request $request)
     {
         $mmobjId = $request->get('videoId');
         $seriesId = $request->get('playlistId');
         $series = $this->get('doctrine_mongodb.odm.document_manager')
-                       ->getRepository('PumukitSchemaBundle:Series')
-                       ->find($seriesId);
+            ->getRepository('PumukitSchemaBundle:Series')
+            ->find($seriesId)
+        ;
         if (!$series) {
-            return $this->return404Response("No playlist found with id: $seriesId");
+            return $this->return404Response("No playlist found with id: {$seriesId}");
         }
 
         if (!$mmobjId) {
@@ -62,22 +63,22 @@ class BasePlaylistController extends BasePlaylistControllero
         }
 
         $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
-        $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
+        $criteria = ['embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC]];
         if (!$series->isPlaylist()) {
             $dm = $this->get('doctrine_mongodb')->getManager();
-            $criteria = array(
+            $criteria = [
                 'series' => new \MongoId($series->getId()),
                 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
                 'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
                 'tracks.tags' => 'display',
-            );
-            $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
+            ];
+            $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, ['rank' => 'asc']);
         } else {
             $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
         }
 
         if (!$mmobj) {
-            return $this->return404Response("No playable multimedia object found with id: $mmobjId belonging to this playlist. ({$series->getTitle()})");
+            return $this->return404Response("No playable multimedia object found with id: {$mmobjId} belonging to this playlist. ({$series->getTitle()})");
         }
 
         $opencastHost = '';
@@ -85,7 +86,7 @@ class BasePlaylistController extends BasePlaylistControllero
             $opencastHost = $this->container->getParameter('pumukit_opencast.host');
         }
 
-        return array(
+        return [
             'autostart' => $request->query->get('autostart', 'false'),
             'intro' => $this->getIntro($request->query->get('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
@@ -94,67 +95,7 @@ class BasePlaylistController extends BasePlaylistControllero
             'object' => $series,
             'responsive' => true,
             'opencast_host' => $opencastHost,
-        );
-    }
-
-    /**
-     * Helper function to used to redirect when the mmobj id is not specified in the request.
-     *
-     * @param Series  $series
-     * @param Request $request
-     * @param null    $mmobjId
-     * @param null    $videoPos
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     */
-    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $videoPos = null)
-    {
-        $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
-        if (!$mmobjId) {
-            $criteria = array('embeddedBroadcast.type' => array('$eq' => EmbeddedBroadcast::TYPE_PUBLIC));
-            if (!$series->isPlaylist()) {
-                $dm = $this->get('doctrine_mongodb')->getManager();
-                $criteria = array(
-                    'series' => new \MongoId($series->getId()),
-                    'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
-                    'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
-                    'tracks.tags' => 'display',
-                );
-                $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, array('rank' => 'asc'));
-            } else {
-                $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
-            }
-
-            if (!$mmobj) {
-                return $this->return404Response('This playlist does not have any playable multimedia objects.');
-            }
-            $mmobjId = $mmobj->getId();
-            $videoPos = 0;
-        }
-        $redirectUrl = $this->generateUrl(
-            'pumukit_playlistplayer_paellaindex',
-            array(
-                'playlistId' => $series->getId(),
-                'videoId' => $mmobjId,
-                'videoPos' => $videoPos,
-                'autostart' => $request->query->get('autostart', 'false'),
-            )
-        );
-
-        return $this->redirect($redirectUrl);
-    }
-
-    private function return404Response($message = '')
-    {
-        $params = array(
-            'message' => $message,
-        );
-        $template = $this->renderView(
-            'PumukitPaellaPlayerBundle:PaellaPlayer:404exception.html.twig',
-            $params
-        );
-
-        return new Response($template, 404);
+        ];
     }
 
     /**
@@ -178,5 +119,65 @@ class BasePlaylistController extends BasePlaylistControllero
         }
 
         return false;
+    }
+
+    /**
+     * Helper function to used to redirect when the mmobj id is not specified in the request.
+     *
+     * @param Series  $series
+     * @param Request $request
+     * @param null    $mmobjId
+     * @param null    $videoPos
+     *
+     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $videoPos = null)
+    {
+        $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
+        if (!$mmobjId) {
+            $criteria = ['embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC]];
+            if (!$series->isPlaylist()) {
+                $dm = $this->get('doctrine_mongodb')->getManager();
+                $criteria = [
+                    'series' => new \MongoId($series->getId()),
+                    'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
+                    'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
+                    'tracks.tags' => 'display',
+                ];
+                $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, ['rank' => 'asc']);
+            } else {
+                $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
+            }
+
+            if (!$mmobj) {
+                return $this->return404Response('This playlist does not have any playable multimedia objects.');
+            }
+            $mmobjId = $mmobj->getId();
+            $videoPos = 0;
+        }
+        $redirectUrl = $this->generateUrl(
+            'pumukit_playlistplayer_paellaindex',
+            [
+                'playlistId' => $series->getId(),
+                'videoId' => $mmobjId,
+                'videoPos' => $videoPos,
+                'autostart' => $request->query->get('autostart', 'false'),
+            ]
+        );
+
+        return $this->redirect($redirectUrl);
+    }
+
+    private function return404Response($message = '')
+    {
+        $params = [
+            'message' => $message,
+        ];
+        $template = $this->renderView(
+            'PumukitPaellaPlayerBundle:PaellaPlayer:404exception.html.twig',
+            $params
+        );
+
+        return new Response($template, 404);
     }
 }
