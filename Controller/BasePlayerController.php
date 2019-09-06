@@ -3,6 +3,7 @@
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerControllero;
+use Pumukit\BasePlayerBundle\Services\IntroService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -21,7 +22,9 @@ class BasePlayerController extends BasePlayerControllero
             return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', ['id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret()]).'&secret='.$multimediaObject->getSecret());
         }
 
-        $response = $this->testBroadcast($multimediaObject, $request);
+        $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
+        $password = $request->get('broadcast_password');
+        $response = $embeddedBroadcastService->canUserPlayMultimediaObject($multimediaObject, $this->getUser(), $password);
         if ($response instanceof Response) {
             return $response;
         }
@@ -56,10 +59,13 @@ class BasePlayerController extends BasePlayerControllero
             $tracks = [$track];
         }
 
+        /** @var IntroService */
+        $basePlayerIntroService = $this->get('pumukit_baseplayer.intro');
+
         return [
             'autostart' => $this->getAutoStart($request),
             'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-            'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
+            'intro' => $basePlayerIntroService->getVideoIntroduction($multimediaObject),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
@@ -79,7 +85,9 @@ class BasePlayerController extends BasePlayerControllero
     {
         $request = $this->container->get('request_stack')->getMasterRequest();
 
-        $response = $this->testBroadcast($multimediaObject, $request);
+        $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
+        $password = $request->get('broadcast_password');
+        $response = $embeddedBroadcastService->canUserPlayMultimediaObject($multimediaObject, $this->getUser(), $password);
         if ($response instanceof Response) {
             return $response;
         }
@@ -114,10 +122,13 @@ class BasePlayerController extends BasePlayerControllero
             $tracks = [$track];
         }
 
+        /** @var IntroService */
+        $basePlayerIntroService = $this->get('pumukit_baseplayer.intro');
+
         return [
             'autostart' => $this->getAutoStart($request),
             'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-            'intro' => $this->getIntroForMultimediaObject($multimediaObject->getProperty('intro'), $request->query->get('intro')),
+            'intro' => $basePlayerIntroService->getVideoIntroduction($multimediaObject),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
@@ -152,25 +163,5 @@ class BasePlayerController extends BasePlayerControllero
         }
 
         return $default;
-    }
-
-    /**
-     * @deprecated: compatibility layer. Remove with PuMuKIT version 2.5.x
-     *
-     * @param null|mixed $introProperty
-     * @param null|mixed $introParameter
-     */
-    private function getIntroForMultimediaObject($introProperty = null, $introParameter = null)
-    {
-        if (!$this->has('pumukit_baseplayer.intro')) {
-            return $this->getIntro($introParameter);
-        }
-
-        $service = $this->get('pumukit_baseplayer.intro');
-        if (method_exists($service, 'getIntroForMultimediaObject')) {
-            return $service->getIntroForMultimediaObject($introProperty, $introParameter);
-        }
-
-        return $this->get('pumukit_baseplayer.intro')->getIntro($introParameter);
     }
 }
