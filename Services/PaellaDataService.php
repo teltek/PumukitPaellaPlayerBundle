@@ -283,7 +283,7 @@ class PaellaDataService
      *
      * @param MultimediaObject $mmobj
      *
-     * @return null|array
+     * @return array|null
      */
     private function getOpencastFrameList(MultimediaObject $mmobj)
     {
@@ -299,7 +299,7 @@ class PaellaDataService
     /**
      * @param MultimediaObject $multimediaObject
      *
-     * @return null|array
+     * @return array|null
      */
     private function getFrameListFromPumukit(MultimediaObject $multimediaObject)
     {
@@ -475,7 +475,7 @@ class PaellaDataService
      * @param $absolute
      * @param $hd
      *
-     * @return null|string
+     * @return string|null
      */
     private function getPicForObject($mmobj, $absolute, $hd)
     {
