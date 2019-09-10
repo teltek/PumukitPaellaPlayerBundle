@@ -128,7 +128,7 @@ class BasePlayerController extends BasePlayerControllero
         return [
             'autostart' => $this->getAutoStart($request),
             'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-            'intro' => $basePlayerIntroService->getVideoIntroduction($multimediaObject),
+            'intro' => $basePlayerIntroService->getVideoIntroduction($multimediaObject, $request->query->getBoolean('intro')),
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $multimediaObject,
