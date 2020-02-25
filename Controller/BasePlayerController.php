@@ -2,166 +2,133 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
-use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerControllero;
+use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerAbstractController;
 use Pumukit\BasePlayerBundle\Services\IntroService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Pumukit\SchemaBundle\Document\Track;
+use Pumukit\SchemaBundle\Services\EmbeddedBroadcastService;
+use Pumukit\SchemaBundle\Services\MultimediaObjectService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class BasePlayerController extends BasePlayerControllero
+class BasePlayerController extends BasePlayerAbstractController
 {
+    private $pumukitOpencastHost;
+    private $paellaCustomCssUrl;
+    private $paellaLogo;
+    private $pumukitIntro;
+    private $paellaAutoPlay;
+    private $pumukitPlayerWhenDispatchViewEvent;
+
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        EmbeddedBroadcastService $embeddedBroadcastService,
+        MultimediaObjectService $multimediaObjectService,
+        IntroService $basePlayerIntroService,
+        $pumukitOpencastHost,
+        $paellaCustomCssUrl,
+        $paellaLogo,
+        $pumukitIntro,
+        $paellaAutoPlay,
+        string $pumukitPlayerWhenDispatchViewEvent
+    ) {
+        parent::__construct($eventDispatcher, $embeddedBroadcastService, $multimediaObjectService, $basePlayerIntroService);
+        $this->pumukitOpencastHost = $pumukitOpencastHost;
+        $this->paellaCustomCssUrl = $paellaCustomCssUrl;
+        $this->paellaLogo = $paellaLogo;
+        $this->pumukitIntro = $pumukitIntro;
+        $this->paellaAutoPlay = $paellaAutoPlay;
+        $this->pumukitPlayerWhenDispatchViewEvent = $pumukitPlayerWhenDispatchViewEvent;
+    }
+
+    /**
+     * @Route("/videoplayer/{id}", name="pumukit_videoplayer_index")
+     * @Route("/videoplayer/opencast/{id}", name="pumukit_videoplayer_opencast")
+     * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
+     */
+    public function indexAction(Request $request, MultimediaObject $multimediaObject)
+    {
+        //$request = $this->container->get('request_stack')->getMasterRequest();
+
+        return $this->doRender($request, $multimediaObject);
+    }
+
     /**
      * @Route("/videoplayer/magic/{secret}", name="pumukit_videoplayer_magicindex")
-     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
+     * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
-    public function magicAction(MultimediaObject $multimediaObject, Request $request)
+    public function magicAction(Request $request, MultimediaObject $multimediaObject)
     {
         if (!$request->query->has('secret')) {
             return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', ['id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret()]).'&secret='.$multimediaObject->getSecret());
         }
 
-        $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
-        $password = $request->get('broadcast_password');
-        $response = $embeddedBroadcastService->canUserPlayMultimediaObject($multimediaObject, $this->getUser(), $password);
-        if ($response instanceof Response) {
+        return $this->doRender($request, $multimediaObject);
+    }
+
+    private function doRender(Request $request, MultimediaObject $multimediaObject)
+    {
+        if ($response = $this->validateAccess($request, $multimediaObject)) {
             return $response;
         }
 
-        $track = $request->query->has('track_id') ?
-               $multimediaObject->getTrackById($request->query->get('track_id')) :
-               $multimediaObject->getDisplayTrack();
-
-        if ($track && $track->containsTag('download')) {
-            return $this->redirect($track->getUrl());
-        }
-
-        if ($url = $multimediaObject->getProperty('externalplayer')) {
-            if (!$track) {
-                return $this->redirect($url);
-            }
+        $track = $this->checkMultimediaObjectTracks($request, $multimediaObject);
+        if ($track instanceof RedirectResponse) {
+            return $track;
         }
 
         if ($request->query->has('raw')) {
-            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', [
-                'autostart' => $this->getAutoStart($request),
-                'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-                'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
-                'multimediaObject' => $multimediaObject,
-                'track' => $track,
-            ]);
+            return $this->generateBasePlayerRaw($request, $multimediaObject, $track);
         }
 
-        if (!$track && $multimediaObject->isMultistream()) {
-            $tracks = $multimediaObject->getFilteredTracksWithTags(['presenter/delivery', 'presentation/delivery']);
-        } else {
-            $tracks = [$track];
-        }
+        $tracks = $this->getMultimediaObjectMultiStreamTracks($multimediaObject, $track);
 
-        /** @var IntroService */
-        $basePlayerIntroService = $this->get('pumukit_baseplayer.intro');
-
-        return [
-            'autostart' => $this->getAutoStart($request),
-            'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-            'intro' => $basePlayerIntroService->getVideoIntroduction($multimediaObject, $request->query->getBoolean('intro')),
-            'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
-            'logo' => $this->container->getParameter('pumukitpaella.logo'),
-            'multimediaObject' => $multimediaObject,
-            'object' => $multimediaObject,
-            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
-            'tracks' => $tracks,
-            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
-        ];
+        return $this->getParametersForPlayer($request, $multimediaObject, $tracks);
     }
 
-    /**
-     * @Route("/videoplayer/{id}", name="pumukit_videoplayer_index" )
-     * @Route("/videoplayer/opencast/{id}", name="pumukit_videoplayer_opencast" )
-     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
-     */
-    public function indexAction(MultimediaObject $multimediaObject, Request $request)
+    private function getAutoStart(Request $request)
     {
-        $request = $this->container->get('request_stack')->getMasterRequest();
-
-        $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
-        $password = $request->get('broadcast_password');
-        $response = $embeddedBroadcastService->canUserPlayMultimediaObject($multimediaObject, $this->getUser(), $password);
-        if ($response instanceof Response) {
-            return $response;
-        }
-
-        $track = $request->query->has('track_id') ?
-               $multimediaObject->getTrackById($request->query->get('track_id')) :
-               $multimediaObject->getDisplayTrack();
-
-        if ($track && $track->containsTag('download')) {
-            return $this->redirect($track->getUrl());
-        }
-
-        if ($url = $multimediaObject->getProperty('externalplayer')) {
-            if (!$track) {
-                return $this->redirect($url);
-            }
-        }
-
-        if ($request->query->has('raw')) {
-            return $this->render('PumukitPaellaPlayerBundle:BasePlayer:player.html.twig', [
-                'autostart' => $this->getAutoStart($request),
-                'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-                'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
-                'multimediaObject' => $multimediaObject,
-                'track' => $track,
-            ]);
-        }
-
-        if (!$track && $multimediaObject->isMultistream()) {
-            $tracks = $multimediaObject->getFilteredTracksWithTags(['presenter/delivery', 'presentation/delivery']);
-        } else {
-            $tracks = [$track];
-        }
-
-        /** @var IntroService */
-        $basePlayerIntroService = $this->get('pumukit_baseplayer.intro');
-
-        return [
-            'autostart' => $this->getAutoStart($request),
-            'autoplay_fallback' => $this->container->getParameter('pumukitpaella.autoplay'),
-            'intro' => $basePlayerIntroService->getVideoIntroduction($multimediaObject, $request->query->getBoolean('intro')),
-            'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
-            'logo' => $this->container->getParameter('pumukitpaella.logo'),
-            'multimediaObject' => $multimediaObject,
-            'object' => $multimediaObject,
-            'when_dispatch_view_event' => $this->getParameterWithDefaultValue('pumukitplayer.when_dispatch_view_event', 'on_load'),
-            'tracks' => $tracks,
-            'opencast_host' => $this->getParameterWithDefaultValue('pumukit_opencast.host', ''),
-        ];
-    }
-
-    private function getAutoStart($request)
-    {
-        if ('disabled' === $this->container->getParameter('pumukitpaella.autoplay')) {
+        if ('disabled' === $this->paellaAutoPlay) {
             return false;
         }
 
         $autoStart = $request->query->get('autostart', 'false');
         $userAgent = $request->headers->get('user-agent');
-        if (false !== strpos($userAgent, 'Safari')) {
-            if (false === strpos($userAgent, 'Chrome')) {
-                $autoStart = false;
-            }
+        if ((false !== strpos($userAgent, 'Safari')) && false === strpos($userAgent, 'Chrome')) {
+            $autoStart = false;
         }
 
         return $autoStart;
     }
 
-    private function getParameterWithDefaultValue($name, $default = null)
+    private function generateBasePlayerRaw(Request $request, MultimediaObject $multimediaObject, Track $track): Response
     {
-        if ($this->container->hasParameter($name)) {
-            return $this->container->getParameter($name);
-        }
+        return $this->render('@PumukitPaellaPlayer/BasePlayer/player.html.twig', [
+            'autostart' => $this->getAutoStart($request),
+            'autoplay_fallback' => $this->paellaAutoPlay,
+            'when_dispatch_view_event' => $this->pumukitPlayerWhenDispatchViewEvent,
+            'multimediaObject' => $multimediaObject,
+            'track' => $track,
+        ]);
+    }
 
-        return $default;
+    private function getParametersForPlayer(Request $request, MultimediaObject $multimediaObject, array $tracks): array
+    {
+        return [
+            'autostart' => $this->getAutoStart($request),
+            'autoplay_fallback' => $this->paellaAutoPlay,
+            'intro' => $this->basePlayerIntroService->getVideoIntroduction($multimediaObject, $request->query->getBoolean('intro')),
+            'custom_css_url' => $this->paellaCustomCssUrl,
+            'logo' => $this->paellaLogo,
+            'multimediaObject' => $multimediaObject,
+            'object' => $multimediaObject,
+            'when_dispatch_view_event' => $this->pumukitPlayerWhenDispatchViewEvent,
+            'tracks' => $tracks,
+            'opencast_host' => $this->pumukitOpencastHost,
+        ];
     }
 }

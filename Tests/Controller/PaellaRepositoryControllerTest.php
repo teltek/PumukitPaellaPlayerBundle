@@ -2,70 +2,61 @@
 
 namespace Pumukit\PaellaPlayerBundle\Tests\Controller;
 
+use Pumukit\CoreBundle\Tests\PumukitTestCase;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Track;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @internal
  * @coversNothing
  */
-class PaellaRepositoryControllerTest extends WebTestCase
+class PaellaRepositoryControllerTest extends PumukitTestCase
 {
-    private $dm;
     private $factoryService;
     private $picService;
     private $trackUrlService;
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $options = ['environment' => 'test'];
         static::bootKernel($options);
 
-        $this->dm = static::$kernel->getContainer()->get('doctrine_mongodb')->getManager();
         $this->factoryService = static::$kernel->getContainer()->get('pumukitschema.factory');
         $this->picService = static::$kernel->getContainer()->get('pumukitschema.pic');
         $this->trackUrlService = static::$kernel->getContainer()->get('pumukit_baseplayer.trackurl');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
-        $this->dm = null;
+        parent::tearDown();
         $this->factoryService = null;
         $this->picService = null;
         $this->trackUrlService = null;
-
         gc_collect_cycles();
-        parent::tearDown();
     }
 
     public function testPaellaRepository()
     {
-        //Init Mmobj
         $series = $this->factoryService->createSeries();
         $mmobj = $this->factoryService->createMultimediaObject($series);
-
         $this->assertEquals(0, count($mmobj->getTracks()));
-
-        $this->dm->persist($series);
-        $this->dm->persist($mmobj);
-        $this->dm->flush();
 
         $trackPresenter = new Track();
         $trackPresenter->setDuration(2);
         $trackPresenter->setMimetype('video/mp4');
         $trackPresenter->setTags(['display', 'presenter/delivery']);
-
+        $this->dm->persist($trackPresenter);
         $mmobj->addTrack($trackPresenter);
-        $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return 404
         $response = $this->callRepo($mmobj);
+        dump($response);
         $this->assertEquals(404, $response->getStatusCode());
 
         $mmobj->setStatus(MultimediaObject::STATUS_PUBLISHED);
-        $this->dm->persist($mmobj);
         $this->dm->flush();
 
         //Should return ok and empty
@@ -75,7 +66,6 @@ class PaellaRepositoryControllerTest extends WebTestCase
         $this->assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackPresenter->setVcodec('h264');
-        $this->dm->persist($mmobj);
         $this->dm->flush();
 
         //Should return presenter
@@ -264,7 +254,7 @@ class PaellaRepositoryControllerTest extends WebTestCase
         );
     }
 
-    private function callRepo($mmobj, $track = null)
+    private function callRepo(MultimediaObject $mmobj, ?Track $track = null): Response
     {
         $client = static::createClient();
         $url = sprintf('paellarepository/%s', $mmobj->getId());
@@ -272,11 +262,9 @@ class PaellaRepositoryControllerTest extends WebTestCase
         if ($track) {
             $url .= '?track_id='.$track->getId();
         }
-
         $client->request('GET', $url);
-        $response = $client->getResponse();
 
-        return $response;
+        return $client->getResponse();
     }
 
     private function makePaellaData($mmobj, $trackLists = [])

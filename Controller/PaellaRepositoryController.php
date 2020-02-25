@@ -3,60 +3,51 @@
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
+use Pumukit\CoreBundle\Services\SerializerService;
+use Pumukit\PaellaPlayerBundle\Services\PaellaDataService;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class PaellaRepositoryController.
- */
-class PaellaRepositoryController extends Controller implements PersonalControllerInterface
+class PaellaRepositoryController extends AbstractController implements PersonalControllerInterface
 {
-    /**
-     * @Route("/paellarepository/{id}.{_format}", defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
-     * @Route("/secret/paellarepository/{secret}.{_format}", defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
-     * @Method("GET")
-     *
-     * @param MultimediaObject $mmobj
-     * @param Request          $request
-     *
-     * @return Response
-     */
-    public function indexAction(MultimediaObject $mmobj, Request $request)
+    private $serializer;
+    private $paellaDataService;
+
+    public function __construct(SerializerService $serializer, PaellaDataService $paellaDataService)
     {
-        $serializer = $this->get('jms_serializer');
-        $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
-        $data = $paellaDataService->getPaellaMmobjData($mmobj, $request);
-        $response = $serializer->serialize($data, $request->getRequestFormat());
+        $this->serializer = $serializer;
+        $this->paellaDataService = $paellaDataService;
+    }
+
+    /**
+     * @Route("/paellarepository/{id}.{_format}", methods={"GET"}, defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
+     * @Route("/secret/paellarepository/{secret}.{_format}", methods={"GET"}, defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
+     */
+    public function indexAction(Request $request, MultimediaObject $multimediaObject): Response
+    {
+        $data = $this->paellaDataService->getPaellaMmobjData($multimediaObject, $request);
+        $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
     }
 
     /**
-     * @Route("/paellaplaylist/{id}.{_format}", defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
-     * @Route("/secret/paellaplaylist/{secret}.{_format}", defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
-     * @Method("GET")
-     *
-     * @param Series  $series
-     * @param Request $request
-     *
-     * @return Response
+     * @Route("/paellaplaylist/{id}.{_format}", methods={"GET"}, defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
+     * @Route("/secret/paellaplaylist/{secret}.{_format}", methods={"GET"}, defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      */
-    public function playlistAction(Series $series, Request $request)
+    public function playlistAction(Request $request, Series $series): Response
     {
-        $serializer = $this->get('jms_serializer');
-        $paellaDataService = $this->get('pumukitpaellaplayer.paelladata');
         $criteria = [
             'embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC],
             'tracks' => ['$elemMatch' => ['tags' => 'display', 'hide' => false]],
         ];
-        $data = $paellaDataService->getPaellaPlaylistData($series, $criteria);
-        $response = $serializer->serialize($data, $request->getRequestFormat());
+        $data = $this->paellaDataService->getPaellaPlaylistData($series, $criteria);
+        $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
     }
