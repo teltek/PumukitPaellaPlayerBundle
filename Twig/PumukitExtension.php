@@ -3,46 +3,29 @@
 namespace Pumukit\PaellaPlayerBundle\Twig;
 
 use Pumukit\SchemaBundle\Document\MultimediaObject;
-use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\HttpFoundation\Request;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class PumukitExtension extends \Twig_Extension
+class PumukitExtension extends AbstractExtension
 {
-    /**
-     * @var RequestContext
-     */
-    protected $container;
-
-    public function __construct($container)
-    {
-        $container = $container;
-    }
-
-    /**
-     * Get functions.
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction('getPaellaLayout', [$this, 'getPaellaLayout', ['needs_environment' => true]]),
+            new TwigFunction('getPaellaLayout', [$this, 'getPaellaLayout', ['needs_environment' => true]]),
         ];
     }
 
-    /**
-     * @param MultimediaObject $mmobj   Multimedia object to get the paella layout from
-     * @param mixed            $request
-     *
-     * @return string
-     */
-    public function getPaellaLayout($mmobj, $request)
+    public function getPaellaLayout(MultimediaObject $multimediaObject, Request $request)
     {
         $paellaLayout = 'professor_slide';
 
-        if ($mmobj->getProperty('opencastinvert')) {
+        if ($multimediaObject->getProperty('opencastinvert')) {
             $paellaLayout = 'slide_professor';
         }
 
-        if ($mmobj->getProperty('paellalayout')) {
-            $paellaLayout = $mmobj->getProperty('paellalayout');
+        if ($multimediaObject->getProperty('paellalayout')) {
+            $paellaLayout = $multimediaObject->getProperty('paellalayout');
         }
 
         return $request->query->get('paella_layout', $paellaLayout);

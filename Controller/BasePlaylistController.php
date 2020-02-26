@@ -2,57 +2,58 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
-use Pumukit\BasePlayerBundle\Controller\BasePlaylistController as BasePlaylistControllero;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use MongoDB\BSON\ObjectId;
+use Pumukit\BasePlayerBundle\Controller\BasePlaylistController as BasePlaylistAbstractController;
+use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class BasePlaylistController extends BasePlaylistControllero
+class BasePlaylistController extends BasePlaylistAbstractController
 {
+    private $pumukitOpencastHost;
+    private $paellaCustomCssUrl;
+    private $paellaLogo;
+    private $pumukitIntro;
+
+    public function __construct(
+        DocumentManager $documentManager,
+        SeriesPlaylistService $seriesPlaylistService,
+        $pumukitOpencastHost,
+        $paellaCustomCssUrl,
+        $paellaLogo,
+        $pumukitIntro
+    ) {
+        parent::__construct($documentManager, $seriesPlaylistService);
+        $this->pumukitOpencastHost = $pumukitOpencastHost;
+        $this->paellaCustomCssUrl = $paellaCustomCssUrl;
+        $this->paellaLogo = $paellaLogo;
+        $this->pumukitIntro = $pumukitIntro;
+    }
+
     /**
      * @Route("/playlist/{id}", name="pumukit_playlistplayer_index", defaults={"no_channels": true} )
      * @Route("/playlist/magic/{secret}", name="pumukit_playlistplayer_magicindex", defaults={"show_hide": true, "no_channels": true} )
-     *
-     * Added default indexAction and redirect to the paella route.
-     *
-     * @param Series  $series
-     * @param Request $request
-     *
-     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function indexAction(Series $series, Request $request)
+    public function indexAction(Request $request, Series $series)
     {
-        $mmobjId = $request->get('videoId');
-        $videoPos = $request->get('videoPos');
-
-        return $this->redirectWithMmobj($series, $request, $mmobjId, $videoPos);
+        return $this->redirectWithMmobj($series, $request, $request->get('videoId'), $request->get('videoPos'));
     }
 
     /**
      * @Route("/playlist", name="pumukit_playlistplayer_paellaindex", defaults={"no_channels": true} )
-     * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
-     *
-     * In order to make things easier on the paella side, we drop the symfony custom urls.
-     *
-     * @param Request $request
-     *
-     * @throws \Doctrine\ODM\MongoDB\LockException
-     * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
-     *
-     * @return array|Response|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function paellaIndexAction(Request $request)
     {
         $mmobjId = $request->get('videoId');
         $seriesId = $request->get('playlistId');
-        $series = $this->get('doctrine_mongodb.odm.document_manager')
-            ->getRepository('PumukitSchemaBundle:Series')
-            ->find($seriesId)
-        ;
+        $series = $this->documentManager->getRepository(Series::class)->find($seriesId);
         if (!$series) {
             return $this->return404Response("No playlist found with id: {$seriesId}");
         }
@@ -62,35 +63,30 @@ class BasePlaylistController extends BasePlaylistControllero
             return $this->redirectWithMmobj($series, $request);
         }
 
-        $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         $criteria = ['embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC]];
         if (!$series->isPlaylist()) {
-            $dm = $this->get('doctrine_mongodb')->getManager();
             $criteria = [
-                'series' => new \MongoId($series->getId()),
+                'series' => new ObjectId($series->getId()),
                 'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
                 'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
                 'tracks.tags' => 'display',
             ];
-            $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, ['rank' => 'asc']);
+            $mmobj = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy($criteria, ['rank' => 'asc']);
         } else {
-            $mmobj = $playlistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
+            $mmobj = $this->seriesPlaylistService->getMmobjFromIdAndPlaylist($mmobjId, $series, $criteria);
         }
 
         if (!$mmobj) {
             return $this->return404Response("No playable multimedia object found with id: {$mmobjId} belonging to this playlist. ({$series->getTitle()})");
         }
 
-        $opencastHost = '';
-        if ($this->container->hasParameter('pumukit_opencast.host')) {
-            $opencastHost = $this->container->getParameter('pumukit_opencast.host');
-        }
+        $opencastHost = $this->pumukitOpencastHost ?? '';
 
         return [
             'autostart' => $request->query->get('autostart', 'false'),
             'intro' => $this->getIntro($request->query->get('intro')),
-            'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
-            'logo' => $this->container->getParameter('pumukitpaella.logo'),
+            'custom_css_url' => $this->paellaCustomCssUrl,
+            'logo' => $this->paellaLogo,
             'multimediaObject' => $mmobj,
             'object' => $series,
             'responsive' => true,
@@ -98,16 +94,9 @@ class BasePlaylistController extends BasePlaylistControllero
         ];
     }
 
-    /**
-     * Use IntroService in the new version 1.3.x.
-     *
-     * @param null $introParameter
-     *
-     * @return bool|mixed
-     */
-    protected function getIntro($introParameter = null)
+    protected function getIntro($introParameter = null): bool
     {
-        $hasIntro = $this->container->hasParameter('pumukit.intro');
+        $hasIntro = $this->pumukitIntro;
 
         $showIntro = true;
         if (null !== $introParameter && false === filter_var($introParameter, FILTER_VALIDATE_BOOLEAN)) {
@@ -115,38 +104,26 @@ class BasePlaylistController extends BasePlaylistControllero
         }
 
         if ($hasIntro && $showIntro) {
-            return $this->container->getParameter('pumukit.intro');
+            return $this->pumukitIntro;
         }
 
         return false;
     }
 
-    /**
-     * Helper function to used to redirect when the mmobj id is not specified in the request.
-     *
-     * @param Series  $series
-     * @param Request $request
-     * @param null    $mmobjId
-     * @param null    $videoPos
-     *
-     * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
-     */
     private function redirectWithMmobj(Series $series, Request $request, $mmobjId = null, $videoPos = null)
     {
-        $playlistService = $this->get('pumukit_baseplayer.seriesplaylist');
         if (!$mmobjId) {
             $criteria = ['embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC]];
             if (!$series->isPlaylist()) {
-                $dm = $this->get('doctrine_mongodb')->getManager();
                 $criteria = [
-                    'series' => new \MongoId($series->getId()),
+                    'series' => new ObjectId($series->getId()),
                     'embeddedBroadcast.type' => EmbeddedBroadcast::TYPE_PUBLIC,
                     'type' => ['$ne' => MultimediaObject::TYPE_LIVE],
                     'tracks.tags' => 'display',
                 ];
-                $mmobj = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy($criteria, ['rank' => 'asc']);
+                $mmobj = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy($criteria, ['rank' => 'asc']);
             } else {
-                $mmobj = $playlistService->getPlaylistFirstMmobj($series, $criteria);
+                $mmobj = $this->seriesPlaylistService->getPlaylistFirstMmobj($series, $criteria);
             }
 
             if (!$mmobj) {
@@ -168,13 +145,13 @@ class BasePlaylistController extends BasePlaylistControllero
         return $this->redirect($redirectUrl);
     }
 
-    private function return404Response($message = '')
+    private function return404Response($message = ''): Response
     {
         $params = [
             'message' => $message,
         ];
         $template = $this->renderView(
-            'PumukitPaellaPlayerBundle:PaellaPlayer:404exception.html.twig',
+            '@PumukitPaellaPlayer/PaellaPlayer/404exception.html.twig',
             $params
         );
 

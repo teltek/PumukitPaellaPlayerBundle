@@ -3,9 +3,9 @@
 namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use MongoDB\BSON\ObjectId;
 use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
-use Pumukit\BasePlayerBundle\Services\UserAgentParserService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Services\MaterialService;
@@ -14,74 +14,54 @@ use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- * Class PaellaDataService.
- */
 class PaellaDataService
 {
     private $picService;
     private $trackService;
     private $opencastClient;
     private $mobileDetectorService;
-    private $userAgentParserService;
     private $dm;
     private $playlistService;
     private $materialService;
     private $urlGenerator;
     private $forceDual;
 
-    /**
-     * PaellaDataService constructor.
-     *
-     * @param DocumentManager        $dm
-     * @param PicService             $picService
-     * @param TrackUrlService        $trackService
-     * @param SeriesPlaylistService  $playlistService
-     * @param MaterialService        $materialService
-     * @param UrlGeneratorInterface  $urlGenerator
-     * @param MobileDetector         $mobileDetectorService
-     * @param UserAgentParserService $userAgentParserService
-     * @param                        $forceDual
-     */
-    public function __construct(DocumentManager $dm, PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService, $forceDual)
-    {
+    public function __construct(
+        DocumentManager $documentManager,
+        PicService $picService,
+        TrackUrlService $trackService,
+        SeriesPlaylistService $playlistService,
+        MaterialService $materialService,
+        UrlGeneratorInterface $urlGenerator,
+        MobileDetector $mobileDetectorService,
+        bool $forceDual,
+        string $requestContextScheme,
+        string $requestContextHost
+    ) {
         $this->picService = $picService;
         $this->trackService = $trackService;
         $this->playlistService = $playlistService;
         $this->materialService = $materialService;
         $this->urlGenerator = $urlGenerator;
-        //Only used to check whether the request is mobile and return a side-by-side on opencast videos.
         $this->mobileDetectorService = $mobileDetectorService;
-        $this->userAgentParserService = $userAgentParserService;
         $this->forceDual = $forceDual;
-        $this->dm = $dm;
+        $this->dm = $documentManager;
+        $this->requestContextScheme = $requestContextScheme;
+        $this->requestContextHost = $requestContextHost;
     }
 
-    /**
-     * @param $opencastClient
-     */
-    public function setOpencastClient($opencastClient)
+    public function setOpencastClient($opencastClient): void
     {
         $this->opencastClient = $opencastClient;
     }
 
-    /**
-     * Returns a dictionary array with the playlist data using the paella playlist plugin necessary structure.
-     *
-     * This structure can be later serialized and returned as a json file for the paella player to use.
-     *
-     * @param Series $series
-     * @param array  $criteria
-     *
-     * @return array
-     */
-    public function getPaellaPlaylistData(Series $series, $criteria = [])
+    public function getPaellaPlaylistData(Series $series, array $criteria = []): array
     {
         if (!$series->isPlaylist()) {
-            $criteria['series'] = new \MongoId($series->getId());
+            $criteria['series'] = new ObjectId($series->getId());
             $criteria['type'] = ['$ne' => MultimediaObject::TYPE_LIVE];
             $criteria['status'] = ['$ne' => MultimediaObject::STATUS_PROTOTYPE];
-            $mmobjs = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findBy($criteria, ['rank' => 'asc']);
+            $mmobjs = $this->dm->getRepository(MultimediaObject::class)->findBy($criteria, ['rank' => 'asc']);
         } else {
             $mmobjs = $this->playlistService->getPlaylistMmobjs($series, $criteria);
         }
@@ -109,17 +89,7 @@ class PaellaDataService
         return $data;
     }
 
-    /**
-     * Returns a dictionary array with the mmobj data using the paella prefered structure.
-     *
-     * This structure can be later serialized and returned as a json file for the paella player to use.
-     *
-     * @param MultimediaObject $mmobj
-     * @param Request          $request
-     *
-     * @return array
-     */
-    public function getPaellaMmobjData(MultimediaObject $mmobj, Request $request)
+    public function getPaellaMmobjData(MultimediaObject $mmobj, Request $request): array
     {
         $trackId = $request->query->get('track_id');
         $isMobile = $this->isMobile($request);
@@ -197,15 +167,7 @@ class PaellaDataService
         return $data;
     }
 
-    /**
-     * Returns the absolute url from a given path or url.
-     *
-     * @param Request $request
-     * @param         $url
-     *
-     * @return string
-     */
-    private function getAbsoluteUrl(Request $request, $url)
+    private function getAbsoluteUrl(Request $request, string $url): string
     {
         if (false !== strpos($url, '://') || 0 === strpos($url, '//')) {
             return $url;
@@ -215,18 +177,10 @@ class PaellaDataService
             return $url;
         }
 
-        return $request->getSchemeAndHttpHost().$request->getBasePath().$url;
+        return  $this->requestContextScheme.'://'.$this->requestContextHost.$request->getBasePath().$url;
     }
 
-    /**
-     * Returns an array (can be empty) of tracks for the mmobj.
-     *
-     * @param MultimediaObject $mmobj
-     * @param                  $trackId
-     *
-     * @return array
-     */
-    private function getMmobjTracks(MultimediaObject $mmobj, $trackId)
+    private function getMmobjTracks(MultimediaObject $mmobj, ?string $trackId): array
     {
         $tracks = [
             'display' => [],
@@ -278,14 +232,7 @@ class PaellaDataService
         return $tracks;
     }
 
-    /**
-     * Returns a frameList formatted to be added to the paella.
-     *
-     * @param MultimediaObject $mmobj
-     *
-     * @return array|null
-     */
-    private function getOpencastFrameList(MultimediaObject $mmobj)
+    private function getOpencastFrameList(MultimediaObject $mmobj): array
     {
         $images = $this->getFrameListFromPumukit($mmobj);
 
@@ -296,12 +243,7 @@ class PaellaDataService
         return $images;
     }
 
-    /**
-     * @param MultimediaObject $multimediaObject
-     *
-     * @return array|null
-     */
-    private function getFrameListFromPumukit(MultimediaObject $multimediaObject)
+    private function getFrameListFromPumukit(MultimediaObject $multimediaObject): ?array
     {
         if (!method_exists($multimediaObject, 'getEmbeddedSegments')) {
             return null;
@@ -331,12 +273,7 @@ class PaellaDataService
         return $images;
     }
 
-    /**
-     * @param MultimediaObject $multimediaObject
-     *
-     * @return array
-     */
-    private function getFrameListFromOpencast(MultimediaObject $multimediaObject)
+    private function getFrameListFromOpencast(MultimediaObject $multimediaObject): array
     {
         if (!$this->opencastClient) {
             return [];
@@ -387,15 +324,7 @@ class PaellaDataService
         return $images;
     }
 
-    /**
-     * Returns a caption list formatted to be added to the paella.
-     *
-     * @param MultimediaObject $mmobj
-     * @param Request          $request
-     *
-     * @return array
-     */
-    private function getCaptions(MultimediaObject $mmobj, Request $request)
+    private function getCaptions(MultimediaObject $mmobj, Request $request): array
     {
         $captions = $this->materialService->getCaptions($mmobj);
 
@@ -414,14 +343,6 @@ class PaellaDataService
         return array_values($captionsMapped);
     }
 
-    /**
-     * Returns a data array with the required paella structure for a 'data stream'.
-     *
-     * @param array   $tracks
-     * @param Request $request
-     *
-     * @return mixed
-     */
     private function buildDataStream(array $tracks, Request $request)
     {
         $sources = [];
@@ -456,28 +377,14 @@ class PaellaDataService
         return $dataStream;
     }
 
-    /**
-     * Returns whether the request comes from a 'mobile device'.
-     *
-     * @param Request $request
-     *
-     * @return bool
-     */
-    private function isMobile(Request $request)
+    private function isMobile(Request $request): bool
     {
         $userAgent = $request->headers->get('user-agent');
 
         return $this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent);
     }
 
-    /**
-     * @param $mmobj
-     * @param $absolute
-     * @param $hd
-     *
-     * @return string|null
-     */
-    private function getPicForObject($mmobj, $absolute, $hd)
+    private function getPicForObject(MultimediaObject $mmobj, bool $absolute, bool $hd): string
     {
         $pic = null;
 

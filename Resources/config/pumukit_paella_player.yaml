@@ -1,0 +1,33 @@
+services:
+  _defaults:
+    autowire:      true
+    autoconfigure: true
+    public:        true
+    bind:
+      $pumukitOpencastHost: "@=container.hasParameter('pumukit_opencast.host') ? parameter('pumukit_opencast.host') : null"
+      $paellaCustomCssUrl: '%pumukitpaella.custom_css_url%'
+      $paellaLogo: '%pumukitpaella.logo%'
+      $pumukitIntro: '%pumukit.intro%'
+      $paellaXAPIEndpoint: '%pumukitpaella.xapi_endpoint%'
+      $paellaXAPIAuth: '%pumukitpaella.xapi_auth%'
+      $paellaAccessControlClass: '%pumukitpaella.access_control_class%'
+      $paellaFootPrints: '%pumukitpaella.footprints%'
+      $paellaAutoPlay: '%pumukitpaella.autoplay%'
+      $pumukitPlayerWhenDispatchViewEvent: '%pumukitplayer.when_dispatch_view_event%'
+      $requestContextScheme: '%router.request_context.scheme%'
+      $requestContextHost: '%router.request_context.host%'
+
+
+  Pumukit\PaellaPlayerBundle\Controller\:
+    resource: '../../Controller/'
+    tags: ['controller.service_arguments']
+
+  Pumukit\PaellaPlayerBundle\Twig\PumukitExtension:
+    class: Pumukit\PaellaPlayerBundle\Twig\PumukitExtension
+    tags:
+      - { name: "twig.extension" }
+
+  Pumukit\PaellaPlayerBundle\Services\PaellaDataService:
+    class: Pumukit\PaellaPlayerBundle\Services\PaellaDataService
+    arguments:
+      $forceDual: '%pumukitpaella.force_dual%'

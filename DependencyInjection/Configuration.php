@@ -7,13 +7,10 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('pumukit_paella_player');
+        $treeBuilder = new TreeBuilder('pumukit_paella_player');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
