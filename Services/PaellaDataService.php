@@ -34,7 +34,9 @@ class PaellaDataService
         MaterialService $materialService,
         UrlGeneratorInterface $urlGenerator,
         MobileDetector $mobileDetectorService,
-        bool $forceDual
+        bool $forceDual,
+        string $requestContextScheme,
+        string $requestContextHost
     ) {
         $this->picService = $picService;
         $this->trackService = $trackService;
@@ -44,6 +46,8 @@ class PaellaDataService
         $this->mobileDetectorService = $mobileDetectorService;
         $this->forceDual = $forceDual;
         $this->dm = $documentManager;
+        $this->requestContextScheme = $requestContextScheme;
+        $this->requestContextHost = $requestContextHost;
     }
 
     public function setOpencastClient($opencastClient): void
@@ -173,7 +177,7 @@ class PaellaDataService
             return $url;
         }
 
-        return $request->getSchemeAndHttpHost().$request->getBasePath().$url;
+        return  $this->requestContextScheme.'://'.$this->requestContextHost.$request->getBasePath().$url;
     }
 
     private function getMmobjTracks(MultimediaObject $mmobj, ?string $trackId): array
