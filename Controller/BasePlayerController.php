@@ -52,8 +52,6 @@ class BasePlayerController extends BasePlayerAbstractController
      */
     public function indexAction(Request $request, MultimediaObject $multimediaObject)
     {
-        //$request = $this->container->get('request_stack')->getMasterRequest();
-
         return $this->doRender($request, $multimediaObject);
     }
 
