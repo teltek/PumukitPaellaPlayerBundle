@@ -2456,23 +2456,6 @@ a.btn {
   bottom: 0px;
   right: 0px;
 }
-.buttonPlugin.audioLanguages {
-  text-align: center;
-  background-position: -900% -200%;
-  font-size: 0.8em;
-  line-height: 20px;
-  color: black;
-  text-transform: uppercase;
-}
-.videoAudioTrackItem {
-  padding: 10px;
-  font-size: 20px;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-.videoAudioTrackItem:hover {
-  background-color: #cc0000;
-}
 .blackBoardDiv {
   position: absolute;
   /* 16:9 */
@@ -2492,6 +2475,23 @@ a.btn {
 }
 #overlayContainer div.lensContainer {
   pointer-events: all;
+}
+.buttonPlugin.audioLanguages {
+  text-align: center;
+  background-position: -900% -200%;
+  font-size: 0.8em;
+  line-height: 20px;
+  color: black;
+  text-transform: uppercase;
+}
+.videoAudioTrackItem {
+  padding: 10px;
+  font-size: 20px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.videoAudioTrackItem:hover {
+  background-color: #cc0000;
 }
 .textBreak {
   background-color: rgba(128, 128, 128, 0.7);
