@@ -33,15 +33,7 @@ class PaellaDataService
     /**
      * PaellaDataService constructor.
      *
-     * @param DocumentManager        $dm
-     * @param PicService             $picService
-     * @param TrackUrlService        $trackService
-     * @param SeriesPlaylistService  $playlistService
-     * @param MaterialService        $materialService
-     * @param UrlGeneratorInterface  $urlGenerator
-     * @param MobileDetector         $mobileDetectorService
-     * @param UserAgentParserService $userAgentParserService
-     * @param                        $forceDual
+     * @param $forceDual
      */
     public function __construct(DocumentManager $dm, PicService $picService, TrackUrlService $trackService, SeriesPlaylistService $playlistService, MaterialService $materialService, UrlGeneratorInterface $urlGenerator, MobileDetector $mobileDetectorService, UserAgentParserService $userAgentParserService, $forceDual)
     {
@@ -70,8 +62,7 @@ class PaellaDataService
      *
      * This structure can be later serialized and returned as a json file for the paella player to use.
      *
-     * @param Series $series
-     * @param array  $criteria
+     * @param array $criteria
      *
      * @return array
      */
@@ -113,9 +104,6 @@ class PaellaDataService
      * Returns a dictionary array with the mmobj data using the paella prefered structure.
      *
      * This structure can be later serialized and returned as a json file for the paella player to use.
-     *
-     * @param MultimediaObject $mmobj
-     * @param Request          $request
      *
      * @return array
      */
@@ -167,11 +155,13 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
+                $dataStream['content'] = 'presenter';
                 $dataStream['language'] = $tracks['display'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
             if ($tracks['presentation']) {
                 $dataStream = $this->buildDataStream($tracks['presentation'], $request);
+                $dataStream['content'] = 'presentation';
                 $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
@@ -200,8 +190,7 @@ class PaellaDataService
     /**
      * Returns the absolute url from a given path or url.
      *
-     * @param Request $request
-     * @param         $url
+     * @param $url
      *
      * @return string
      */
@@ -221,8 +210,7 @@ class PaellaDataService
     /**
      * Returns an array (can be empty) of tracks for the mmobj.
      *
-     * @param MultimediaObject $mmobj
-     * @param                  $trackId
+     * @param $trackId
      *
      * @return array
      */
@@ -281,8 +269,6 @@ class PaellaDataService
     /**
      * Returns a frameList formatted to be added to the paella.
      *
-     * @param MultimediaObject $mmobj
-     *
      * @return array|null
      */
     private function getOpencastFrameList(MultimediaObject $mmobj)
@@ -297,8 +283,6 @@ class PaellaDataService
     }
 
     /**
-     * @param MultimediaObject $multimediaObject
-     *
      * @return array|null
      */
     private function getFrameListFromPumukit(MultimediaObject $multimediaObject)
@@ -332,8 +316,6 @@ class PaellaDataService
     }
 
     /**
-     * @param MultimediaObject $multimediaObject
-     *
      * @return array
      */
     private function getFrameListFromOpencast(MultimediaObject $multimediaObject)
@@ -390,9 +372,6 @@ class PaellaDataService
     /**
      * Returns a caption list formatted to be added to the paella.
      *
-     * @param MultimediaObject $mmobj
-     * @param Request          $request
-     *
      * @return array
      */
     private function getCaptions(MultimediaObject $mmobj, Request $request)
@@ -416,9 +395,6 @@ class PaellaDataService
 
     /**
      * Returns a data array with the required paella structure for a 'data stream'.
-     *
-     * @param array   $tracks
-     * @param Request $request
      *
      * @return mixed
      */
@@ -458,8 +434,6 @@ class PaellaDataService
 
     /**
      * Returns whether the request comes from a 'mobile device'.
-     *
-     * @param Request $request
      *
      * @return bool
      */
