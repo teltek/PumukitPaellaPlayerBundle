@@ -137,11 +137,13 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
+                $dataStream['content'] = 'presenter';
                 $dataStream['language'] = $tracks['display'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
             if ($tracks['presentation']) {
                 $dataStream = $this->buildDataStream($tracks['presentation'], $request);
+                $dataStream['content'] = 'presentation';
                 $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
