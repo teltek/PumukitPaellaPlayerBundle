@@ -35,10 +35,10 @@ class PumukitExtension extends \Twig_Extension
      */
     public function getPaellaLayout($mmobj, $request)
     {
-        $paellaLayout = 'professor_slide';
+        $paellaLayout = 'presenter_presentation';
 
         if ($mmobj->getProperty('opencastinvert')) {
-            $paellaLayout = 'slide_professor';
+            $paellaLayout = 'presenter_presentation';
         }
 
         if ($mmobj->getProperty('paellalayout')) {

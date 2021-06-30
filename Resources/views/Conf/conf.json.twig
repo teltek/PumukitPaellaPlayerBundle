@@ -6,7 +6,7 @@
         "videoQualityStrategyParams":{ "maxAutoQualityRes":720 },
         "reloadOnFullscreen": false,
         "videoZoom": {
-            "enabled":false,
+            "enabled":true,
             "max":800,
             "minWindowSize":500
         },
@@ -44,7 +44,7 @@
     "editor":{
         "enabled":false
     },
-    "defaultProfile":"slide_professor",
+    "defaultProfile":"presenter_presentation",
     "data":{
         "enabled":true,
         "dataDelegates":{
@@ -71,31 +71,29 @@
         "//**** For a list of available plugins and configuration, go to": "https://github.com/polimediaupv/paella/blob/master/doc/plugins.md",
         "list":{
             "//****": "Button Plugins",
-            "edu.harvard.dce.paella.flexSkipPlugin": {"enabled":true, "direction": "Rewind", "seconds": 10},
+            "edu.harvard.dce.paella.flexSkipPlugin": {"enabled":true, "direction": "Rewind", "seconds": 10, "minWindowSize": 510 },
             "edu.harvard.dce.paella.flexSkipForwardPlugin": {"enabled":true, "direction": "Forward", "seconds": 30},
-            "es.teltek.paella.playlistPlugin":  {"enabled":true, "playlistApi":"/paellaplaylist"},
-            "es.teltek.paella.integratedDurationPlugin": {"enabled":true},
-            "es.teltek.paella.simpleSoundControlPlugin": {"enabled":true},
-            "es.teltek.paella.advanceViewModePlugin": {"enabled": {{ 'advanced' in app.request.headers.get('referer') ? 'true': 'false'}} },
+            "es.teltek.paella.integratedDurationPlugin": {"enabled":true, "minWindowSize": 450 },
             "es.upv.paella.captionsPlugin": {"enabled":true, "searchOnCaptions":true},
-            "es.upv.paella.extendedTabAdapterPlugin": {"enabled":false},
+            "es.upv.paella.extendedTabAdapterPlugin": {"enabled":true, "minWindowSize": 400},
             "es.upv.paella.footprintsPlugin": {"enabled":true, "skin":"custom", "fillStyle": "green", "strokeStyle": "green"},
-            "es.upv.paella.frameControlPlugin":  {"enabled": true, "showFullPreview": "auto", "showCaptions":false},
+            "es.upv.paella.frameControlPlugin":  {"enabled": true, "showFullPreview": "auto", "showCaptions":false, "minWindowSize": 450 },
             "es.upv.paella.fullScreenButtonPlugin": {"enabled":true, "reloadOnFullscreen":{ "enabled":true, "keepUserSelection":true }},
-            "es.upv.paella.helpPlugin": {"enabled":false, "langs":["en","es"]},
-            "es.upv.paella.multipleQualitiesPlugin": {"enabled":true, "showWidthRes":true},
-            "es.upv.paella.playbackRatePlugin": {"enabled":true, "availableRates": [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]},
+            "es.upv.paella.helpPlugin": {"enabled":true, "langs":["en","es"], "minWindowSize": 650 },
+            "es.upv.paella.multipleQualitiesPlugin": {"enabled":true, "showWidthRes":true, "minWindowSize": 550 },
+            "es.upv.paella.playbackRatePlugin": {"enabled":true, "availableRates": [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2], "minWindowSize": 500 },
             "es.upv.paella.playPauseButtonPlugin": {"enabled":true},
             "es.upv.paella.searchPlugin": {"enabled":true, "sortType":"time", "colorSearch":false},
-            "es.upv.paella.socialPlugin": {"enabled":false},
+            "es.upv.paella.sharePlugin": {"enabled":true, "minWindowSize": 600},
             "es.upv.paella.themeChooserPlugin":  {"enabled":false},
             "es.upv.paella.viewModePlugin": { "enabled": true },
-            "es.upv.paella.volumeRangePlugin":{"enabled":false, "showMasterVolume": true, "showSlaveVolume": false },
+            "es.upv.paella.volumeRangePlugin":{"enabled":true, "showMasterVolume": false, "showSlaveVolume": false },
             "es.upv.paella.pipModePlugin": { "enabled":true },
             "es.upv.paella.ratePlugin": { "enabled":false },
-            "es.upv.paella.videoZoomPlugin": { "enabled":false },
+            "es.upv.paella.videoZoomPlugin": { "enabled":true, "showButtons":true },
             "es.upv.paella.audioLanguage": { "enabled":false },
-            "es.upv.paella.videoZoomToolbarPlugin": { "enabled":false, "targetStreamIndex":0 },
+            "es.upv.paella.audioSelector": { "enabled":true, "minWindowSize": 400  },
+            "es.upv.paella.videoZoomToolbarPlugin": { "enabled":true, "targetStreamIndex":0, "minWindowSize": 500 },
             "es.upv.paella.videoZoomTrack4kPlugin": { "enabled":false, "targetStreamIndex":0, "autoModeByDefault":false },
             "es.upv.paella.airPlayPlugin": { "enabled":false },
 
@@ -129,6 +127,30 @@
             "es.upv.paella.windowTitlePlugin": {"enabled": false},
             "es.upv.paella.track4kPlugin": { "enabled":false },
 
+            "//**** Video profile plugins": "",
+            "es.upv.paella.singleStreamProfilePlugin": {
+                "enabled": true,
+                "videoSets": [
+                    { "icon":"professor_icon.svg", "id":"presenter", "content":["presenter"]},
+                    { "icon":"slide_icon.svg", "id":"presentation", "content":["presentation"]}
+                ]
+
+            },
+            "es.upv.paella.dualStreamProfilePlugin": { "enabled":true,
+                "videoSets": [
+                { "icon":"slide_professor_icon.svg", "id":"presenter_presentation", "content":["presenter","presentation"] },
+                { "icon":"slide_professor_icon.svg", "id":"presenter2_presentation", "content":["presenter-2","presentation"] },
+                { "icon":"slide_professor_icon.svg", "id":"presenter3_presentation", "content":["presenter-3","presentation"] }
+                ]
+            },
+            "es.upv.paella.tripleStreamProfilePlugin": {
+                "enabled": true,
+                "videoSets": [
+                { "icon":"three_streams_icon.svg", "id":"presenter_presentation_presenter2", "content":["presenter","presentation","presenter-2"] },
+                { "icon":"three_streams_icon.svg", "id":"presenter_presentation_presenter3", "content":["presenter","presentation","presenter-3"] }
+                ]
+            },
+
             "//****": "Captions Parser Plugins",
             "es.upv.paella.captions.DFXPParserPlugin": {"enabled":true},
             "es.teltek.paella.captions.WebVTTParserPlugin": {"enabled":true},
@@ -144,7 +166,9 @@
                  "es.teltek.paella.usertracking.xAPISaverPlugin": {"enabled": true, "endpoint": "{{ xapi_endpoint }}", "auth":"{{ xapi_auth }}"},
             {% endif %}
             "es.upv.paella.usertracking.elasticsearchSaverPlugin": { "enabled": false, "url": "http://my.elastic.server"},
-            "es.upv.paella.usertracking.GoogleAnalyticsSaverPlugIn": { "enabled": false, "trackingID": "UA-XXXXXXXX-Y" }
+            "es.upv.paella.usertracking.GoogleAnalyticsSaverPlugIn": { "enabled": false, "trackingID": "UA-XXXXXXXX-Y" },
+            "//*****  Keyboard plugins": "",
+            "es.upv.paella.defaultKeysPlugin": {"enabled": true }
 
 
         }
