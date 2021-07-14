@@ -29,9 +29,9 @@
             display: none !important;
         }
         {% endif %}
-
-        {% if intro %}
-            #introContainer {
+ 
+        {% if intro or tail %}
+            #introContainer, #tailContainer {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -41,7 +41,7 @@
                 z-index: 88888;
             }
 
-            #intro {
+            #intro, #tail {
                 width: 100%;
                 height: 100%;
             }
@@ -135,7 +135,7 @@
             const skipContainer = document.createElement("div");
             const overlay = document.createElement("overlay");
 
-            intro.src = "{{ absolute_url(intro) }}";
+            intro.src = "{{ absolute_url(track_url(intro)) }}";
             intro.poster = "{{ multimediaObject|first_url_pic(true) }}";
             intro.id = "intro";
             intro.addEventListener('ended', onEndedVideo);
@@ -224,6 +224,33 @@
             }
         {% else %}
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
+        {% endif %}
+
+        {% if tail %}
+            paella.events.bind(paella.events.endVideo, function (event) {
+
+            const tail = document.createElement("video");
+            const tailContainer = document.createElement("div");
+
+            tail.src = "{{ absolute_url(track_url(tail)) }}";
+            tail.poster = "{{ multimediaObject|first_url_pic(true) }}";
+            tail.id = "tail";
+            tail.addEventListener('ended', onEndedVideo);
+            tail.autoplay = "{{ autostart != 'false' }}";
+            tail.muted= base.userAgent.browser.IsMobileVersion;
+
+            tailContainer.id = "tailContainer";
+            overlay.id = "overlay";
+
+            skipContainer.innerHTML = '{{ "Next Up" | trans}}';
+
+            tailContainer.appendChild(tail);
+            introContainer.appendChild(skipContainer);
+            tailContainer.appendChild(overlay);
+            container.appendChild(tailContainer);
+
+            });
+
         {% endif %}
 
         function setPaellaProfile(profileName) {
