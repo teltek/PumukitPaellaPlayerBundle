@@ -235,7 +235,7 @@
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
 
-        {% if tail %}
+        {% if tail and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
             paella.events.bind(paella.events.endVideo, function (event) {
                 introOrTailVideo("tail");
             });
