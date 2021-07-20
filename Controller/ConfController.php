@@ -15,8 +15,6 @@ class ConfController extends Controller
     /**
      * @Route("/paella/config.json", name="paella_player_config")
      *
-     * @param Request $request
-     *
      * @return Response
      */
     public function confAction(Request $request)

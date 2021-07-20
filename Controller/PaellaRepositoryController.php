@@ -22,9 +22,6 @@ class PaellaRepositoryController extends Controller implements PersonalControlle
      * @Route("/secret/paellarepository/{secret}.{_format}", defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      * @Method("GET")
      *
-     * @param MultimediaObject $mmobj
-     * @param Request          $request
-     *
      * @return Response
      */
     public function indexAction(MultimediaObject $mmobj, Request $request)
@@ -41,9 +38,6 @@ class PaellaRepositoryController extends Controller implements PersonalControlle
      * @Route("/paellaplaylist/{id}.{_format}", defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
      * @Route("/secret/paellaplaylist/{secret}.{_format}", defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      * @Method("GET")
-     *
-     * @param Series  $series
-     * @param Request $request
      *
      * @return Response
      */
