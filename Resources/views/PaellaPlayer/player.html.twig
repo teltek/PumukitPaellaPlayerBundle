@@ -29,7 +29,7 @@
             display: none !important;
         }
         {% endif %}
- 
+
         {% if intro or tail %}
             #introContainer, #tailContainer {
                 position: absolute;
@@ -192,9 +192,13 @@
             const videoContainer = document.createElement("div");
 
             if (typeVideo == "intro") {
-                video.src = "{{ absolute_url(track_url(intro)) }}";
+                {% if intro %}
+                    video.src = "{{ absolute_url(track_url(intro)) }}";
+                {% endif %}
             } else {
-                video.src = "{{ absolute_url(track_url(tail)) }}";
+                {% if tail %}
+                    video.src = "{{ absolute_url(track_url(tail)) }}";
+                {% endif %}
             }
             video.poster = "{{ multimediaObject|first_url_pic(true) }}";
             video.id = "intro";

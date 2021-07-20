@@ -19,9 +19,6 @@ class BasePlaylistController extends BasePlaylistControllero
      *
      * Added default indexAction and redirect to the paella route.
      *
-     * @param Series  $series
-     * @param Request $request
-     *
      * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function indexAction(Series $series, Request $request)
@@ -37,8 +34,6 @@ class BasePlaylistController extends BasePlaylistControllero
      * @Template("PumukitPaellaPlayerBundle:PaellaPlayer:player.html.twig")
      *
      * In order to make things easier on the paella side, we drop the symfony custom urls.
-     *
-     * @param Request $request
      *
      * @throws \Doctrine\ODM\MongoDB\LockException
      * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
@@ -124,10 +119,8 @@ class BasePlaylistController extends BasePlaylistControllero
     /**
      * Helper function to used to redirect when the mmobj id is not specified in the request.
      *
-     * @param Series  $series
-     * @param Request $request
-     * @param null    $mmobjId
-     * @param null    $videoPos
+     * @param null $mmobjId
+     * @param null $videoPos
      *
      * @return Response|\Symfony\Component\HttpFoundation\RedirectResponse
      */
