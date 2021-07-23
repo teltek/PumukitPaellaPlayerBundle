@@ -20,15 +20,9 @@
             display: none;
         }
 
-        {% if logo is defined and logo %}
-        #paella_logo\.png {
-             content: url("{{ logo }}");
-        }
-        {% else %}
-        #paella_logo\.png {
+        #paella_logo-png {
             display: none !important;
         }
-        {% endif %}
 
         {% if intro or tail %}
             #introContainer, #tailContainer {
