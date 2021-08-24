@@ -238,7 +238,11 @@
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
 
-        paella.events.bind(paella.events.endVideo, function (event) {
+        {% if multimediaObject.getProperty('soft-editing-duration') %}
+            paella.events.bind(paella.events.ended, function (event) {
+        {% else %}
+            paella.events.bind(paella.events.endVideo, function (event) {
+        {% endif %}
             {% if tail and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
                     introOrTailVideo("tail");
                     firstPlay = true;
