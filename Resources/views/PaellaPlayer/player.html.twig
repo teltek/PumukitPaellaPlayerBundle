@@ -104,7 +104,7 @@
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
-                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
+                if (!paella.utils.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
                         paella.player.play().catch(function(err) {
                             {% if autoplay_fallback == 'mute_fallback' %}
@@ -199,7 +199,7 @@
             video.id = (typeVideo == "intro") ? 'intro' : 'tail';
             video.addEventListener('ended', onEndedVideo);
             video.autoplay = (typeVideo == "intro") ?  "{{ autostart != 'false' }}" : "true";
-            video.muted = base.userAgent.browser.IsMobileVersion;
+            video.muted = paella.utils.userAgent.browser.IsMobileVersion;
 
             skipContainer.id = "skipContainer";
             videoContainer.id = (typeVideo == "intro") ? 'introContainer' : 'tailContainer';
@@ -258,7 +258,7 @@
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
             paella.player.setProfile(profileName);
-            base.cookies.set("lastProfile", profileName);
+            paella.utils.cookies.set("lastProfile", profileName);
         }
     </script>
 {% endblock %}
