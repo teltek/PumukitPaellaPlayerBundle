@@ -84,6 +84,7 @@ class BasePlaylistController extends BasePlaylistControllero
         return [
             'autostart' => $request->query->get('autostart', 'false'),
             'intro' => $this->getIntro($request->query->get('intro')),
+            'tail' => null,
             'custom_css_url' => $this->container->getParameter('pumukitpaella.custom_css_url'),
             'logo' => $this->container->getParameter('pumukitpaella.logo'),
             'multimediaObject' => $mmobj,
