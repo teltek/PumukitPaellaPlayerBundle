@@ -16101,7 +16101,7 @@ paella.addPlugin(function () {
               _this148.skipTo(breakItem.e);
             }
 
-            breakMessage = breakItem.text;
+            breakMessage = breakItem.name;
             return true;
           }
         })) {
@@ -16115,12 +16115,26 @@ paella.addPlugin(function () {
     }, {
       key: "skipTo",
       value: function skipTo(time) {
+        var newTime = time;
+        
         paella.player.videoContainer.trimming().then(function (trimming) {
           if (trimming.enabled) {
-            paella.player.videoContainer.seekToTime(time - trimming.start);
+            if (time >= trimming.end) {
+              newTime = 0;
+              paella.player.videoContainer.pause();
+            } else {
+              newTime = time - trimming.start;
+            }
+            paella.player.videoContainer.seekToTime(newTime);
           } else {
-            paella.player.videoContainer.seekToTime(time);
+            return paella.player.videoContainer.duration(true);
           }
+        }).then(function (duration) {
+          if (time >= duration) {
+            newTime = 0;
+            paella.player.videoContainer.pause();
+          }
+          paella.player.videoContainer.seekToTime(newTime);
         });
       }
     }, {
@@ -16137,7 +16151,8 @@ paella.addPlugin(function () {
             width: 1080,
             height: 40
           };
-          this.currentText = text;
+
+          this.currentText = text || "Break";
           this.messageContainer = paella.player.videoContainer.overlayContainer.addText(paella.utils.dictionary.translate(text), rect);
           this.messageContainer.className = 'textBreak';
           this.currentText = text;
