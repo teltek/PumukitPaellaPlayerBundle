@@ -20,18 +20,12 @@
             display: none;
         }
 
-        {% if logo is defined and logo %}
-        #paella_logo\.png {
-             content: url("{{ logo }}");
-        }
-        {% else %}
-        #paella_logo\.png {
+        #paella_logo-png {
             display: none !important;
         }
-        {% endif %}
 
-        {% if intro %}
-            #introContainer {
+        {% if intro or tail %}
+            #introContainer, #tailContainer {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -41,7 +35,7 @@
                 z-index: 88888;
             }
 
-            #intro {
+            #intro, #tail {
                 width: 100%;
                 height: 100%;
             }
@@ -110,7 +104,7 @@
         $(document).bind(paella.events.loadComplete, function (event, params) {
             {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
                 or (autostart is defined and autostart == 'true') %}
-                if (!base.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
+                if (!paella.utils.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
                         paella.player.play().catch(function(err) {
                             {% if autoplay_fallback == 'mute_fallback' %}
@@ -128,109 +122,141 @@
 
         });
 
-        {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+        function playPauseCanvas(mainContainer, video){
+            const icon = document.createElement('canvas');
+            icon.className = 'playButtonOnScreenIcon';
+            icon.style.display = (video.autoplay) ?  'none' : 'block' ;
+            if(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+                icon.style.display = 'block';
+            }
+
+            mainContainer.appendChild(icon);
+
+            setTimeout(function(){
+                const width = jQuery(mainContainer).innerWidth();
+                const height = jQuery(mainContainer).innerHeight();
+
+                icon.width = width;
+                icon.height = height;
+
+                const iconSize = (width<height) ? width/3 : height/3;
+
+                const ctx = icon.getContext('2d');
+
+                ctx.translate((width-iconSize)/2, (height-iconSize)/2);
+
+                ctx.beginPath();
+                ctx.arc(iconSize/2, iconSize/2 ,iconSize/2, 0, 2*Math.PI, true);
+                ctx.closePath();
+
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 10;
+                ctx.stroke();
+                ctx.fillStyle = '#8f8f8f';
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(iconSize/3, iconSize/4);
+                ctx.lineTo(3*iconSize/4, iconSize/2);
+                ctx.lineTo(iconSize/3, 3*iconSize/4);
+                ctx.lineTo(iconSize/3, iconSize/4);
+                ctx.closePath();
+                ctx.fillStyle = 'white';
+                ctx.fill();
+
+                ctx.stroke();
+            }, 100);
+
+            $(mainContainer).bind('click', function () {
+                if(video.paused){
+                    icon.style.display = 'none';
+                    video.play();
+                }else{
+                    icon.style.display = 'block';
+                    video.pause();
+                }
+            });
+        }
+
+        function introOrTailVideo(typeVideo) {
             const container= document.querySelector("#playerContainer");
-            const intro = document.createElement("video");
-            const introContainer = document.createElement("div");
-            const skipContainer = document.createElement("div");
             const overlay = document.createElement("overlay");
-
-            intro.src = "{{ absolute_url(intro) }}";
-            intro.poster = "{{ multimediaObject|first_url_pic(true) }}";
-            intro.id = "intro";
-            intro.addEventListener('ended', onEndedVideo);
-            intro.autoplay = "{{ autostart != 'false' }}";
-            intro.muted= base.userAgent.browser.IsMobileVersion;
-
+            const skipContainer = document.createElement("div");
+            const video = document.createElement("video");
+            const videoContainer = document.createElement("div");
+            if (typeVideo == "intro") {
+                {% if intro %}
+                    video.src = "{{ absolute_url(track_url(intro)) }}";
+                    video.poster = "{{ multimediaObject|first_url_pic(true) }}";
+                {% endif %}
+            } else {
+                {% if tail %}
+                    video.src = "{{ absolute_url(track_url(tail)) }}";
+                {% endif %}
+            }
+            
+            video.id = (typeVideo == "intro") ? 'intro' : 'tail';
+            video.addEventListener('ended', onEndedVideo);
+            video.autoplay = (typeVideo == "intro") ?  "{{ autostart != 'false' }}" : "true";
+            video.muted = paella.utils.userAgent.browser.IsMobileVersion;
             skipContainer.id = "skipContainer";
-            introContainer.id = "introContainer";
+            videoContainer.id = (typeVideo == "intro") ? 'introContainer' : 'tailContainer';
             overlay.id = "overlay";
             skipContainer.addEventListener("click", onEndedVideo);
-
-            skipContainer.innerHTML = '{{ "Next Up" | trans}}';
-
-            introContainer.appendChild(intro);
-            introContainer.appendChild(skipContainer);
-            introContainer.appendChild(overlay);
-            container.appendChild(introContainer);
-
-
-            playPauseCanvas(overlay, intro);
-            loadPaella('playerContainer', '{{ multimediaObject.id }}');
-
+            skipContainer.innerHTML = (typeVideo == "intro") ? '{{ "Next up" | trans }}' : '{{ "Finish" | trans }}';
+            if(!document.querySelector("#" + video.id)) {
+                videoContainer.appendChild(video);
+                videoContainer.appendChild(skipContainer);
+                videoContainer.appendChild(overlay);
+                container.appendChild(videoContainer);
+            }
+            playPauseCanvas(overlay, video);
             function onEndedVideo() {
-                container.removeChild(introContainer);
-                if(paella.player.videoLoader.loadStatus){
-                    setTimeout(function () {
-                        paella.player.play();
-                    }, 300);
-                }
-            }
-
-            function playPauseCanvas(mainContainer, video){
-                const icon = document.createElement('canvas');
-                icon.className = 'playButtonOnScreenIcon';
-                icon.style.display = "{{ autostart != 'false' ? 'none' : 'block' }}";
-                if(/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-                    icon.style.display = 'block';
-                }
-
-                mainContainer.appendChild(icon);
-
-                setTimeout(function(){
-                    const width = jQuery(mainContainer).innerWidth();
-                    const height = jQuery(mainContainer).innerHeight();
-
-                    icon.width = width;
-                    icon.height = height;
-
-                    const iconSize = (width<height) ? width/3 : height/3;
-
-                    const ctx = icon.getContext('2d');
-
-                    ctx.translate((width-iconSize)/2, (height-iconSize)/2);
-
-                    ctx.beginPath();
-                    ctx.arc(iconSize/2, iconSize/2 ,iconSize/2, 0, 2*Math.PI, true);
-                    ctx.closePath();
-
-                    ctx.strokeStyle = 'white';
-                    ctx.lineWidth = 10;
-                    ctx.stroke();
-                    ctx.fillStyle = '#8f8f8f';
-                    ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.moveTo(iconSize/3, iconSize/4);
-                    ctx.lineTo(3*iconSize/4, iconSize/2);
-                    ctx.lineTo(iconSize/3, 3*iconSize/4);
-                    ctx.lineTo(iconSize/3, iconSize/4);
-                    ctx.closePath();
-                    ctx.fillStyle = 'white';
-                    ctx.fill();
-
-                    ctx.stroke();
-                }, 100);
-
-                $(mainContainer).bind('click', function () {
-                    if(video.paused){
-                        icon.style.display = 'none';
-                        video.play();
-                    }else{
-                        icon.style.display = 'block';
-                        video.pause();
+                container.removeChild(videoContainer);
+                if (typeVideo == "intro") {
+                    if(paella.player.videoLoader.loadStatus){
+                        setTimeout(function () {
+                            paella.player.play();
+                        }, 300);
                     }
-                });
+                }
             }
+        }
+
+        var firstPlay = false;
+
+        {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+            introOrTailVideo("intro");
+            loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% else %}
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
+
+        {% if multimediaObject.getProperty('soft-editing-duration') %}
+            paella.events.bind(paella.events.ended, function (event) {
+        {% else %}
+            paella.events.bind(paella.events.endVideo, function (event) {
+        {% endif %}
+            {% if tail and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+                    introOrTailVideo("tail");
+                    firstPlay = true;
+            {% endif %}
+            paella.events.bind(paella.events.play, function (event) {
+                {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+                    if (firstPlay) {
+                        introOrTailVideo("intro");
+                        paella.player.pause();
+                        firstPlay = false;
+                    }
+                {% endif %}
+            });
+        });
 
         function setPaellaProfile(profileName) {
             $('.viewModeItemButton').removeClass('selected');
             $('.viewModeItemButton.' + profileName).addClass('selected');
             paella.player.setProfile(profileName);
-            base.cookies.set("lastProfile", profileName);
+            paella.utils.cookies.set("lastProfile", profileName);
         }
     </script>
 {% endblock %}

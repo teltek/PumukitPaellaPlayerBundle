@@ -22,14 +22,20 @@ var GlobalParams = {
 
 window.paella = window.paella || {};
 paella.player = null;
-paella.version = "6.5.0 - build: 978c8899";
+paella.version = "6.5.4 - build: 7867c98";
 
 (function buildBaseUrl() {
 	if (window.paella_debug_baseUrl) {
 		paella.baseUrl = window.paella_debug_baseUrl;
 	}
 	else {
-		paella.baseUrl = location.href.replace(/[^/]*$/, '');
+		var scripts = document.getElementsByTagName('script');
+		var script = scripts[scripts.length - 1].src.split("/");
+		script.pop(); // Remove javascript file name
+
+		script.pop(); // Remove javascript/ folder name
+
+		paella.baseUrl = script.join("/") + '/';
 	}
 })();
 
@@ -75,8 +81,6 @@ paella.events = {
 	videoUnloaded:'paella:videoUnloaded',
 	
 	controlBarLoaded:'paella:controlBarLoaded',	
-	
-	flashVideoEvent:'paella:flashVideoEvent',
 	
 	captionAdded: 'paella:caption:add', // Event triggered when new caption is available.
 	captionsEnabled: 'paella:caption:enabled',  // Event triguered when a caption es enabled.
@@ -1796,6 +1800,12 @@ paella.utils.uuid = function() {
 	}
 	
 	class Log {
+		get kLevelError() { return 1; }
+		get kLevelWarning() { return 2; }
+		get kLevelDebug() { return 3; }
+		get kLevelLog() { return 4; }
+	
+		
         constructor() {
 			this._currentLevel = 0;
             var logLevelParam = paella.utils.parameters.get("logLevel");
@@ -1803,16 +1813,16 @@ paella.utils.uuid = function() {
             logLevelParam = logLevelParam.toLowerCase();
             switch (logLevelParam) {
                 case "error":
-                    this.setLevel(paella.log.kLevelError);
+                    this.setLevel(this.kLevelError);
                     break;
                 case "warning":
-                    this.setLevel(paella.log.kLevelWarning);
+                    this.setLevel(this.kLevelWarning);
                     break;
                 case "debug":
-                    this.setLevel(paella.log.kLevelDebug);
+                    this.setLevel(this.kLevelDebug);
                     break;
                 case "log":
-                    this.setLevel(paella.log.kLevelLog);
+                    this.setLevel(this.kLevelLog);
                     break;
             }
         }
@@ -1865,12 +1875,9 @@ paella.utils.uuid = function() {
         }
 	}
     
-    Log.kLevelError    = 1;
-    Log.kLevelWarning  = 2;
-    Log.kLevelDebug    = 3;
-    Log.kLevelLog      = 4;
-    
-    paella.log = new Log();	
+	paella.log = new Log();
+	
+	
 })();
 
 paella.AntiXSS = {
@@ -2293,7 +2300,7 @@ function paella_DeferredNotImplemented () {
 
             paella.events.bind(paella.events.profileListChanged, () => {
                 if (paella.player && paella.player.videoContainer && 
-                    (!this.currentProfile || this.currentProfileName!=this.currentProfile.id))
+                    (!this.currentProfile || this.currentProfileName!=this.currentProfile.id))
                 {
                     this.setProfile(this.currentProfileName,false);
                 }
@@ -2489,7 +2496,7 @@ function paella_DeferredNotImplemented () {
 				//var selected = source[0];
 				var selected = null;
 				var win_h = $(window).height();
-				var maxRes = params.maxAutoQualityRes || 720;
+				var maxRes = params.maxAutoQualityRes || 720;
 				var diff = Number.MAX_VALUE;
 	
 				source.forEach(function(item,i) { 
@@ -2901,7 +2908,7 @@ paella.Profiles = {
 };
 
 class RelativeVideoSize {
-	get w() { return this._w || 1280; }
+	get w() { return this._w || 1280; }
 	set w(v) { this._w = v; }
 	get h() { return this._h || 720; }
 	set h(v) { this._h = v; }
@@ -3721,7 +3728,7 @@ class Html5Video extends paella.VideoElementBase {
 			return this.domElement;
 		}
 		else {
-			this._video = this._video || document.createElement('video');
+			this._video = this._video || document.createElement('video');
 			return this._video;
 		}
 	}
@@ -5477,7 +5484,7 @@ class StreamProvider {
 		})
 	}
 
-	get qualityStrategy() { return this._qualityStrategy || null; }
+	get qualityStrategy() { return this._qualityStrategy || null; }
 
 	get autoplay() {
 		return this.supportAutoplay && this._autoplay;
@@ -5629,6 +5636,7 @@ class VideoContainer extends paella.VideoContainerBase {
 				if (trimmingData.enabled) {
 					time = time - trimmingData.start;
 				}
+				if (time < 0) time = 0;
 				resolve(time)
 			});
 		});
@@ -5836,7 +5844,7 @@ class VideoContainer extends paella.VideoContainerBase {
 	}
 
 	masterVideo() {
-		return this.streamProvider.mainVideoPlayer || this.audioPlayer;
+		return this.streamProvider.mainVideoPlayer || this.audioPlayer;
 	}
 
 	getVideoRect(videoIndex) {
@@ -7518,12 +7526,16 @@ class Caption {
 	reloadCaptions(next) {
 		var self = this;
 	
-	
+		let xhrFields = paella.player.config.captions?.downloadOptions?.xhrFields || {};
+		if (Object.keys(xhrFields).length) {
+			xhrFields = null;
+		}
 		jQuery.ajax({
 			url: self._url,
 			cache:false,
 			type: 'get',
-			dataType: "text"
+			dataType: "text",
+			xhrFields: null
 		})
 		.then(function(dataRaw){
 			var parser = captionParserManager._formats[self._format];
@@ -9822,11 +9834,16 @@ paella.ControlsContainer = ControlsContainer;
 	class LazyThumbnailContainer extends paella.DomNode {
 
 		static GetIconElement() {
-			let container = document.createElement('div');
+			let container = document.createElement('button');
 			container.className = "play-button-on-screen";
+			container.setAttribute("aria-label","Play");
 			container.style.width = "100%";
 			container.style.height = "100%";
 			container.style.pointerEvents = "none";
+			container.addEventListener("click", (evt) => {
+				evt.stopPropagation();
+				paella.player.play();
+			});
 		
 			let icon = document.createElement('div');
 			icon['className'] = 'play-icon';
@@ -10610,8 +10627,15 @@ paella.addPlugin(function() {
 		getName() { return "edu.harvard.dce.paella.flexSkipPlugin"; }
 		getIndex() { return 121; }
 		getSubclass() { return 'flexSkip_Rewind_10'; }
-		getIconClass() { return 'icon-back-10-s'; }
-		formatMessage() { return 'Rewind 10 seconds'; }
+		getIconClass() {
+			if (this.config.seconds === 10) {
+				return 'icon-back-10-s';
+			}
+			else {
+				return 'icon-backward';
+			}
+		}
+		formatMessage() { return `Rewind ${ this.config.seconds } seconds`; }
 		getDefaultToolTip() { return paella.utils.dictionary.translate(this.formatMessage()); }
 	
 		checkEnabled(onSuccess) {
@@ -10620,8 +10644,8 @@ paella.addPlugin(function() {
 		
 		action(button) {
 			paella.player.videoContainer.currentTime()
-				.then(function(currentTime) {
-					paella.player.videoContainer.seekToTime(currentTime - 10);
+				.then((currentTime) => {
+					paella.player.videoContainer.seekToTime(currentTime - this.config.seconds);
 				});
 		}
 	}
@@ -10637,13 +10661,20 @@ paella.addPlugin(function() {
 		getIndex() { return 122; }
 		getName() { return "edu.harvard.dce.paella.flexSkipForwardPlugin"; }
 		getSubclass() { return 'flexSkip_Forward_30'; }
-		getIconClass() { return 'icon-forward-30-s'; }
-		formatMessage() { return 'Forward 30 seconds'; }
+		getIconClass() { 
+			if (this.config.seconds === 30) {
+				return 'icon-forward-30-s';
+			}
+			else {
+				return 'icon-forward2';
+			}
+		}
+		formatMessage() { return `Forward ${this.config.seconds} seconds`; }
 		
 		action(button) {
 			paella.player.videoContainer.currentTime()
-				.then(function(currentTime) {
-					paella.player.videoContainer.seekToTime(currentTime + 30);
+				.then((currentTime) => {
+					paella.player.videoContainer.seekToTime(currentTime + this.config.seconds);
 				});
 		}
 	}
@@ -10775,6 +10806,99 @@ paella.addPlugin(function() {
 
 	};
 });
+
+Class ("paella.plugins.playlistPlugin",paella.ButtonPlugin,{
+    currentPlaylistId:null,
+    currentVideoId:null,
+    currentVideoPos:null,
+    currentVideo:null,
+    playlistVideos:[],
+
+    getAlignment:function() { return 'left'; },
+    getSubclass:function() { return "playlistPlugin"; },
+    getIndex:function() { return 400; },
+    getName:function() { return "es.teltek.paella.playlistPlugin"; },
+    getDefaultToolTip:function() { return paella.utils.dictionary.translate("Playlist"); },
+    getButtonType:function() { return paella.ButtonPlugin.type.popUpButton; },
+
+    checkEnabled:function(onSuccess) {
+        this.currentPlaylistId = paella.utils.parameters.get("playlistId");
+        this.currentVideoId = paella.utils.parameters.get("videoId");
+        this.currentVideoPos = paella.utils.parameters.get("videoPos");
+        if (this.currentPlaylistId && this.currentVideoId && this.currentVideoPos){
+            onSuccess(true);
+            }
+        else {
+            onSuccess(false);
+            }
+        },
+    findVideo:function() {
+        var currentVideo = null;
+        var playlistPlugin = this;
+        this.playlistVideos.find(function(item){
+            if(item.id == playlistPlugin.currentVideoId) {
+                currentVideo = item;
+                if(item.pos == playlistPlugin.currentVideoPos) {
+                    return true;
+                    }
+                return false;
+                }
+            });
+        return currentVideo;
+        },
+    setup:function() {
+        var url = this.config.playlistApi + "/" + this.currentPlaylistId;
+        var playlistPlugin = this;
+        paella.utils.ajax.get(
+            {url: url},
+            function(data, contentType, returnCode) {
+                playlistPlugin.playlistVideos = data;
+                playlistPlugin.currentVideo = playlistPlugin.findVideo();
+                //Is there a better way to relaunch buildContent?
+                var container = playlistPlugin.containerManager.containers[playlistPlugin.getName()];
+                if(container && container.element)
+                    playlistPlugin.buildContent(container.element);
+                }
+            );
+        paella.events.bind(
+            paella.events.endVideo,
+            function(event){
+                playlistPlugin.goToNextVideo();
+                }
+            );
+        },
+
+    buildContent:function(domElement) {
+        //Removes every element.
+        while(domElement.hasChildNodes()){
+            domElement.removeChild(domElement.lastChild);
+            }
+        var playlistPlugin = this;
+        this.playlistVideos.forEach(function(item){
+            var elem = document.createElement('div');
+            elem.className = "videobutton"+ (item == playlistPlugin.currentVideo  ?' playing':'');
+            elem.innerHTML = item.name;
+            $(elem).click(function(event) {
+                window.location.href=item.url;
+                });
+            domElement.appendChild(elem);
+            });
+        },
+
+    goToNextVideo:function(){
+        var playlistPlugin = this;
+        var index = this.playlistVideos.findIndex(
+            function(elem){
+                return elem == playlistPlugin.currentVideo;
+                }
+            );
+        var length = this.playlistVideos.length;
+        var next = this.playlistVideos[(index + 1) % length];
+        window.location.href = next.url;
+        }
+});
+
+paella.plugins.playlistPlugin = new paella.plugins.playlistPlugin();
 
 paella.addPlugin(function() {
   return class xAPISaverPlugin extends paella.userTracking.SaverPlugIn {
@@ -12597,10 +12721,14 @@ paella.addPlugin(() => {
 			let breakMessage = "";
 			if (this.breaks.some((breakItem) => {
 				if (breakItem.s<=currentTime && breakItem.e>=currentTime) {
-					if (eventType==paella.events.timeUpdate && !this.status) {
-						this.skipTo(breakItem.e);
+						
+					this.skipTo(breakItem.e);
+					
+					breakMessage = breakItem.name;
+					
+					if(paella.player.config.plugins.list[this.getName()].neverShow) {
+						return false;
 					}
-					breakMessage = breakItem.text;
 					return true;
 				}
 			})) {
@@ -12614,15 +12742,30 @@ paella.addPlugin(() => {
 		}
 
 		skipTo(time) {
+			var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
+			var newTime = time + (areBreaksClickable ? .5 : 0);
+
 			paella.player.videoContainer.trimming()
 				.then((trimming) => {
 					if (trimming.enabled) {
-						paella.player.videoContainer.seekToTime(time - trimming.start);
+						if (time >= trimming.end) {
+							newTime = 0;
+							paella.player.videoContainer.pause();
+						} else {
+							newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
+						}
+						paella.player.videoContainer.seekToTime(newTime);
 					}
 					else {
-						paella.player.videoContainer.seekToTime(time);
+						return paella.player.videoContainer.duration(true);
 					}
-				})
+				}).then((duration) => {
+					if (time >= duration) {
+					  newTime = 0;
+					  paella.player.videoContainer.pause();
+					}
+					paella.player.videoContainer.seekToTime(newTime);
+				});
 		}
 
 		showMessage(text) {
@@ -12636,7 +12779,7 @@ paella.addPlugin(() => {
 					width: 1080,
 					height: 40
 				};
-				this.currentText = text;
+				this.currentText = text || "Break";
 				this.messageContainer = paella.player.videoContainer.overlayContainer.addText(paella.utils.dictionary.translate(text), rect);
 				this.messageContainer.className = 'textBreak';
 				this.currentText = text;
@@ -12693,7 +12836,15 @@ paella.addPlugin(function() {
 		parse(content, lang, next) {
 			var captions = [];
 			var self = this;
-			var xmlDoc = $.parseXML(content);
+
+			//fix malformed xml replacing the malformed characters with blank
+			content = content.replace(/[^\x09\x0A\x0D\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm, '')
+			content = content.replace(/&\w+;/gmi,'')
+			content = content.replaceAll('<br>','')
+			
+			var parser = new DOMParser();
+			var xmlDoc = parser.parseFromString(content,"text/xml");	
+			//var xmlDoc = $.parseXML(content);
 			var xml = $(xmlDoc);
 			var g_lang = xml.attr("xml:lang");
 			
@@ -14918,7 +15069,7 @@ paella.addPlugin(function() {
 			var enabled = paella.player.checkFullScreenCapability();
 			onSuccess(enabled);
 		}
-		getDefaultToolTip() { return paella.utils.dictionary.translate("Go Fullscreen"); }
+		getDefaultToolTip() { return paella.utils.dictionary.translate("Fullscreen (f)"); }
 		
 		setup() {
 			this._reload = this.config.reloadOnFullscreen ? this.config.reloadOnFullscreen.enabled:false;
@@ -14975,13 +15126,13 @@ paella.addPlugin(function() {
 		}
 	
 		onEnterFullscreen() {
-			this.setToolTip(paella.utils.dictionary.translate("Exit Fullscreen"));
+			this.setToolTip(paella.utils.dictionary.translate("Exit fullscreen (f)"));
 			this.button.className = this.getButtonItemClass(true);
 			this.changeIconClass('icon-windowed');
 		}
 		
 		onExitFullscreen() {
-			this.setToolTip(paella.utils.dictionary.translate("Go Fullscreen"));
+			this.setToolTip(paella.utils.dictionary.translate("Fullscreen (f)"));
 			this.button.className = this.getButtonItemClass(false);
 			this.changeIconClass('icon-fullscreen');
 			setTimeout(() => {
@@ -15193,19 +15344,11 @@ paella.addPlugin(function() {
 							let cfg = this.config;
 							//cfg.autoStartLoad = false;
 							this._hls = new Hls(cfg);
-							
+							const hlsStream = this.stream?.sources?.hls?.length>0 && this.stream.sources.hls[0];
+							const isLiveStreaming = hlsStream.isLiveStream;
 							this.autoQuality = true;
 
-							// For some streams there are problems if playback does not start after loading the
-							// manifest. This flag is used to pause it again once the video is loaded
-							let firstLoad = true;
-
 							this._hls.on(Hls.Events.LEVEL_SWITCHED, (ev,data) => {
-								if (firstLoad) {
-									firstLoad = false;
-									video.pause();
-								}
-
 								this._qualities = this._qualities || [];
 								this._qualityIndex = this.autoQuality ? this._qualities.length - 1 : data.level;
 								paella.events.trigger(paella.events.qualityChanged,{});
@@ -15248,12 +15391,18 @@ paella.addPlugin(function() {
 								this._hls.currentLevel = this._hls.levels.length>=initialQualityLevel ? initialQualityLevel : -1;
 								setTimeout(() => this._hls.currentLevel = -1, 1000);
 
-								// Fixes hls.js problems loading some videos
-								video.play();
+								// Fixes hls.js problems loading some live videos
+								if (isLiveStreaming) {
+									try {
+										//video.play();
+									} catch (e) {}
+								}
 
 								resolve(video);
 							});
 
+							const rand = Math.floor(Math.random() * 100000000000);
+							url += /\?/.test(url) ? `&cache=${ rand }` : `?cache=${ rand }`;
 							this._hls.loadSource(url);
 							this._hls.attachMedia(video);
 						}
@@ -15583,6 +15732,11 @@ paella.addPlugin(() => {
 				}
 			}
 			else { // Paella player keys
+				// added key K
+				if (event.which==paella.Keys.Space || event.which==paella.Keys.K) {
+                    this.togglePlayPause();
+                    return true;
+				}
 				if (event.which==paella.Keys.Space) {
                     this.togglePlayPause();
                     return true;
@@ -15599,10 +15753,58 @@ paella.addPlugin(() => {
                     this.mute();
                     return true;
 				}
+				// added key F
+				else if (event.which==paella.Keys.F) {
+					this.toggleFullScreen();
+					return true;
+				}
+				// added key J and ARROW LEFT
+				else if (event.which==paella.Keys.J || event.which==paella.Keys.Left ) {
+					this.jumpBackward();
+					return true;
+				}
+				// added key L and ARROW RIGHT
+				else if (event.which==paella.Keys.L || event.which==paella.Keys.Right ) {
+					this.jumpForward();
+					return true;
+				}
             }
-            
             return false;
         }
+
+		// toggle fullscreen (see "fullScreenButtonPlugin" -> "fullscreenbutton.js")
+		toggleFullScreen() {
+			if (paella.player.isFullScreen()) {
+				paella.player.exitFullScreen();
+			}
+			else if ((!paella.player.checkFullScreenCapability() || paella.utils.userAgent.browser.Explorer) && window.location !== window.parent.location) {
+				// Iframe and no fullscreen support
+				var url = window.location.href;
+	
+				paella.player.pause();
+				paella.player.videoContainer.currentTime()
+					.then((currentTime) => {
+						var obj = this.secondsToHours(currentTime);
+						window.open(url+"&time="+obj.h+"h"+obj.m+"m"+obj.s+"s&autoplay=true");
+					});
+				
+				return;
+			}
+			else {
+				paella.player.goFullScreen();
+			}
+	
+			if (paella.player.config.player.reloadOnFullscreen && paella.player.videoContainer.supportAutoplay()) {
+				setTimeout(() => {
+					if(this._reload) {
+						paella.player.videoContainer.setQuality(null)
+							.then(() => {
+							});
+						//paella.player.reloadVideos();
+					}
+				}, 1000);
+			}
+		}
 
         togglePlayPause() {
             paella.player.videoContainer.paused().then((p) => {
@@ -15644,6 +15846,22 @@ paella.addPlugin(() => {
 				volume -= 0.1;
 				volume = (volume<0) ? 0.0:volume;
 				paella.player.videoContainer.setVolume(volume);
+			});
+		}
+
+		// jump backward "-10 seconds" (see "flexSkipPlugin" -> "flexskipbutton.js")
+		jumpBackward() {
+			var videoContainer = paella.player.videoContainer;
+			videoContainer.currentTime().then(function(currentTime) {
+				paella.player.videoContainer.seekToTime(currentTime - 10);
+			});
+		}
+
+		// jump forward "+10 seconds" (see "flexSkipPlugin" -> "flexskipbutton.js")
+		jumpForward() {
+			var videoContainer = paella.player.videoContainer;
+			videoContainer.currentTime().then(function(currentTime) {
+				paella.player.videoContainer.seekToTime(currentTime + 10);
 			});
 		}
     };
@@ -16090,19 +16308,19 @@ paella.addPlugin(function() {
 			paella.events.bind(paella.events.play,(event) => {
 				this.changeIconClass(this.pauseIconClass);
 				this.changeSubclass(this.pauseSubclass);
-				this.setToolTip(paella.utils.dictionary.translate("Pause"));
+				this.setToolTip(paella.utils.dictionary.translate("Pause (k)"));
 			});
 
 			paella.events.bind(paella.events.pause,(event) => {
 				this.changeIconClass(this.playIconClass);
 				this.changeSubclass(this.playSubclass);
-				this.setToolTip(paella.utils.dictionary.translate("Play"));
+				this.setToolTip(paella.utils.dictionary.translate("Play (k)"));
 			});
 
 			paella.events.bind(paella.events.ended,(event) => {
 				this.changeIconClass(this.replayIconClass);
 				this.changeSubclass(this.playSubclass);
-				this.setToolTip(paella.utils.dictionary.translate("Play"));
+				this.setToolTip(paella.utils.dictionary.translate("Play (k)"));
 			});
 		}
 	
@@ -16546,432 +16764,6 @@ paella.addPlugin(() => {
 });
 
 
-(() => {
-
-class RTMPVideo extends paella.VideoElementBase {
-
-	constructor(id,stream,left,top,width,height) {
-		super(id,stream,'div',left,top,width,height);
-
-		this._posterFrame = null;
-		this._currentQuality = null;
-		this._duration = 0;
-		this._paused = true;
-		this._streamName = null;
-		this._flashId = null;
-		this._swfContainer = null;
-		this._flashVideo = null;
-		this._volume = 1;
-
-		this._flashId = id + 'Movie';
-		this._streamName = 'rtmp';
-		var This = this;
-
-		this._stream.sources.rtmp.sort(function(a,b) {
-			return a.res.h - b.res.h;
-		});
-
-		var processEvent = function(eventName,params) {
-			if (eventName!="loadedmetadata" && eventName!="pause" && !This._isReady) {
-				This._isReady = true;
-				This._duration = params.duration;
-				$(This.swfContainer).trigger("paella:flashvideoready");
-			}
-			if (eventName=="progress") {
-				try { This.flashVideo.setVolume(This._volume); }
-				catch(e) {}
-				paella.log.debug("Flash video event: " + eventName + ", progress: " + This.flashVideo.currentProgress());
-			}
-			else if (eventName=="ended") {
-				paella.log.debug("Flash video event: " + eventName);
-				paella.events.trigger(paella.events.pause);
-				paella.player.controls.showControls();
-			}
-			else {
-				paella.log.debug("Flash video event: " + eventName);
-			}
-		};
-
-		var eventReceived = function(eventName,params) {
-			params = params.split(",");
-			var processedParams = {};
-			for (var i=0; i<params.length; ++i) {
-				var splitted = params[i].split(":");
-				var key = splitted[0];
-				var value = splitted[1];
-				if (value=="NaN") {
-					value = NaN;
-				}
-				else if (/^true$/i.test(value)) {
-					value = true;
-				}
-				else if (/^false$/i.test(value)) {
-					value = false;
-				}
-				else if (!isNaN(parseFloat(value))) {
-					value = parseFloat(value);
-				}
-				processedParams[key] = value;
-			}
-			processEvent(eventName,processedParams);
-		};
-
-		paella.events.bind(paella.events.flashVideoEvent,function(event,params) {
-			if (This.flashId==params.source) {
-				eventReceived(params.eventName,params.values);
-			}
-		});
-	}
-
-	get swfContainer() { return this._swfContainer; };
-
-	get flashId() { return this._flashId; }
-
-	get flashVideo() { return this._flashVideo; }
-
-	_createSwfObject(swfFile,flashVars) {
-		var id = this.identifier;
-		var parameters = { wmode:'transparent' };
-
-		var domElement = document.createElement('div');
-		this.domElement.appendChild(domElement);
-		domElement.id = id + "Movie";
-		this._swfContainer = domElement;
-
-		if (swfobject.hasFlashPlayerVersion("9.0.0")) {
-			swfobject.embedSWF(swfFile,domElement.id,"100%","100%","9.0.0","",flashVars,parameters, null, function callbackFn(e){
-				if (e.success == false){
-					var message = document.createElement('div');
-
-					var header = document.createElement('h3');
-					header.innerText = paella.utils.dictionary.translate("Flash player problem");
-					var text = document.createElement('div');
-					text.innerHTML = paella.utils.dictionary.translate("A problem occurred trying to load flash player.") + "<br>" +
-						paella.utils.dictionary.translate("Please go to {0} and install it.")
-							.replace("{0}", "<a style='color: #800000; text-decoration: underline;' href='http://www.adobe.com/go/getflash'>http://www.adobe.com/go/getflash</a>") + '<br>' +
-
-						paella.utils.dictionary.translate("If the problem presist, contact us.");
-
-					var link = document.createElement('a');
-					link.setAttribute("href", "http://www.adobe.com/go/getflash");
-					link.innerHTML = '<img style="margin:5px;" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Obtener Adobe Flash Player" />';
-
-					message.appendChild(header);
-					message.appendChild(text);
-					message.appendChild(link);
-
-					paella.messageBox.showError(message.innerHTML);
-				}
-			});
-		}
-		else {
-			var message = document.createElement('div');
-
-			var header = document.createElement('h3');
-			header.innerText = paella.utils.dictionary.translate("Flash player needed");
-
-			var text = document.createElement('div');
-
-			text.innerHTML = paella.utils.dictionary.translate("You need at least Flash player 9 installed.") + "<br>" +
-				paella.utils.dictionary.translate("Please go to {0} and install it.")
-					.replace("{0}", "<a style='color: #800000; text-decoration: underline;' href='http://www.adobe.com/go/getflash'>http://www.adobe.com/go/getflash</a>");
-
-			var link = document.createElement('a');
-			link.setAttribute("href", "http://www.adobe.com/go/getflash");
-			link.innerHTML = '<img style="margin:5px;" src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Obtener Adobe Flash Player" />';
-
-			message.appendChild(header);
-			message.appendChild(text);
-			message.appendChild(link);
-
-			paella.messageBox.showError(message.innerHTML);
-		}
-
-		var flashObj = $('#' + domElement.id)[0];
-		return flashObj;
-	}
-
-	_deferredAction(action) {
-		return new Promise((resolve,reject) => {
-			if (this.ready) {
-				resolve(action());
-			}
-			else {
-				$(this.swfContainer).bind('paella:flashvideoready', () => {
-					this._ready = true;
-					resolve(action());
-				});
-			}
-		});
-	}
-
-	_getQualityObject(index, s) {
-		return {
-			index: index,
-			res: s.res,
-			src: s.src,
-			toString:function() { return this.res.w + "x" + this.res.h; },
-			shortLabel:function() { return this.res.h + "p"; },
-			compare:function(q2) { return this.res.w*this.res.h - q2.res.w*q2.res.h; }
-		};
-	}
-
-	// Initialization functions
-	getVideoData() {
-		let FlashVideoPlugin = this;
-		return new Promise((resolve,reject) => {
-			this._deferredAction(() => {
-				let videoData = {
-					duration: FlashVideoPlugin.flashVideo.duration(),
-					currentTime: FlashVideoPlugin.flashVideo.getCurrentTime(),
-					volume: FlashVideoPlugin.flashVideo.getVolume(),
-					paused: FlashVideoPlugin._paused,
-					ended: FlashVideoPlugin._ended,
-					res: {
-						w: FlashVideoPlugin.flashVideo.getWidth(),
-						h: FlashVideoPlugin.flashVideo.getHeight()
-					}
-				};
-				resolve(videoData);
-			});
-		});
-	}
-
-	setPosterFrame(url) {
-		if (this._posterFrame==null) {
-			this._posterFrame = url;
-			var posterFrame = document.createElement('img');
-			posterFrame.src = url;
-			posterFrame.className = "videoPosterFrameImage";
-			posterFrame.alt = "poster frame";
-			this.domElement.appendChild(posterFrame);
-			this._posterFrameElement = posterFrame;
-		}
-	//	this.video.setAttribute("poster",url);
-	}
-
-	setAutoplay(auto) {
-		this._autoplay = auto;
-	}
-
-	load() {
-		var This = this;
-		var sources = this._stream.sources.rtmp;
-		if (this._currentQuality===null && this._videoQualityStrategy) {
-			this._currentQuality = this._videoQualityStrategy.getQualityIndex(sources);
-		}
-
-		var isValid = function(stream) {
-			return stream.src && typeof(stream.src)=='object' && stream.src.server && stream.src.stream;
-		};
-
-		var stream = this._currentQuality<sources.length ? sources[this._currentQuality]:null;
-		if (stream) {
-			if (!isValid(stream)) {
-				return paella_DeferredRejected(new Error("Invalid video data"));
-			}
-			else {
-				var subscription = false;
-				if (stream.src.requiresSubscription===undefined && paella.player.config.player.rtmpSettings) {
-					subscription = paella.player.config.player.rtmpSettings.requiresSubscription || false;
-				}
-				else if (stream.src.requiresSubscription) {
-					subscription = stream.src.requiresSubscription;
-				}
-				var parameters = {};
-				var swfName = 'resources/deps/player_streaming.swf';
-				if (this._autoplay) {
-					parameters.autoplay = this._autoplay;
-				}
-				if (paella.utils.parameters.get('debug')=="true") {
-					parameters.debugMode = true;
-				}
-
-				parameters.playerId = this.flashId;
-				parameters.isLiveStream = stream.isLiveStream!==undefined ? stream.isLiveStream:false;
-				parameters.server = stream.src.server;
-				parameters.stream = stream.src.stream;
-				parameters.subscribe = subscription;
-				if (paella.player.config.player.rtmpSettings && paella.player.config.player.rtmpSettings.bufferTime!==undefined) {
-					parameters.bufferTime = paella.player.config.player.rtmpSettings.bufferTime;
-				}
-				this._flashVideo = this._createSwfObject(swfName,parameters);
-
-				$(this.swfContainer).trigger("paella:flashvideoready");
-
-				return this._deferredAction(function() {
-					return stream;
-				});
-			}
-
-		}
-		else {
-			return paella_DeferredRejected(new Error("Could not load video: invalid quality stream index"));
-		}
-	}
-
-	getQualities() {
-		return new Promise((resolve,reject) => {
-			setTimeout(() => {
-				var result = [];
-				var sources = this._stream.sources.rtmp;
-				var index = -1;
-				sources.forEach((s) => {
-					index++;
-					result.push(this._getQualityObject(index,s));
-				});
-				resolve(result);
-			},50);
-		});
-	}
-
-	setQuality(index) {
-		index = index!==undefined && index!==null ? index:0;
-		return new Promise((resolve,reject) => {
-			var paused = this._paused;
-			var sources = this._stream.sources.rtmp;
-			this._currentQuality = index<sources.length ? index:0;
-			var source = sources[index];
-			this._ready = false;
-			this._isReady = false;
-			this.load()
-				.then(function() {
-					resolve();
-				});
-		});
-	}
-
-	getCurrentQuality() {
-		return new Promise((resolve,reject) => {
-			resolve(this._getQualityObject(this._currentQuality,
-										   this._stream.sources.rtmp[this._currentQuality]));
-		});
-	}
-
-	play() {
-		var This = this;
-		return this._deferredAction(function() {
-			if (This._posterFrameElement) {
-				This._posterFrameElement.parentNode.removeChild(This._posterFrameElement);
-				This._posterFrameElement = null;
-			}
-			This._paused = false;
-			This.flashVideo.play();
-		});
-	}
-
-	pause() {
-		var This = this;
-		return this._deferredAction(function() {
-			This._paused = true;
-			This.flashVideo.pause();
-		});
-	}
-
-	isPaused() {
-		var This = this;
-		return this._deferredAction(function() {
-			return This._paused;
-		});
-	}
-
-	duration() {
-		var This = this;
-		return this._deferredAction(function() {
-			return This.flashVideo.duration();
-		});
-	}
-
-	setCurrentTime(time) {
-		var This = this;
-		return this._deferredAction(function() {
-			var duration = This.flashVideo.duration();
-			This.flashVideo.seekTo(time * 100 / duration);
-		});
-	}
-
-	currentTime() {
-		var This = this;
-		return this._deferredAction(function() {
-			return This.flashVideo.getCurrentTime();
-		});
-	}
-
-	setVolume(volume) {
-		var This = this;
-		this._volume = volume;
-		return this._deferredAction(function() {
-			This.flashVideo.setVolume(volume);
-		});
-	}
-
-	volume() {
-		var This = this;
-		return this._deferredAction(function() {
-			return This.flashVideo.getVolume();
-		});
-	}
-
-	setPlaybackRate(rate) {
-		var This = this;
-		return this._deferredAction(function() {
-			This._playbackRate = rate;
-		});
-	}
-
-	playbackRate() {
-		var This = this;
-		return this._deferredAction(function() {
-			return This._playbackRate;
-		});
-	}
-
-	goFullScreen() {
-		return paella_DeferredNotImplemented();
-	}
-
-	unFreeze(){
-		return this._deferredAction(function() {});
-	}
-
-	freeze() {
-		return this._deferredAction(function() {});
-	}
-
-	unload() {
-		this._callUnloadEvent();
-		return paella_DeferredNotImplemented();
-	}
-
-	getDimensions() {
-		return paella_DeferredNotImplemented();
-	}
-}
-
-paella.RTMPVideo = RTMPVideo;
-
-class RTMPVideoFactory extends paella.VideoFactory {
-	isStreamCompatible(streamData) {
-		try {
-			if (paella.utils.userAgent.system.iOS || paella.utils.userAgent.system.Android) {
-				return false;
-			}
-			for (var key in streamData.sources) {
-				if (key=='rtmp') return true;
-			}
-		}
-		catch (e) {}
-		return false;
-	}
-
-	getVideoObject(id, streamData, rect) {
-		return new paella.RTMPVideo(id, streamData, rect.x, rect.y, rect.w, rect.h);
-	}
-}
-
-paella.videoFactories.RTMPVideoFactory = RTMPVideoFactory;
-
-})();
 /////////////////////////////////////////////////
 // Caption Search
 /////////////////////////////////////////////////
@@ -17465,38 +17257,6 @@ paella.addPlugin(function() {
 
 	}
 });
-
-paella.addPlugin(function() {
-	return class ShowEditorPlugin extends paella.VideoOverlayButtonPlugin {
-		getName() {
-			return "es.upv.paella.showEditorPlugin";
-		}
-		getSubclass() { return "showEditorButton"; }
-		getIconClass() { return 'icon-pencil'; }
-		getAlignment() { return 'right'; }
-		getIndex() {return 10;}
-		getDefaultToolTip() { return paella.utils.dictionary.translate("Enter editor mode"); }
-
-		checkEnabled(onSuccess) {			
-			if (this.config.editorUrl) {
-				paella.initDelegate.initParams.accessControl.canWrite()
-				.then((canWrite)=>{
-					var enabled = (canWrite); // && !paella.utils.userAgent.browser.IsMobileVersion && !paella.player.isLiveStream());					
-					onSuccess(enabled);
-				});	
-			}
-			else {				
-				onSuccess(false);
-			}
-		}
-
-		action(button) {
-			var editorUrl = this.config.editorUrl.replace("{id}", paella.player.videoIdentifier);
-			window.location.href = editorUrl;
-		}
-	}
-});
-
 
 paella.addPlugin(function() {
 	return class ThemeChooserPlugin extends paella.ButtonPlugin {
@@ -19568,6 +19328,11 @@ paella.addPlugin(function() {
 
     } // checkEnabled
 
+    setVideoTitleAttr(){
+      var video_element = video_element = document.getElementsByTagName("video");
+      video_element.video_0.setAttribute("data-matomo-title", document.title);
+    }
+
     registerVisit() {
       var title,
           event_id,
@@ -19576,18 +19341,25 @@ paella.addPlugin(function() {
           presenter,
           view_mode;
 
-      if (paella.opencast && paella.opencast._episode) {
+      if ((paella.opencast != undefined) && (paella.opencast._episode != undefined)) {
         title = paella.opencast._episode.dcTitle;
         event_id = paella.opencast._episode.id;
         presenter = paella.opencast._episode.dcCreator;
         paella.userTracking.matomotracker.setCustomVariable(5, "client",
           (paella.userTracking.matomotracker.client_id || "Paella Opencast"));
       } else {
+        title = this.loadTitle();
+        // Add title for Matomo Media Analytics.
+        if (this.config.html_title){
+          this.setVideoTitleAttr();
+        } else{
+          Matomo.MediaAnalytics.setMediaTitleFallback(function (mediaElement) {return title; });
+        }
         paella.userTracking.matomotracker.setCustomVariable(5, "client",
-          (paella.userTracking.matomotracker.client_id || "Paella Standalone"));
+          (paella.userTracking.matomotracker.client_id || "Paella Standalone"));          
       }
 
-      if (paella.opencast && paella.opencast._episode && paella.opencast._episode.mediapackage) {
+      if ((paella.opencast != undefined) && (paella.opencast._episode != undefined) && (paella.opencast._episode.mediapackage != undefined)) {
         series_id = paella.opencast._episode.mediapackage.series;
         series_title = paella.opencast._episode.mediapackage.seriestitle;
       }
@@ -19620,7 +19392,7 @@ paella.addPlugin(function() {
 
         var value = "";
 
-        try {
+        try {     
           value = JSON.stringify(params);
         } catch(e) {}
 
