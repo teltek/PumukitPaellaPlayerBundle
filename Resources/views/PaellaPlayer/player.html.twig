@@ -245,8 +245,8 @@
         {% endif %}
             {% if tail and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
                     introOrTailVideo("tail");
-                    firstPlay = true;
             {% endif %}
+            firstPlay = true;
             paella.events.bind(paella.events.play, function (event) {
                 {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
                     if (firstPlay) {
