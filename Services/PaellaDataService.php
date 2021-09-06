@@ -168,6 +168,7 @@ class PaellaDataService
         }
         $data['metadata'] = [
             'title' => $mmobj->getTitle(),
+            'preview' => $this->getPicForObject($mmobj, true, true),
             'description' => $mmobj->getDescription(),
             'duration' => $mmobj->getDuration(),
             'i18nTitle' => $mmobj->getI18nTitle(),
