@@ -43,6 +43,17 @@ class PumukitExtension extends \Twig_Extension
 
         if ($mmobj->getProperty('paellalayout')) {
             $paellaLayout = $mmobj->getProperty('paellalayout');
+            switch($paellaLayout) {
+                case "professor_slide":
+                    $paellaLayout = "presenter_presentation";
+                    break;
+                case "professor":
+                    $paellaLayout = "presenter";
+                    break;
+                case "slide":
+                    $paellaLayout = "presentation";
+                    break;
+            }
         }
 
         return $request->query->get('paella_layout', $paellaLayout);
