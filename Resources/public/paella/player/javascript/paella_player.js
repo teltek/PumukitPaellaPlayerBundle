@@ -13540,8 +13540,8 @@ paella.addPlugin(function() {
                       playlistPlugin.buildContent(container.element);
                   }
               );
-          paella.events.bind(
-              paella.events.endVideo,
+
+          paella.events.bind(paella.events.ended,
               function(event){
                   playlistPlugin.goToNextVideo();
                   }
