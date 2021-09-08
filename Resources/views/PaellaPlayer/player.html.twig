@@ -68,6 +68,12 @@
             .playButtonOnScreenIcon {
                 height: 100%;
             }
+
+            @media(max-width: 767px) {
+                #skipContainer {
+                    bottom: 1.5em;
+                }
+            }
         {% endif %}
 
         {% if not multimediaObject.getProperty('opencast') %}
@@ -102,7 +108,7 @@
         {% endif %}
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
-            {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
+            {% if intro
                 or (autostart is defined and autostart == 'true') %}
                 if (!paella.utils.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
@@ -231,7 +237,7 @@
 
         var firstPlay = false;
 
-        {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+        {% if intro %}
             introOrTailVideo("intro");
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% else %}
@@ -243,12 +249,12 @@
         {% else %}
             paella.events.bind(paella.events.endVideo, function (event) {
         {% endif %}
-            {% if tail and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+            {% if tail %}
                     introOrTailVideo("tail");
             {% endif %}
             firstPlay = true;
             paella.events.bind(paella.events.play, function (event) {
-                {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+                {% if intro %}
                     if (firstPlay) {
                         introOrTailVideo("intro");
                         paella.player.pause();
