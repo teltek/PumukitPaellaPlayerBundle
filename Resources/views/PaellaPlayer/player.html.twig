@@ -135,7 +135,7 @@
             const skipContainer = document.createElement("div");
             const overlay = document.createElement("overlay");
 
-            intro.src = "{{ absolute_url(intro) }}";
+            intro.src = "{{ absolute_url(track_url(intro)) }}";
             intro.poster = "{{ multimediaObject|first_url_pic(true) }}";
             intro.id = "intro";
             intro.addEventListener('ended', onEndedVideo);
