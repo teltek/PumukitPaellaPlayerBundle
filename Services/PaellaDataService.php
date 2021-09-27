@@ -156,6 +156,12 @@ class PaellaDataService
             'i18nDescription' => $mmobj->getI18nDescription(),
         ];
 
+        if (!$request->query->get('autostart')) {
+            $data['metadata'] = [
+                'preview' => $this->getPicForObject($mmobj, true, true),
+            ];
+        }
+
         $frameList = $this->getOpencastFrameList($mmobj);
         if ($frameList) {
             $data['frameList'] = $frameList;

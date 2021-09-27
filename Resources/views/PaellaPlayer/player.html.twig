@@ -102,7 +102,7 @@
         {% endif %}
 
         $(document).bind(paella.events.loadComplete, function (event, params) {
-            {% if (intro and not (app.request.headers.get('user-agent') matches '/Mobi/'))
+            {% if intro
                 or (autostart is defined and autostart == 'true') %}
                 if (!paella.utils.userAgent.browser.IsMobileVersion && !document.querySelector("#introContainer")){
                     setTimeout(function () {
@@ -184,6 +184,7 @@
             const skipContainer = document.createElement("div");
             const video = document.createElement("video");
             const videoContainer = document.createElement("div");
+
             if (typeVideo == "intro") {
                 {% if intro %}
                     video.src = "{{ absolute_url(track_url(intro)) }}";
@@ -199,11 +200,14 @@
             video.addEventListener('ended', onEndedVideo);
             video.autoplay = (typeVideo == "intro") ?  "{{ autostart != 'false' }}" : "true";
             video.muted = paella.utils.userAgent.browser.IsMobileVersion;
+
             skipContainer.id = "skipContainer";
             videoContainer.id = (typeVideo == "intro") ? 'introContainer' : 'tailContainer';
             overlay.id = "overlay";
             skipContainer.addEventListener("click", onEndedVideo);
+
             skipContainer.innerHTML = (typeVideo == "intro") ? '{{ "Next up" | trans }}' : '{{ "Finish" | trans }}';
+
             if(!document.querySelector("#" + video.id)) {
                 videoContainer.appendChild(video);
                 videoContainer.appendChild(skipContainer);
@@ -211,6 +215,7 @@
                 container.appendChild(videoContainer);
             }
             playPauseCanvas(overlay, video);
+
             function onEndedVideo() {
                 container.removeChild(videoContainer);
                 if (typeVideo == "intro") {
@@ -225,7 +230,7 @@
 
         var firstPlay = false;
 
-        {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+        {% if intro %}
             introOrTailVideo("intro");
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% else %}
@@ -237,12 +242,14 @@
         {% else %}
             paella.events.bind(paella.events.endVideo, function (event) {
         {% endif %}
-            {% if tail and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+            {% if tail %}
                     introOrTailVideo("tail");
-                    firstPlay = true;
             {% endif %}
+
+            firstPlay = true;
+
             paella.events.bind(paella.events.play, function (event) {
-                {% if intro and not (app.request.headers.get('user-agent') matches '/Mobi/') %}
+                {% if intro %}
                     if (firstPlay) {
                         introOrTailVideo("intro");
                         paella.player.pause();

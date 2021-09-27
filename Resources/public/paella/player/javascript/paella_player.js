@@ -13552,7 +13552,7 @@ Class("paella.plugins.playlistPlugin", paella.ButtonPlugin, {
       var container = playlistPlugin.containerManager.containers[playlistPlugin.getName()];
       if (container && container.element) playlistPlugin.buildContent(container.element);
     });
-    paella.events.bind(paella.events.endVideo, function (event) {
+    paella.events.bind(paella.events.ended, function (event) {
       playlistPlugin.goToNextVideo();
     });
   },
