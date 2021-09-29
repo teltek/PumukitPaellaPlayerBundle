@@ -174,7 +174,7 @@ class PaellaDataService
             'i18nDescription' => $mmobj->getI18nDescription(),
         ];
         
-        if (!$request->query->get('autostart')) {
+        if (!$request->query->get('autostart') && !$request->query->get('backend')) {
             $data['metadata'] = [
                 'preview' => $this->getPicForObject($mmobj, true, true),
             ];
