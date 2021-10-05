@@ -2,6 +2,7 @@
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
+use Detection\MobileDetect;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use MongoDB\BSON\ObjectId;
 use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
@@ -10,7 +11,6 @@ use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Services\MaterialService;
 use Pumukit\SchemaBundle\Services\PicService;
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -19,7 +19,7 @@ class PaellaDataService
     private $picService;
     private $trackService;
     private $opencastClient;
-    private $mobileDetectorService;
+    private $mobileDetector;
     private $dm;
     private $playlistService;
     private $materialService;
@@ -33,7 +33,6 @@ class PaellaDataService
         SeriesPlaylistService $playlistService,
         MaterialService $materialService,
         UrlGeneratorInterface $urlGenerator,
-        MobileDetector $mobileDetectorService,
         bool $forceDual,
         string $requestContextScheme,
         string $requestContextHost
@@ -43,11 +42,12 @@ class PaellaDataService
         $this->playlistService = $playlistService;
         $this->materialService = $materialService;
         $this->urlGenerator = $urlGenerator;
-        $this->mobileDetectorService = $mobileDetectorService;
         $this->forceDual = $forceDual;
         $this->dm = $documentManager;
         $this->requestContextScheme = $requestContextScheme;
         $this->requestContextHost = $requestContextHost;
+
+        $this->mobileDetector = new MobileDetect();
     }
 
     public function setOpencastClient($opencastClient): void
@@ -156,7 +156,7 @@ class PaellaDataService
             'i18nDescription' => $mmobj->getI18nDescription(),
         ];
 
-        if (!$request->query->get('autostart')) {
+        if (!$request->query->get('autostart') && !$request->query->get('backend')) {
             $data['metadata'] = [
                 'preview' => $this->getPicForObject($mmobj, true, true),
             ];
@@ -389,7 +389,7 @@ class PaellaDataService
     {
         $userAgent = $request->headers->get('user-agent');
 
-        return $this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent);
+        return $this->mobileDetector->isMobile($userAgent) || $this->mobileDetector->isTablet($userAgent);
     }
 
     private function getPicForObject(MultimediaObject $mmobj, bool $absolute, bool $hd): string
