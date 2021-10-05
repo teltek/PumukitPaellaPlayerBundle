@@ -2,39 +2,29 @@
 
 Bundle based on [Symfony](http://symfony.com/) to work with the [PuMuKIT Video Platform](https://github.com/pumukit/PuMuKIT/blob/4.0.x/README.md).
 
-This bundle overrides the [Pumukit BasePlayer Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/BasePlayerBundle). It adds a Paella Player to the WebTV Portal to be used instead of the default [JW Player Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/JWPlayerBundle)
-
-## Installation
-
-Step 1 requires you to have Composer installed globally, as explained in the [installation chapter](https://getcomposer.org/doc/00-intro.md) of the Composer documentation.
-
-
-### Step 1: Download the Bundle
-
-Open a command console, enter your project directory and execute the
-following command to download the latest stable version of this bundle:
+This bundle overrides the [Pumukit BasePlayer Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/BasePlayerBundle). It adds a Paella Player to the WebTV Portal to be used instead of the default [Player Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/PlayerBundle)
 
 ```bash
-$ composer require teltek/pumukit-paella-player-bundle 4.0.x-dev
+composer require teltek/pumukit-paella-player-bundle
 ```
 
-### Step 2: Configuring PaellaPlayer instead of JWPlayer
+### Step 2: Configuring PaellaPlayer instead of BasePlayer
 
-The JWPlayerBundle needs to be uninstalled in order for the Paella Player to work properly:
+The BasePlayer needs to be uninstalled in order for the Paella Player to work properly:
 
 Remove the next line from config/bundles.php
 ```
-Pumukit\JWPlayerBundle\PumukitJWPlayerBundle::class => ['all' => true],
+Pumukit\PlayerBundle\PumukitPlayerBundle::class => ['all' => true],
 ```
 
 Remove the next lines from config/routes/annotations.yaml
 ```
-pumukit_jw_player:
-  resource: "@PumukitJWPlayerBundle/Resources/config/routing.yml"
+pumukit_player:
+  resource: "@PumukitPlayerBundle/Resources/config/routing.yml"
   prefix:   /
 ```
 
-Remove file config/packages/pumukit_jwplayer.yaml
+Remove file config/packages/pumukit_player.yaml
 
 Add PaellaPlayer line from config/bundles.php
 ```
