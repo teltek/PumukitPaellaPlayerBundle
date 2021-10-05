@@ -8,14 +8,15 @@
         "bundle",
         "pumukit",
         "teltek",
-        "paella"
+        "paella",
+        "player"
     ],
     "homepage": "https://github.com/teltek/PumukitPaellaPlayerBundle",
     "license": "proprietary",
     "authors": [
         {
             "name": "Teltek Team",
-            "homepage": "http://teltek.es"
+            "homepage": "https://teltek.es"
         }
     ],
     "require": {
