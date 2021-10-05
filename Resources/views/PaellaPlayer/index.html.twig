@@ -9,10 +9,8 @@
 
 {% endblock %}
 {% block javascripts %}
-   <script type="text/javascript" src="javascript/swfobject.js"></script>
    <script type="text/javascript" src="javascript/base.js"></script>
-   <script type="text/javascript" src="javascript/traceur-runtime.min.js"></script>
-   <script type="text/javascript" src="javascript/jquery.js"></script>
+   <script type="text/javascript" src="javascript/jquery.min.js"></script>
    <script type="text/javascript" src="javascript/lunr.min.js"></script>
    <script type="text/javascript" src="javascript/require.js"></script>
    <script type="text/javascript" src="javascript/paella_player.js"></script>
@@ -65,7 +63,7 @@
 {% endblock %}
 
 {% block title %}{{ parent() }} - {{ object.title }}{% endblock %}
-{% block keywords %}{{ parent() }} - {{ object.keyword }}{% endblock %}
+{% block keywords %}{{ parent() }} - {{ object.keywords|join(',') }}{% endblock %}
 
 {% block body_base %}
 {% endblock %}

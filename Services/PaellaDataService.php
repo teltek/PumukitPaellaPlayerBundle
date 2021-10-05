@@ -2,6 +2,7 @@
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
+use Detection\MobileDetect;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use MongoDB\BSON\ObjectId;
 use Pumukit\BasePlayerBundle\Services\SeriesPlaylistService;
@@ -10,7 +11,6 @@ use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Services\MaterialService;
 use Pumukit\SchemaBundle\Services\PicService;
-use SunCat\MobileDetectBundle\DeviceDetector\MobileDetector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -19,7 +19,7 @@ class PaellaDataService
     private $picService;
     private $trackService;
     private $opencastClient;
-    private $mobileDetectorService;
+    private $mobileDetector;
     private $dm;
     private $playlistService;
     private $materialService;
@@ -33,7 +33,6 @@ class PaellaDataService
         SeriesPlaylistService $playlistService,
         MaterialService $materialService,
         UrlGeneratorInterface $urlGenerator,
-        MobileDetector $mobileDetectorService,
         bool $forceDual,
         string $requestContextScheme,
         string $requestContextHost
@@ -43,11 +42,12 @@ class PaellaDataService
         $this->playlistService = $playlistService;
         $this->materialService = $materialService;
         $this->urlGenerator = $urlGenerator;
-        $this->mobileDetectorService = $mobileDetectorService;
         $this->forceDual = $forceDual;
         $this->dm = $documentManager;
         $this->requestContextScheme = $requestContextScheme;
         $this->requestContextHost = $requestContextHost;
+
+        $this->mobileDetector = new MobileDetect();
     }
 
     public function setOpencastClient($opencastClient): void
@@ -137,11 +137,13 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
+                $dataStream['content'] = 'presenter';
                 $dataStream['language'] = $tracks['display'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
             if ($tracks['presentation']) {
                 $dataStream = $this->buildDataStream($tracks['presentation'], $request);
+                $dataStream['content'] = 'presentation';
                 $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
@@ -153,6 +155,12 @@ class PaellaDataService
             'i18nTitle' => $mmobj->getI18nTitle(),
             'i18nDescription' => $mmobj->getI18nDescription(),
         ];
+
+        if (!$request->query->get('autostart') && !$request->query->get('backend')) {
+            $data['metadata'] = [
+                'preview' => $this->getPicForObject($mmobj, true, true),
+            ];
+        }
 
         $frameList = $this->getOpencastFrameList($mmobj);
         if ($frameList) {
@@ -177,7 +185,7 @@ class PaellaDataService
             return $url;
         }
 
-        return  $this->requestContextScheme.'://'.$this->requestContextHost.$request->getBasePath().$url;
+        return $this->requestContextScheme.'://'.$this->requestContextHost.$request->getBasePath().$url;
     }
 
     private function getMmobjTracks(MultimediaObject $mmobj, ?string $trackId): array
@@ -381,7 +389,7 @@ class PaellaDataService
     {
         $userAgent = $request->headers->get('user-agent');
 
-        return $this->mobileDetectorService->isMobile($userAgent) || $this->mobileDetectorService->isTablet($userAgent);
+        return $this->mobileDetector->isMobile($userAgent) || $this->mobileDetector->isTablet($userAgent);
     }
 
     private function getPicForObject(MultimediaObject $mmobj, bool $absolute, bool $hd): string

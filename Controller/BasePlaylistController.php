@@ -85,6 +85,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
         return [
             'autostart' => $request->query->get('autostart', 'false'),
             'intro' => $this->getIntro($request->query->get('intro')),
+            'tail' => null,
             'custom_css_url' => $this->paellaCustomCssUrl,
             'logo' => $this->paellaLogo,
             'multimediaObject' => $mmobj,

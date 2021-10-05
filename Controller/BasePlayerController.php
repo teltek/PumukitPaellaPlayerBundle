@@ -120,6 +120,7 @@ class BasePlayerController extends BasePlayerAbstractController
             'autostart' => $this->getAutoStart($request),
             'autoplay_fallback' => $this->paellaAutoPlay,
             'intro' => $this->basePlayerIntroService->getVideoIntroduction($multimediaObject, $request->query->getBoolean('intro')),
+            'tail' => $this->basePlayerIntroService->getVideoTail($multimediaObject),
             'custom_css_url' => $this->paellaCustomCssUrl,
             'logo' => $this->paellaLogo,
             'multimediaObject' => $multimediaObject,

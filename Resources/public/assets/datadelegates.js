@@ -3,7 +3,7 @@ paella.matterhorn = {}
 paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paella.DataDelegate,{
 	read:function(context,params,onSuccess) {
 		var episodeId = params.id;
-		paella.ajax.get({url: '/annotation/annotations.json', params: {episode: episodeId, type: "paella/"+context}},
+		paella.utils.ajax.get({url: '/annotation/annotations.json', params: {episode: episodeId, type: "paella/"+context}},
 			function(data, contentType, returnCode) {
  				var annotations = data.annotations.annotation;
 				if (!(annotations instanceof Array)) { annotations = [annotations]; }
@@ -33,14 +33,14 @@ paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paell
 		var episodeId = params.id;
 		if (typeof(value)=='object') value = JSON.stringify(value);
 
-		paella.ajax.get({url: '/annotation/annotations.json', params: {episode: episodeId, type: "paella/"+context}},
+		paella.utils.ajax.get({url: '/annotation/annotations.json', params: {episode: episodeId, type: "paella/"+context}},
 			function(data, contentType, returnCode) {
 				var annotations = data.annotations.annotation;
 				if (annotations == undefined) {annotations = [];}
 				if (!(annotations instanceof Array)) { annotations = [annotations]; }
 
 				if (annotations.length == 0 ) {
-					paella.ajax.put({ url: '/annotation/',
+					paella.utils.ajax.put({ url: '/annotation/',
 						params: {
 							episode: episodeId,
 							type: 'paella/' + context,
@@ -53,7 +53,7 @@ paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paell
 				}
 				else if (annotations.length == 1 ) {
 					var annotationId = annotations[0].id;
-					paella.ajax.put({ url: '/annotation/'+ annotationId, params: { value: value }},
+					paella.utils.ajax.put({ url: '/annotation/'+ annotationId, params: { value: value }},
 						function(data, contentType, returnCode) { if (onSuccess) onSuccess({}, true); },
 						function(data, contentType, returnCode) { if (onSuccess) onSuccess({}, false); }
 					);
@@ -76,7 +76,7 @@ paella.dataDelegates.MHAnnotationServiceDefaultDataDelegate = Class.create(paell
 	remove:function(context,params,onSuccess) {
 		var episodeId = params.id;
 
-		paella.ajax.get({url: '/annotation/annotations.json', params: {episode: episodeId, type: "paella/"+context}},
+		paella.utils.ajax.get({url: '/annotation/annotations.json', params: {episode: episodeId, type: "paella/"+context}},
 			function(data, contentType, returnCode) {
  				var annotations = data.annotations.annotation;
  				if(annotations) {
@@ -299,7 +299,7 @@ paella.dataDelegates.MHCaptionsDataDelegate = Class.create(paella.DataDelegate,{
 				captionsFound = true;
 
 				// Load Captions!
-				paella.ajax.get({url: catalog.url},
+				paella.utils.ajax.get({url: catalog.url},
 					function(data, contentType, returnCode, dataRaw) {
 
 						var parser = new paella.matterhorn.DFXPParser();
@@ -344,7 +344,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 		var episodeId = localStorage.getItem('opencastId');
 		var domain = localStorage.getItem('opencast_host');
 
-		paella.ajax.get({url: domain + '/usertracking/footprint.json', params: {id: episodeId}},
+		paella.utils.ajax.get({url: domain + '/usertracking/footprint.json', params: {id: episodeId}},
 			function(data, contentType, returnCode) {
 				if ((returnCode == 200) && (contentType == 'application/json')) {
 					var footPrintsData = data.footprints.footprint;
@@ -383,7 +383,7 @@ paella.dataDelegates.MHFootPrintsDataDelegate = Class.create(paella.DataDelegate
 			return;
 		}
 
-		paella.ajax.get({url: domain + '/usertracking/', params: {
+		paella.utils.ajax.get({url: domain + '/usertracking/', params: {
 					_method: 'PUT',
 					id: episodeId,
 					type:'FOOTPRINT',

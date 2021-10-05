@@ -18,14 +18,31 @@ class PumukitExtension extends AbstractExtension
 
     public function getPaellaLayout(MultimediaObject $multimediaObject, Request $request)
     {
-        $paellaLayout = 'professor_slide';
+        $paellaLayout = 'presenter_presentation';
 
         if ($multimediaObject->getProperty('opencastinvert')) {
-            $paellaLayout = 'slide_professor';
+            $paellaLayout = 'presenter_presentation';
         }
 
         if ($multimediaObject->getProperty('paellalayout')) {
             $paellaLayout = $multimediaObject->getProperty('paellalayout');
+
+            switch ($paellaLayout) {
+                case 'professor_slide':
+                    $paellaLayout = 'presenter_presentation';
+
+                    break;
+
+                case 'professor':
+                    $paellaLayout = 'presenter';
+
+                    break;
+
+                case 'slide':
+                    $paellaLayout = 'presentation';
+
+                    break;
+            }
         }
 
         return $request->query->get('paella_layout', $paellaLayout);
