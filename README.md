@@ -2,15 +2,13 @@
 
 Bundle based on [Symfony](http://symfony.com/) to work with the [PuMuKIT Video Platform](https://github.com/pumukit/PuMuKIT/blob/4.0.x/README.md).
 
-This bundle overrides the [Pumukit BasePlayer Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/BasePlayerBundle). It adds a Paella Player to the WebTV Portal to be used instead of the default [Player Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/PlayerBundle)
+This bundle overrides the [Pumukit Player Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/PlayerBundle). It adds a Paella Player to the WebTV Portal to be used instead of the default [Player Bundle](https://github.com/pumukit/PuMuKIT/tree/master/src/Pumukit/PlayerBundle)
 
 ```bash
 composer require teltek/pumukit-paella-player-bundle
 ```
 
-### Step 2: Configuring PaellaPlayer instead of BasePlayer
-
-The BasePlayer needs to be uninstalled in order for the Paella Player to work properly:
+The base Player needs to be uninstalled in order for the Paella Player to work properly:
 
 Remove the next line from config/bundles.php
 ```
@@ -38,7 +36,7 @@ pumukit_player:
   prefix:   /
 ```
 
-### Step 3: Update assets
+Then execute the following commands
 
 ```bash
 $ php app/console cache:clear
