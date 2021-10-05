@@ -16097,11 +16097,14 @@ paella.addPlugin(function () {
 
         if (this.breaks.some(function (breakItem) {
           if (breakItem.s <= currentTime && breakItem.e >= currentTime) {
-            if (eventType == paella.events.timeUpdate && !_this148.status) {
-              _this148.skipTo(breakItem.e);
-            }
+            _this148.skipTo(breakItem.e);
 
             breakMessage = breakItem.name;
+
+            if (paella.player.config.plugins.list[_this148.getName()].neverShow) {
+              return false;
+            }
+
             return true;
           }
         })) {
@@ -16115,7 +16118,8 @@ paella.addPlugin(function () {
     }, {
       key: "skipTo",
       value: function skipTo(time) {
-        var newTime = time;
+        var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
+        var newTime = time + (areBreaksClickable ? .5 : 0);
         
         paella.player.videoContainer.trimming().then(function (trimming) {
           if (trimming.enabled) {
@@ -16123,7 +16127,7 @@ paella.addPlugin(function () {
               newTime = 0;
               paella.player.videoContainer.pause();
             } else {
-              newTime = time - trimming.start;
+              newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
             }
             paella.player.videoContainer.seekToTime(newTime);
           } else {

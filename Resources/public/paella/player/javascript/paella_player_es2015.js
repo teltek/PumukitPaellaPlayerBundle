@@ -12715,10 +12715,15 @@ paella.addPlugin(() => {
 			let breakMessage = "";
 			if (this.breaks.some((breakItem) => {
 				if (breakItem.s<=currentTime && breakItem.e>=currentTime) {
-					if (eventType==paella.events.timeUpdate && !this.status) {
-						this.skipTo(breakItem.e);
-					}
+
+					this.skipTo(breakItem.e);
+
 					breakMessage = breakItem.text;
+
+					if(paella.player.config.plugins.list[this.getName()].neverShow) {
+						return false;
+					}
+
 					return true;
 				}
 			})) {
@@ -12732,15 +12737,30 @@ paella.addPlugin(() => {
 		}
 
 		skipTo(time) {
+			var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
+			var newTime = time + (areBreaksClickable ? .5 : 0);
+
 			paella.player.videoContainer.trimming()
 				.then((trimming) => {
 					if (trimming.enabled) {
-						paella.player.videoContainer.seekToTime(time - trimming.start);
+						if (time >= trimming.end) {
+							newTime = 0;
+							paella.player.videoContainer.pause();
+						} else {
+							newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
+						}
+						paella.player.videoContainer.seekToTime(newTime);
 					}
 					else {
-						paella.player.videoContainer.seekToTime(time);
+						return paella.player.videoContainer.duration(true);
 					}
-				})
+				}).then((duration) => {
+					if (time >= duration) {
+					  newTime = 0;
+					  paella.player.videoContainer.pause();
+					}
+					paella.player.videoContainer.seekToTime(newTime);
+				});
 		}
 
 		showMessage(text) {
