@@ -185,7 +185,7 @@ class PaellaDataService
             return $url;
         }
 
-        return  $this->requestContextScheme.'://'.$this->requestContextHost.$request->getBasePath().$url;
+        return $this->requestContextScheme.'://'.$this->requestContextHost.$request->getBasePath().$url;
     }
 
     private function getMmobjTracks(MultimediaObject $mmobj, ?string $trackId): array

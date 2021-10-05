@@ -26,15 +26,21 @@ class PumukitExtension extends AbstractExtension
 
         if ($multimediaObject->getProperty('paellalayout')) {
             $paellaLayout = $multimediaObject->getProperty('paellalayout');
+
             switch ($paellaLayout) {
-                case "professor_slide":
-                    $paellaLayout = "presenter_presentation";
+                case 'professor_slide':
+                    $paellaLayout = 'presenter_presentation';
+
                     break;
-                case "professor":
-                    $paellaLayout = "presenter";
+
+                case 'professor':
+                    $paellaLayout = 'presenter';
+
                     break;
-                case "slide":
-                    $paellaLayout = "presentation";
+
+                case 'slide':
+                    $paellaLayout = 'presentation';
+
                     break;
             }
         }
