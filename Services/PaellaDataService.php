@@ -25,6 +25,8 @@ class PaellaDataService
     private $materialService;
     private $urlGenerator;
     private $forceDual;
+    private $requestContextScheme;
+    private $requestContextHost;
 
     public function __construct(
         DocumentManager $documentManager,
