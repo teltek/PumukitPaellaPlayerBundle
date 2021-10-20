@@ -282,11 +282,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $paellaData = [
             'streams' => [],
             'metadata' => [
-                'title' => $mmobj->getTitle(),
-                'description' => $mmobj->getDescription(),
-                'duration' => $mmobj->getDuration(),
-                'i18nTitle' => $mmobj->getI18nTitle(),
-                'i18nDescription' => $mmobj->getI18nDescription(),
+                'preview' => $this->picService->getFirstUrlPic($mmobj, true, false),
             ],
         ];
         foreach ($trackLists as $id => $tracks) {
@@ -320,8 +316,14 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
                 if (!$preview && $track->containsAnyTag(['display', 'presenter/delivery'])) {
                     $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
                 }
+
+                if($track->containsAnyTag(['display', 'presenter/delivery'])) {
+                    $content = 'presenter';
+                } elseif ($track->containsAnyTag(['presentation/delivery'])) {
+                    $content = 'presentation';
+                }
             }
-            $paellaData['streams'][$id] = ['sources' => $sources, 'language' => $tracks[0]->getLanguage()];
+            $paellaData['streams'][$id] = ['sources' => $sources, 'language' => $tracks[0]->getLanguage(), 'content' => $content];
 
             if ($preview) {
                 $paellaData['streams'][$id]['preview'] = $preview;
