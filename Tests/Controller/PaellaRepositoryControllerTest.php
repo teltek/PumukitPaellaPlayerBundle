@@ -266,6 +266,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
     private function callRepo(MultimediaObject $mmobj, ?Track $track = null): Response
     {
+        self::ensureKernelShutdown();
         $client = static::createClient();
         $url = sprintf('paellarepository/%s', $mmobj->getId());
 
@@ -317,7 +318,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
                     $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
                 }
 
-                if($track->containsAnyTag(['display', 'presenter/delivery'])) {
+                if ($track->containsAnyTag(['display', 'presenter/delivery'])) {
                     $content = 'presenter';
                 } elseif ($track->containsAnyTag(['presentation/delivery'])) {
                     $content = 'presentation';
