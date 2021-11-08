@@ -318,6 +318,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
                     $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
                 }
 
+                $content = '';
                 if ($track->containsAnyTag(['display', 'presenter/delivery'])) {
                     $content = 'presenter';
                 } elseif ($track->containsAnyTag(['presentation/delivery'])) {
