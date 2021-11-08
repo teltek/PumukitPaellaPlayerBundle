@@ -280,6 +280,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
     private function makePaellaData(MultimediaObject $mmobj, array $trackLists = []): array
     {
+        $content = '';
         $paellaData = [
             'streams' => [],
             'metadata' => [
@@ -318,7 +319,6 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
                     $preview = $this->picService->getFirstUrlPic($mmobj, true, false);
                 }
 
-                $content = '';
                 if ($track->containsAnyTag(['display', 'presenter/delivery'])) {
                     $content = 'presenter';
                 } elseif ($track->containsAnyTag(['presentation/delivery'])) {
