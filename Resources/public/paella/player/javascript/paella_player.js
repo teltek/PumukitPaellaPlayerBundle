@@ -16120,9 +16120,9 @@ paella.addPlugin(function () {
       value: function skipTo(time) {
         var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
         var newTime = time + (areBreaksClickable ? .5 : 0);
-        
-        paella.player.videoContainer.trimming().then(function (trimming) {
-          if (trimming.enabled) {
+
+        paella.player.videoContainer.trimEnabled()
+          ? paella.player.videoContainer.trimming().then(function (trimming) {
             if (time >= trimming.end) {
               newTime = 0;
               paella.player.videoContainer.pause();
@@ -16130,16 +16130,14 @@ paella.addPlugin(function () {
               newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
             }
             paella.player.videoContainer.seekToTime(newTime);
-          } else {
-            return paella.player.videoContainer.duration(true);
-          }
-        }).then(function (duration) {
-          if (time >= duration) {
-            newTime = 0;
-            paella.player.videoContainer.pause();
-          }
-          paella.player.videoContainer.seekToTime(newTime);
-        });
+          })
+         : paella.player.videoContainer.duration(!0).then(function (duration) {
+            if (time >= duration) {
+              newTime = 0;
+              paella.player.videoContainer.pause();
+            }
+            paella.player.videoContainer.seekToTime(newTime);
+          });
       }
     }, {
       key: "showMessage",
