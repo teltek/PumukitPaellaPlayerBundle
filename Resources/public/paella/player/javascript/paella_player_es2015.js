@@ -12681,112 +12681,133 @@ paella.addPlugin(function() {
 
 paella.addPlugin(() => {
 	return class BreaksPlayerPlugin extends paella.EventDrivenPlugin {
-		getName() { return "es.upv.paella.breaksPlayerPlugin"; }
-
-		checkEnabled(onSuccess) {
-			onSuccess(true);
+		get breaks() {
+			return this._breaks || []
+		}
+		set breaks(b) {
+			this._breaks = b;
+		}
+		get lastEvent() {
+			return this._lastEvent || 0;
+		}
+		set lastEvent(e) {
+			this._lastEvent = e;
+		}
+		get visibleBreaks() {
+			return this._visibleBreaks || [];
+		}
+		set visibleBreaks(v) {
+			this._visibleBreaks = v;
 		}
 
-		setup() {
-			this.breaks = [];
-			this.status = false;
-			this.lastTime = 0;
-			paella.data.read('breaks', { id: paella.player.videoIdentifier }, (data) => {
+		getName() {
+			return "es.upv.paella.breaksPlayerPlugin";
+		}
+		checkEnabled(onSuccess) {
+			var This = this;
+			paella.data.read('breaks', {
+				id: paella.initDelegate.getId()
+			}, function (data, status) {
 				if (data && typeof (data) == 'object' && data.breaks && data.breaks.length > 0) {
-					this.breaks = data.breaks;
+					This.breaks = data.breaks;
 				}
+				onSuccess(true);
 			});
 		}
 
-		getEvents() { return [ paella.events.timeUpdate ]; }
+		getEvents() {
+			return [paella.events.timeUpdate];
+		}
 
 		onEvent(eventType, params) {
-			paella.player.videoContainer.currentTime(true)
-				.then((currentTime) => {
-					// The event type checking must to be done using the time difference, because
-					// the timeUpdate event may arrive before the seekToTime event
-					let diff = Math.abs(currentTime - this.lastTime);
-					this.checkBreaks(currentTime,diff>=1 ? paella.events.seekToTime : paella.events.timeUpdate);
-					this.lastTime = currentTime;
+			var thisClass = this;
+
+			params.videoContainer.currentTime(true)
+				.then(function (currentTime) {
+					thisClass.checkBreaks(currentTime);
 				});
 		}
 
-		checkBreaks(currentTime,eventType) {
-			let breakMessage = "";
-			if (this.breaks.some((breakItem) => {
-				if (breakItem.s<=currentTime && breakItem.e>=currentTime) {
+		checkBreaks(currentTime) {
+			var a;
+			for (var i = 0; i < this.breaks.length; ++i) {
+				a = this.breaks[i];
 
-					this.skipTo(breakItem.e);
-
-					breakMessage = breakItem.text;
-
-					if(paella.player.config.plugins.list[this.getName()].neverShow) {
-						return false;
-					}
-
-					return true;
+				if (a.s < currentTime && a.e > currentTime) {
+					if (this.areBreaksClickable())
+						this.avoidBreak(a);
+					else
+						this.showBreaks(a);
+				} else if (a.s.toFixed(0) == currentTime.toFixed(0)) {
+					this.avoidBreak(a);
 				}
-			})) {
-				this.showMessage(breakMessage);
-				this.status = true;
 			}
-			else {
-				this.hideMessage();
-				this.status = false;
-			}
-		}
-
-		skipTo(time) {
-			var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
-			var newTime = time + (areBreaksClickable ? .5 : 0);
-
-			paella.player.videoContainer.trimming()
-				.then((trimming) => {
-					if (trimming.enabled) {
-						if (time >= trimming.end) {
-							newTime = 0;
-							paella.player.videoContainer.pause();
-						} else {
-							newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
+			if (!this.areBreaksClickable()) {
+				for (var key in this.visibleBreaks) {
+					if (typeof (a) == 'object') {
+						a = this.visibleBreaks[key];
+						if (a && (a.s >= currentTime || a.e <= currentTime)) {
+							this.removeBreak(a);
 						}
-						paella.player.videoContainer.seekToTime(newTime);
 					}
-					else {
-						return paella.player.videoContainer.duration(true);
-					}
-				}).then((duration) => {
-					if (time >= duration) {
-					  newTime = 0;
-					  paella.player.videoContainer.pause();
-					}
-					paella.player.videoContainer.seekToTime(newTime);
-				});
+				}
+			}
 		}
 
-		showMessage(text) {
-			if (this.currentText != text) {
-				if (this.messageContainer) {
-					paella.player.videoContainer.overlayContainer.removeElement(this.messageContainer);
-				}
+		areBreaksClickable() {
+			//Returns true if the config value is set and if we are not on the editor.
+			return this.config.neverShow && !(paella.editor && paella.editor.instance && paella.editor.instance.isLoaded);
+		}
+
+		showBreaks(br) {
+			if (!this.visibleBreaks[br.s]) {
 				var rect = {
 					left: 100,
 					top: 350,
 					width: 1080,
 					height: 40
 				};
-				this.currentText = text;
-				this.messageContainer = paella.player.videoContainer.overlayContainer.addText(paella.utils.dictionary.translate(text), rect);
-				this.messageContainer.className = 'textBreak';
-				this.currentText = text;
+				let name = br.name || paella.utils.dictionary.translate("Break")
+				br.elem = paella.player.videoContainer.overlayContainer.addText(name, rect);
+				br.elem.className = 'textBreak';
+				this.visibleBreaks[br.s] = br;
 			}
 		}
 
-		hideMessage() {
-			if (this.messageContainer) {
-				paella.player.videoContainer.overlayContainer.removeElement(this.messageContainer);
-				this.messageContainer = null;
+		removeBreak(br) {
+			if (this.visibleBreaks[br.s]) {
+				var elem = this.visibleBreaks[br.s].elem;
+				paella.player.videoContainer.overlayContainer.removeElement(elem);
+				this.visibleBreaks[br.s] = null;
 			}
-			this.currentText = "";
+		}
+
+		avoidBreak(br) {
+			var newTime;
+			if (paella.player.videoContainer.trimEnabled()) {
+				paella.player.videoContainer.trimming()
+					.then((trimming) => {
+						if (br.e >= trimming.end) {
+							newTime = 0;
+							paella.player.videoContainer.pause();
+						} else {
+							newTime = br.e + (this.config.neverShow ? 0.5 : 0) - trimming.start;
+						}
+						paella.player.videoContainer.seekToTime(newTime);
+
+					});
+			} else {
+				paella.player.videoContainer.duration(true)
+					.then((duration) => {
+						if (br.e >= duration) {
+							newTime = 0;
+							paella.player.videoContainer.pause();
+						} else {
+							newTime = br.e + (this.config.neverShow ? 0.5 : 0);
+						}
+						paella.player.videoContainer.seekToTime(newTime);
+					});
+			}
 		}
 	}
 });

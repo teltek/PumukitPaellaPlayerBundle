@@ -16043,6 +16043,30 @@ paella.addPlugin(function () {
     }
 
     _createClass(BreaksPlayerPlugin, [{
+      key: "breaks",
+      get: function get() {
+        return this._breaks || [];
+      },
+      set: function set(b) {
+        this._breaks = b;
+      }
+    }, {
+      key: "lastEvent",
+      get: function get() {
+        return this._lastEvent || 0;
+      },
+      set: function set(e) {
+        this._lastEvent = e;
+      }
+    }, {
+      key: "visibleBreaks",
+      get: function get() {
+        return this._visibleBreaks || [];
+      },
+      set: function set(v) {
+        this._visibleBreaks = v;
+      }
+    }, {
       key: "getName",
       value: function getName() {
         return "es.upv.paella.breaksPlayerPlugin";
@@ -16050,22 +16074,15 @@ paella.addPlugin(function () {
     }, {
       key: "checkEnabled",
       value: function checkEnabled(onSuccess) {
-        onSuccess(true);
-      }
-    }, {
-      key: "setup",
-      value: function setup() {
-        var _this146 = this;
-
-        this.breaks = [];
-        this.status = false;
-        this.lastTime = 0;
+        var This = this;
         paella.data.read('breaks', {
-          id: paella.player.videoIdentifier
-        }, function (data) {
+          id: paella.initDelegate.getId()
+        }, function (data, status) {
           if (data && _typeof(data) == 'object' && data.breaks && data.breaks.length > 0) {
-            _this146.breaks = data.breaks;
+            This.breaks = data.breaks;
           }
+
+          onSuccess(true);
         });
       }
     }, {
@@ -16076,99 +16093,99 @@ paella.addPlugin(function () {
     }, {
       key: "onEvent",
       value: function onEvent(eventType, params) {
-        var _this147 = this;
-
-        paella.player.videoContainer.currentTime(true).then(function (currentTime) {
-          // The event type checking must to be done using the time difference, because
-          // the timeUpdate event may arrive before the seekToTime event
-          var diff = Math.abs(currentTime - _this147.lastTime);
-
-          _this147.checkBreaks(currentTime, diff >= 1 ? paella.events.seekToTime : paella.events.timeUpdate);
-
-          _this147.lastTime = currentTime;
+        var thisClass = this;
+        params.videoContainer.currentTime(true).then(function (currentTime) {
+          thisClass.checkBreaks(currentTime);
         });
       }
     }, {
       key: "checkBreaks",
-      value: function checkBreaks(currentTime, eventType) {
-        var _this148 = this;
+      value: function checkBreaks(currentTime) {
+        var a;
 
-        var breakMessage = "";
+        for (var i = 0; i < this.breaks.length; ++i) {
+          a = this.breaks[i];
 
-        if (this.breaks.some(function (breakItem) {
-          if (breakItem.s <= currentTime && breakItem.e >= currentTime) {
-            _this148.skipTo(breakItem.e);
-
-            breakMessage = breakItem.name;
-
-            if (paella.player.config.plugins.list[_this148.getName()].neverShow) {
-              return false;
-            }
-
-            return true;
+          if (a.s < currentTime && a.e > currentTime) {
+            if (this.areBreaksClickable()) this.avoidBreak(a);else this.showBreaks(a);
+          } else if (a.s.toFixed(0) == currentTime.toFixed(0)) {
+            this.avoidBreak(a);
           }
-        })) {
-          this.showMessage(breakMessage);
-          this.status = true;
-        } else {
-          this.hideMessage();
-          this.status = false;
+        }
+
+        if (!this.areBreaksClickable()) {
+          for (var key in this.visibleBreaks) {
+            if (_typeof(a) == 'object') {
+              a = this.visibleBreaks[key];
+
+              if (a && (a.s >= currentTime || a.e <= currentTime)) {
+                this.removeBreak(a);
+              }
+            }
+          }
         }
       }
     }, {
-      key: "skipTo",
-      value: function skipTo(time) {
-        var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
-        var newTime = time + (areBreaksClickable ? .5 : 0);
-
-        paella.player.videoContainer.trimEnabled()
-          ? paella.player.videoContainer.trimming().then(function (trimming) {
-            if (time >= trimming.end) {
-              newTime = 0;
-              paella.player.videoContainer.pause();
-            } else {
-              newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
-            }
-            paella.player.videoContainer.seekToTime(newTime);
-          })
-         : paella.player.videoContainer.duration(!0).then(function (duration) {
-            if (time >= duration) {
-              newTime = 0;
-              paella.player.videoContainer.pause();
-            }
-            paella.player.videoContainer.seekToTime(newTime);
-          });
+      key: "areBreaksClickable",
+      value: function areBreaksClickable() {
+        //Returns true if the config value is set and if we are not on the editor.
+        return this.config.neverShow && !(paella.editor && paella.editor.instance && paella.editor.instance.isLoaded);
       }
     }, {
-      key: "showMessage",
-      value: function showMessage(text) {
-        if (this.currentText != text) {
-          if (this.messageContainer) {
-            paella.player.videoContainer.overlayContainer.removeElement(this.messageContainer);
-          }
-
+      key: "showBreaks",
+      value: function showBreaks(br) {
+        if (!this.visibleBreaks[br.s]) {
           var rect = {
             left: 100,
             top: 350,
             width: 1080,
             height: 40
           };
-
-          this.currentText = text || "Break";
-          this.messageContainer = paella.player.videoContainer.overlayContainer.addText(paella.utils.dictionary.translate(text), rect);
-          this.messageContainer.className = 'textBreak';
-          this.currentText = text;
+          var name = br.name || paella.utils.dictionary.translate("Break");
+          br.elem = paella.player.videoContainer.overlayContainer.addText(name, rect);
+          br.elem.className = 'textBreak';
+          this.visibleBreaks[br.s] = br;
         }
       }
     }, {
-      key: "hideMessage",
-      value: function hideMessage() {
-        if (this.messageContainer) {
-          paella.player.videoContainer.overlayContainer.removeElement(this.messageContainer);
-          this.messageContainer = null;
+      key: "removeBreak",
+      value: function removeBreak(br) {
+        if (this.visibleBreaks[br.s]) {
+          var elem = this.visibleBreaks[br.s].elem;
+          paella.player.videoContainer.overlayContainer.removeElement(elem);
+          this.visibleBreaks[br.s] = null;
         }
+      }
+    }, {
+      key: "avoidBreak",
+      value: function avoidBreak(br) {
+        var _this146 = this;
 
-        this.currentText = "";
+        var newTime;
+
+        if (paella.player.videoContainer.trimEnabled()) {
+          paella.player.videoContainer.trimming().then(function (trimming) {
+            if (br.e >= trimming.end) {
+              newTime = 0;
+              paella.player.videoContainer.pause();
+            } else {
+              newTime = br.e + (_this146.config.neverShow ? 0.5 : 0) - trimming.start;
+            }
+
+            paella.player.videoContainer.seekToTime(newTime);
+          });
+        } else {
+          paella.player.videoContainer.duration(true).then(function (duration) {
+            if (br.e >= duration) {
+              newTime = 0;
+              paella.player.videoContainer.pause();
+            } else {
+              newTime = br.e + (_this146.config.neverShow ? 0.5 : 0);
+            }
+
+            paella.player.videoContainer.seekToTime(newTime);
+          });
+        }
       }
     }]);
 
