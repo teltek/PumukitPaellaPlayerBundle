@@ -7137,7 +7137,7 @@ function buildChromaVideoCanvas(e, t) {
               var i = t.containerManager.containers[t.getName()];
               i && i.element && t.buildContent(i.element);
             }),
-              paella.events.bind(paella.events.ended, function (e) {
+              paella.events.bind(paella.events.endVideo, function (e) {
                 t.goToNextVideo();
               });
           },
