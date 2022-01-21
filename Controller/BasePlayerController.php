@@ -149,7 +149,6 @@ class BasePlayerController extends BasePlayerControllero
 
         $autoStart = $request->query->get('autostart', 'false');
         $userAgent = $request->headers->get('user-agent');
-        dump($userAgent);
         if (false !== strpos($userAgent, 'Safari') || false !== strpos($userAgent, 'Mozilla')) {
             if (false === strpos($userAgent, 'Chrome')) {
                 $autoStart = false;
