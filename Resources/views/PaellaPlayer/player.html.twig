@@ -209,7 +209,7 @@
 
             video.id = (typeVideo == "intro") ? 'intro' : 'tail';
             video.addEventListener('ended', onEndedVideo);
-            video.autoplay = (typeVideo == "intro") ?  "{{ autostart != 'false' }}" : "true";
+            video.autoplay = (typeVideo == "intro") ?  "{{ autostart }}" : "true";
             video.muted = base.userAgent.browser.IsMobileVersion;
 
             skipContainer.id = "skipContainer";
