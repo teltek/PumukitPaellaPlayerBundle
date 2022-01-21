@@ -8666,13 +8666,14 @@ function buildChromaVideoCanvas(e, t) {
             paella.player.videoContainer.trimEnabled()
               ? paella.player.videoContainer.trimming().then(function (a) {
                   e.e >= a.end
-                    ? ((t = 0), paella.player.videoContainer.pause())
+                    ? ((t = 0), paella.player.videoContainer.pause(), paella.events.trigger(paella.events.endVideo))
                     : (t = e.e + (n.config.neverShow ? 0.5 : 0) - a.start),
                     paella.player.videoContainer.seekToTime(t);
                 })
               : paella.player.videoContainer.duration(!0).then(function (a) {
+                console.log("hola");
                   e.e >= a
-                    ? ((t = 0), paella.player.videoContainer.pause())
+                    ? ((t = 0), paella.player.videoContainer.pause(), paella.events.trigger(paella.events.endVideo))
                     : (t = e.e + (n.config.neverShow ? 0.5 : 0)),
                     paella.player.videoContainer.seekToTime(t);
                 });
