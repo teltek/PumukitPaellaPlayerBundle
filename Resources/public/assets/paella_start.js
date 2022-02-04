@@ -46,6 +46,17 @@ var MyAccessControl = Class.create(paella.AccessControl,{
 
 });
 
+Class("paella.MyInitDelegate", paella.InitDelegate, {
+  getId: function() {
+    var id = base.parameters.get("id")
+    if(!id)
+    id = base.parameters.get("videoId")
+    if(!id)
+    id = window.location.pathname.match(/\/(\w+)$/)[1];
+    return  id || "noid"
+  }
+});
+
 var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
   ref2IntRe:/.*;time=T(\d*?):(\d*?):(\d*?):(\d*?)F1000/i,
 
@@ -139,17 +150,9 @@ var MyVideoLoader = Class.create(paella.DefaultVideoLoader, {
 });
 
 function loadPaella(containerId, videoId) {
-  var initDelegate = new paella.InitDelegate({
+  var initDelegate = new paella.MyInitDelegate({
     configUrl: "/paella/config.json?id=" + videoId,
-    videoLoader:new MyVideoLoader(),
-    getId: function() {
-        var id = base.parameters.get("id")
-        if(!id)
-            id = base.parameters.get("videoId")
-        if(!id)
-            id = window.location.pathname.match(/\/(\w+)$/)[1];
-        return  id || "noid"
-    }
+    videoLoader:new MyVideoLoader()
   });
   initPaellaEngage(containerId,initDelegate);
 }
