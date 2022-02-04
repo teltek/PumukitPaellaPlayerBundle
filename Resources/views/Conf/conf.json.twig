@@ -44,7 +44,7 @@
     "editor":{
         "enabled":false
     },
-    "defaultProfile":"presenter_presentation",
+    "defaultProfile":"slide_professor",
     "data":{
         "enabled":true,
         "dataDelegates":{
@@ -71,10 +71,12 @@
         "//**** For a list of available plugins and configuration, go to": "https://github.com/polimediaupv/paella/blob/master/doc/plugins.md",
         "list":{
             "//****": "Button Plugins",
-            "edu.harvard.dce.paella.flexSkipPlugin": {"enabled":true, "direction": "Rewind", "seconds": 10, "minWindowSize": 510 },
-            "edu.harvard.dce.paella.flexSkipForwardPlugin": {"enabled":true, "direction": "Forward", "seconds": 30, "minWindowSize": 510 },
-            "es.teltek.paella.integratedDurationPlugin": {"enabled":true},
+            "edu.harvard.dce.paella.flexSkipPlugin": {"enabled":true, "direction": "Rewind", "seconds": 10},
+            "edu.harvard.dce.paella.flexSkipForwardPlugin": {"enabled":true, "direction": "Forward", "seconds": 30},
             "es.teltek.paella.playlistPlugin":  {"enabled":true, "playlistApi":"/paellaplaylist"},
+            "es.teltek.paella.integratedDurationPlugin": {"enabled":true},
+            "es.teltek.paella.simpleSoundControlPlugin": {"enabled":true},
+            "es.teltek.paella.advanceViewModePlugin": {"enabled": {{ 'advanced' in app.request.headers.get('referer') ? 'true': 'false'}} },
             "es.upv.paella.captionsPlugin": {"enabled":true, "searchOnCaptions":true},
             "es.upv.paella.extendedTabAdapterPlugin": {"enabled":false},
             "es.upv.paella.footprintsPlugin": {"enabled":true, "skin":"custom", "fillStyle": "green", "strokeStyle": "green"},
@@ -88,12 +90,11 @@
             "es.upv.paella.socialPlugin": {"enabled":false},
             "es.upv.paella.themeChooserPlugin":  {"enabled":false},
             "es.upv.paella.viewModePlugin": { "enabled": true },
-            "es.upv.paella.volumeRangePlugin":{"enabled":true, "showMasterVolume": false, "showSlaveVolume": false },
+            "es.upv.paella.volumeRangePlugin":{"enabled":false, "showMasterVolume": true, "showSlaveVolume": false },
             "es.upv.paella.pipModePlugin": { "enabled":true },
             "es.upv.paella.ratePlugin": { "enabled":false },
             "es.upv.paella.videoZoomPlugin": { "enabled":false },
             "es.upv.paella.audioLanguage": { "enabled":false },
-            "es.upv.paella.audioSelector": { "enabled":true },
             "es.upv.paella.videoZoomToolbarPlugin": { "enabled":false, "targetStreamIndex":0 },
             "es.upv.paella.videoZoomTrack4kPlugin": { "enabled":false, "targetStreamIndex":0, "autoModeByDefault":false },
             "es.upv.paella.airPlayPlugin": { "enabled":false },
@@ -127,30 +128,6 @@
             "es.upv.paella.zoomPlugin": {"enabled": false},
             "es.upv.paella.windowTitlePlugin": {"enabled": false},
             "es.upv.paella.track4kPlugin": { "enabled":false },
-
-            "//**** Video profile plugins": "",
-            "es.upv.paella.singleStreamProfilePlugin": {
-                "enabled": true,
-                "videoSets": [
-                    { "icon":"professor_icon.svg", "id":"presenter", "content":["presenter"]},
-                    { "icon":"slide_icon.svg", "id":"presentation", "content":["presentation"]}
-                ]
-
-            },
-            "es.upv.paella.dualStreamProfilePlugin": { "enabled":true,
-                "videoSets": [
-                { "icon":"slide_professor_icon.svg", "id":"presenter_presentation", "content":["presenter","presentation"] },
-                { "icon":"slide_professor_icon.svg", "id":"presenter2_presentation", "content":["presenter-2","presentation"] },
-                { "icon":"slide_professor_icon.svg", "id":"presenter3_presentation", "content":["presenter-3","presentation"] }
-                ]
-            },
-            "es.upv.paella.tripleStreamProfilePlugin": {
-                "enabled": true,
-                "videoSets": [
-                { "icon":"three_streams_icon.svg", "id":"presenter_presentation_presenter2", "content":["presenter","presentation","presenter-2"] },
-                { "icon":"three_streams_icon.svg", "id":"presenter_presentation_presenter3", "content":["presenter","presentation","presenter-3"] }
-                ]
-            },
 
             "//****": "Captions Parser Plugins",
             "es.upv.paella.captions.DFXPParserPlugin": {"enabled":true},

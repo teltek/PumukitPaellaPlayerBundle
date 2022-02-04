@@ -139,13 +139,11 @@ class PaellaDataService
                 $dataStream = $this->buildDataStream($tracks['display'], $request);
                 $pic = $this->getPicForObject($mmobj, true, true);
                 $dataStream['preview'] = $pic;
-                $dataStream['content'] = 'presenter';
                 $dataStream['language'] = $tracks['display'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
             if ($tracks['presentation']) {
                 $dataStream = $this->buildDataStream($tracks['presentation'], $request);
-                $dataStream['content'] = 'presentation';
                 $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
                 $data['streams'][] = $dataStream;
             }
@@ -157,12 +155,6 @@ class PaellaDataService
             'i18nTitle' => $mmobj->getI18nTitle(),
             'i18nDescription' => $mmobj->getI18nDescription(),
         ];
-
-        if (!$request->query->get('autostart') && !$request->query->get('backend')) {
-            $data['metadata'] = [
-                'preview' => $this->getPicForObject($mmobj, true, true),
-            ];
-        }
 
         $frameList = $this->getOpencastFrameList($mmobj);
         if ($frameList) {
