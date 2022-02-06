@@ -16,7 +16,7 @@ class PumukitExtension extends AbstractExtension
         ];
     }
 
-    public function getPaellaLayout(MultimediaObject $multimediaObject, Request $request)
+    public function getPaellaLayout(MultimediaObject $mmobj, Request $request)
     {
         $paellaLayout = 'professor_slide';
 
