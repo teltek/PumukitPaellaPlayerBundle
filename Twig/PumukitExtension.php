@@ -16,33 +16,16 @@ class PumukitExtension extends AbstractExtension
         ];
     }
 
-    public function getPaellaLayout(MultimediaObject $multimediaObject, Request $request)
+    public function getPaellaLayout(MultimediaObject $mmobj, Request $request)
     {
-        $paellaLayout = 'presenter_presentation';
+        $paellaLayout = 'professor_slide';
 
-        if ($multimediaObject->getProperty('opencastinvert')) {
-            $paellaLayout = 'presenter_presentation';
+        if ($mmobj->getProperty('opencastinvert')) {
+            $paellaLayout = 'slide_professor';
         }
 
-        if ($multimediaObject->getProperty('paellalayout')) {
-            $paellaLayout = $multimediaObject->getProperty('paellalayout');
-
-            switch ($paellaLayout) {
-                case 'professor_slide':
-                    $paellaLayout = 'presenter_presentation';
-
-                    break;
-
-                case 'professor':
-                    $paellaLayout = 'presenter';
-
-                    break;
-
-                case 'slide':
-                    $paellaLayout = 'presentation';
-
-                    break;
-            }
+        if ($mmobj->getProperty('paellalayout')) {
+            $paellaLayout = $mmobj->getProperty('paellalayout');
         }
 
         return $request->query->get('paella_layout', $paellaLayout);

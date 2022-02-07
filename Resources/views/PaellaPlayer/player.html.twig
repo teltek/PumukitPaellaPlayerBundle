@@ -20,9 +20,15 @@
             display: none;
         }
 
-        #paella_logo-png {
+        {% if logo is defined and logo %}
+        #paella_logo\.png {
+             content: url("{{ logo }}");
+        }
+        {% else %}
+        #paella_logo\.png {
             display: none !important;
         }
+        {% endif %}
 
         {% if intro or tail %}
             #introContainer, #tailContainer {
@@ -67,6 +73,12 @@
 
             .playButtonOnScreenIcon {
                 height: 100%;
+            }
+
+            @media(max-width: 767px) {
+                #skipContainer {
+                    bottom: 1.5em;
+                }
             }
         {% endif %}
 
@@ -198,7 +210,7 @@
             
             video.id = (typeVideo == "intro") ? 'intro' : 'tail';
             video.addEventListener('ended', onEndedVideo);
-            video.autoplay = (typeVideo == "intro") ?  "{{ autostart != 'false' }}" : "true";
+            video.autoplay = (typeVideo == "intro") ? "{{ autostart }}" : "true";
             video.muted = paella.utils.userAgent.browser.IsMobileVersion;
 
             skipContainer.id = "skipContainer";
@@ -237,17 +249,11 @@
             loadPaella('playerContainer', '{{ multimediaObject.id }}');
         {% endif %}
 
-        {% if multimediaObject.getProperty('soft-editing-duration') %}
-            paella.events.bind(paella.events.ended, function (event) {
-        {% else %}
-            paella.events.bind(paella.events.endVideo, function (event) {
-        {% endif %}
+        paella.events.bind(paella.events.endVideo, function (event) {
             {% if tail %}
                     introOrTailVideo("tail");
             {% endif %}
-
             firstPlay = true;
-
             paella.events.bind(paella.events.play, function (event) {
                 {% if intro %}
                     if (firstPlay) {
