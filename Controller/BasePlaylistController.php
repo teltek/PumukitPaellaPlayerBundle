@@ -20,6 +20,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
     private $paellaCustomCssUrl;
     private $paellaLogo;
     private $pumukitIntro;
+    private $paellaAutoPlay;
 
     public function __construct(
         DocumentManager $documentManager,
@@ -27,13 +28,15 @@ class BasePlaylistController extends BasePlaylistAbstractController
         $pumukitOpencastHost,
         $paellaCustomCssUrl,
         $paellaLogo,
-        $pumukitIntro
+        $pumukitIntro,
+        $paellaAutoPlay
     ) {
         parent::__construct($documentManager, $seriesPlaylistService);
         $this->pumukitOpencastHost = $pumukitOpencastHost;
         $this->paellaCustomCssUrl = $paellaCustomCssUrl;
         $this->paellaLogo = $paellaLogo;
         $this->pumukitIntro = $pumukitIntro;
+        $this->paellaAutoPlay = $paellaAutoPlay;
     }
 
     /**
@@ -84,6 +87,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
 
         return [
             'autostart' => $request->query->get('autostart', 'false'),
+            'autoplay_fallback' => $this->paellaAutoPlay,
             'intro' => $this->getIntro($request->query->get('intro')),
             'tail' => null,
             'custom_css_url' => $this->paellaCustomCssUrl,
