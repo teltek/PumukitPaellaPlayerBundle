@@ -21,7 +21,8 @@
     ],
     "require": {
         "php": ">=7.2",
-        "pumukit/pumukit": "^4.0"
+        "pumukit/pumukit": "^4.0",
+        "symfony/webpack-encore-bundle": "^1.14"
     },
     "autoload": {
         "psr-4": {
