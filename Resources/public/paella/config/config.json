@@ -1,10 +1,8 @@
 {
-    "repositoryUrl": "repository",
+    "repositoryUrl": "manifest",
     "manifestFileName": "data.json",
 
-    "defaultLayout": "presenter",
-   
-    "logLevel": "INFO",
+    "defaultLayout": "presenter-presentation",
 
     "plugins": {
         "es.upv.paella.singleVideo": {
@@ -30,175 +28,17 @@
                 { "id": "presenter-2-presenter-3-presentation", "content": ["presenter-2","presenter-3","presentation"], "icon": "present-mode-4.svg", "title": "Presenter and presentation" }
             ]
         },
-        
-        "es.upv.paella.hlsVideoFormat": {
-            "enabled": true,
-            "order": 0,
-            "hlsConfig": {
-                "maxBufferLength": 40
-            },
-            "corsConfig": {
-                "withCredentials": false,
-                "requestHeaders": {
-                    "Access-Control-Allow-Credentials": false
-                }
-            }
-        },
-
-        "es.upv.paella.hlsLiveVideoFormat": {
-            "enabled": true,
-            "order": 0,
-            "hlsConfig": {
-                "maxBufferLength": 40
-            },
-            "corsConfig": {
-                "withCredentials": false,
-                "requestHeaders": {
-                    "Access-Control-Allow-Credentials": false
-                }
-            }
-        },
-
         "es.upv.paella.mp4VideoFormat": {
             "enabled": true,
             "order": 1
         },
-        
         "es.upv.paella.playPauseButton": {
             "enabled": true,
-            "order": 0,
-            "description": "Play and pause button"
-        },
-        
-        "es.upv.paella.frameControlButtonPlugin": {
-            "enabled": true,
-            "side": "right",
-            "order": 102
-        },
-
-        "es.upv.paella.fullscreenButton": {
-            "enabled": true,
-            "side": "right",
-            "order": 103
-        },
-
-        "es.upv.paella.layoutSelector": {
-            "enabled": true,
-            "side": "right",
-            "order": 101,
-            "parentContainer": "videoContainer"
-        },
-
-        "es.upv.paella.playbackRateButton": {
-            "enabled": true,
-            "side": "right",
-            "order": 102,
-            "parentContainer": "videoContainer",
-            "rates": [0.75, 1, 1.5, 2]
-        },
-
-        "es.upv.paella.volumeButtonPlugin": {
-            "enabled": true,
-            "side": "left",
-            "order": 3
-        },
-
-        "es.upv.paella.forwardButtonPlugin": {
-            "enabled": true,
-            "side": "left",
-            "order": 2
-        },
-
-        "es.upv.paella.backwardButtonPlugin": {
-            "enabled": true,
-            "side": "left",
             "order": 1
         },
-
-        "es.upv.paella.zoomPlugin": {
-            "enabled": true,
-            "order": 0,
-            "maxZoom": 400,
-            "showButtons": true,
-            "target": "presenter"
-        },
-
         "es.upv.paella.videoCanvas": {
             "enabled": true,
             "order": 1
-        },
-
-        "es.upv.paella.cookieDataPlugin": {
-            "enabled": true,
-            "order": 0,
-            "context": ["default","trimming"]
-        },
-
-        "es.upv.paella.vttManifestCaptionsPlugin": {
-            "enabled": true
-        },
-
-        "es.upv.paella.hlsCaptionsPlugin": {
-            "enabled": true
-        },
-
-        "es.upv.paella.captionsSelectorPlugin": {
-            "enabled": true,
-            "side": "right",
-            "parentContainer": "videoContainer"
-        },
-
-        "es.upv.paella.qualitySelector": {
-            "enabled": true,
-            "side": "right",
-            "parentContainer": "videoContainer"
-        },
-
-        "es.upv.paella.audioSelector": {
-            "enabled": true,
-            "side": "right"
-        },
-        
-        "es.upv.paella.defaultShortcuts": {
-            "enabled": true,
-            "validPlaybackRates": [0.75, 2, 1, 1.5]
-        },
-
-        "es.upv.paella.arrowSlidesNavigator": {
-            "enabled": true,
-            "target": [
-                "presentation",
-                "presenter"
-            ]
-        },
-
-        "es.upv.paella.keyboardShortcutsHelp": {
-            "enabled": true,
-            "order": 80,
-            "description": "Keyboard Shortcuts",
-            "side": "right"
-        },
-
-        "es.upv.paella.userEventTracker": {
-            "enabled": true,
-            "context_": "userTracking"
-        },
-
-        "es.upv.paella.debug.userTrackingDataPlugin": {
-            "enabled": true,
-            "context": [
-                "userTracking"
-            ]
-        },
-
-        "es.upv.paella.analytics.userTrackingDataPlugin": {
-            "enabled": false,
-            "trackingId": "configure_your_tracking_id_here",
-            "domain": "",
-            "category": true,
-            "context": [
-                "userTracking"
-            ]
         }
     }
 }
