@@ -1,0 +1,44 @@
+{
+    "repositoryUrl": "manifest",
+    "manifestFileName": "data.json",
+
+    "defaultLayout": "presenter-presentation",
+
+    "plugins": {
+        "es.upv.paella.singleVideo": {
+            "enabled": true,
+            "validContent": [
+                { "id": "presenter", "content": ["presenter"], "icon": "present-mode-2.svg", "title": "Presenter" },
+                { "id": "presentation", "content": ["presentation"], "icon": "present-mode-1.svg", "title": "Presentation" },
+                { "id": "presenter-2", "content": ["presenter-2"], "icon": "present-mode-1.svg", "title": "Presentation" }
+            ]
+        },
+        "es.upv.paella.dualVideo": {
+            "enabled": true,
+            "validContent": [
+                { "id": "presenter-presentation", "content": ["presenter","presentation"], "icon": "present-mode-3.svg", "title": "Presenter and presentation" },
+                { "id": "presenter-2-presentation", "content": ["presenter-2","presentation"], "icon": "present-mode-3.svg", "title": "Presenter and presentation" },
+                { "id": "presenter-presenter-2", "content": ["presenter","presenter-2"], "icon": "present-mode-3.svg", "title": "Presenter and presentation" }
+            ]
+        },
+        "es.upv.paella.tripleVideo": {
+            "enabled": true,
+            "validContent": [
+                { "id": "presenter-presenter-2-presentation", "content": ["presenter","presenter-2","presentation"], "icon": "present-mode-4.svg", "title": "Presenter and presentation" },
+                { "id": "presenter-2-presenter-3-presentation", "content": ["presenter-2","presenter-3","presentation"], "icon": "present-mode-4.svg", "title": "Presenter and presentation" }
+            ]
+        },
+        "es.upv.paella.mp4VideoFormat": {
+            "enabled": true,
+            "order": 1
+        },
+        "es.upv.paella.playPauseButton": {
+            "enabled": true,
+            "order": 1
+        },
+        "es.upv.paella.videoCanvas": {
+            "enabled": true,
+            "order": 1
+        }
+    }
+}
