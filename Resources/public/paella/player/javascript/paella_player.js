@@ -10198,10 +10198,10 @@ function buildChromaVideoCanvas(e, t) {
               { id: paella.initDelegate.getId() },
               function (t, n) {
                 var a = {};
-                paella.player.videoContainer.duration().then(function (n) {
+                paella.player.videoContainer.duration().then(async (n) => {
                   for (
                     var i = Math.floor(
-                        paella.player.videoContainer.trimStart()
+                        await paella.player.videoContainer.trimStart()
                       ),
                       r = -1,
                       o = 0,
