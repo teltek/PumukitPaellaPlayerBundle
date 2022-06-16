@@ -91,6 +91,19 @@ class PaellaDataService
         return $data;
     }
 
+    public function addPaellaMetadata(MultimediaObject $multimediaObject): array
+    {
+        $data['metadata']['id'] = $multimediaObject->getId();
+        $data['metadata']['title'] = $multimediaObject->getTitle();
+        $data['metadata']['i18nTitle'] = $multimediaObject->getI18nTitle();
+        $data['metadata']['description'] = $multimediaObject->getDescription();
+        $data['metadata']['i18nDescription'] = $multimediaObject->getI18nDescription();
+        $data['metadata']['preview'] = $this->picService->getPosterUrl($multimediaObject, true);
+//        $data['metadata'] = $this->addRelatedMetadata($multimediaObject);
+
+        return $data;
+    }
+
     public function getPaellaMmobjData(MultimediaObject $mmobj, Request $request): array
     {
         $trackId = $request->query->get('track_id');
@@ -102,6 +115,7 @@ class PaellaDataService
         }
 
         $data = [];
+        $data = $this->addPaellaMetadata($mmobj);
         $data['streams'] = [];
         $tracks = $this->getMmobjTracks($mmobj, $trackId);
 
@@ -148,13 +162,13 @@ class PaellaDataService
                 $data['streams'][] = $dataStream;
             }
         }
-        $data['metadata'] = [
-            'title' => $mmobj->getTitle(),
-            'description' => $mmobj->getDescription(),
-            'duration' => $mmobj->getDuration(),
-            'i18nTitle' => $mmobj->getI18nTitle(),
-            'i18nDescription' => $mmobj->getI18nDescription(),
-        ];
+//        $data['metadata'] = [
+//            'title' => $mmobj->getTitle(),
+//            'description' => $mmobj->getDescription(),
+//            'duration' => $mmobj->getDuration(),
+//            'i18nTitle' => $mmobj->getI18nTitle(),
+//            'i18nDescription' => $mmobj->getI18nDescription(),
+//        ];
 
         $frameList = $this->getOpencastFrameList($mmobj);
         if ($frameList) {
@@ -375,6 +389,10 @@ class PaellaDataService
             $sources[$format][] = $dataStreamTrack;
         }
         $dataStream['sources'] = $sources;
+        $dataStream['content'] = 'presenter';
+        $dataStream['audioTag'] = 'es';
+
+
 
         return $dataStream;
     }
