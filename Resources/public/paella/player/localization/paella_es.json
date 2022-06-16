@@ -53,8 +53,6 @@
 	"Could not load the video": "No se ha podido cargar el vídeo",
 	"Error! Captions format not supported.": "Error! El formato de los subtitulos no está soportado.",
 	"No such HLS stream: the video is not available": "No se ha encontrado el stream de emisión en vivo: el vídeo no está disponible",
-	"Duration": "Duración",
-	"Playlist": "Lista de reproducción",
 	"Trimming": "Ajuste de inicio y fin",
 	"Breaks": "Descansos",
 	"Break": "Descanso",

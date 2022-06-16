@@ -22,7 +22,7 @@ var GlobalParams = {
 
 window.paella = window.paella || {};
 paella.player = null;
-paella.version = "6.5.4 - build: d3168aaa";
+paella.version = "6.5.6 - build: dac35217";
 
 (function buildBaseUrl() {
 	if (window.paella_debug_baseUrl) {
@@ -5551,17 +5551,25 @@ class VideoContainer extends paella.VideoContainerBase {
 
 	// Playback and status functions
 	play() {
+		let thisClass = this;
 		return new Promise((resolve,reject) => {
 			this.ended()
 				.then((ended) => {
 					if (ended) {
+						// Wait for seek to complete before requesting play, or risk media freeze-up (i.e. FireFox)
+						$(document).bind(paella.events.seekToTime, function (event, params) {
+							$(document).unbind(paella.events.seekToTime);
+							// Now it's safe to call this method again. Ended state evaluates to false because of the seek.
+							return thisClass.play();
+						});
 						this._streamProvider.startTime = 0;
 						this.seekToTime(0);
 					}
 					else {
 						this.streamProvider.startTime = this._startTime;
+						// Call separately from the ended state handling, or risk media freeze-up.
+						return this.streamProvider.callPlayerFunction('play');
 					}
-					return this.streamProvider.callPlayerFunction('play')
 				})
 				.then(() => {
 					super.play();
@@ -10746,154 +10754,6 @@ paella.addPlugin(function () {
     }
 })
 
-
-paella.addPlugin(function() {
-	return class integratedDurationPlugin extends paella.ButtonPlugin {
-		getAlignment() { return 'left'; }
-		getSubclass() { return 'integratedDurationButton'; }
-		getName() { return "es.teltek.paella.integratedDurationPlugin"; }
-		getDefaultToolTip() { return base.dictionary.translate("Duration"); }
-		getIndex() {return 190;}
-
-		checkEnabled(onSuccess) {
-			onSuccess(true);
-		}
-
-		setup() {
-		    let self = this;
-			paella.events.bind(paella.events.timeUpdate,function(event,params) {self.changeTime();});
-		}
-
-		changeTime(){
-		    let thisClass = this;
-		    
-            paella.player.videoContainer.currentTime().then(function(duration) {
-                paella.player.videoContainer.duration().then(function(d) {
-                      duration = parseInt(duration);
-                      thisClass.setText(thisClass.secondsToHours(duration) + " / " + thisClass.secondsToHours(parseInt(d)));
-                });
-		    });
-        }
-
-        getText() {
-            return "00:00 / 00:00";
-        }
-
-        secondsToHours(sec_numb) {
-            let hours   = Math.floor(sec_numb / 3600);
-            let minutes = Math.floor((sec_numb - (hours * 3600)) / 60);
-            let seconds = sec_numb - (hours * 3600) - (minutes * 60);
-
-            if (minutes < 10) {minutes = "0"+minutes;}
-            if (seconds < 10) {seconds = "0"+seconds;}
-
-            if(hours === 0) {
-                return minutes + ':' + seconds;
-            }
-
-            if(minutes === 0) {
-                return '0:' + seconds;
-            }
-
-            return hours + ':' + minutes + ':' + seconds;
-        }
-
-	};
-});
-
-Class ("paella.plugins.playlistPlugin",paella.ButtonPlugin,{
-    currentPlaylistId:null,
-    currentVideoId:null,
-    currentVideoPos:null,
-    currentVideo:null,
-    playlistVideos:[],
-
-    getAlignment:function() { return 'left'; },
-    getSubclass:function() { return "playlistPlugin"; },
-    getIndex:function() { return 400; },
-    getName:function() { return "es.teltek.paella.playlistPlugin"; },
-    getDefaultToolTip:function() { return paella.utils.dictionary.translate("Playlist"); },
-    getButtonType:function() { return paella.ButtonPlugin.type.popUpButton; },
-
-    checkEnabled:function(onSuccess) {
-        this.currentPlaylistId = paella.utils.parameters.get("playlistId");
-        this.currentVideoId = paella.utils.parameters.get("videoId");
-        this.currentVideoPos = paella.utils.parameters.get("videoPos");
-        if (this.currentPlaylistId && this.currentVideoId && this.currentVideoPos){
-            onSuccess(true);
-            }
-        else {
-            onSuccess(false);
-            }
-        },
-    findVideo:function() {
-        var currentVideo = null;
-        var playlistPlugin = this;
-        this.playlistVideos.find(function(item){
-            if(item.id == playlistPlugin.currentVideoId) {
-                currentVideo = item;
-                if(item.pos == playlistPlugin.currentVideoPos) {
-                    return true;
-                    }
-                return false;
-                }
-            });
-        return currentVideo;
-        },
-    setup:function() {
-        var url = this.config.playlistApi + "/" + this.currentPlaylistId;
-        var playlistPlugin = this;
-        paella.utils.ajax.get(
-            {url: url},
-            function(data, contentType, returnCode) {
-                playlistPlugin.playlistVideos = data;
-                playlistPlugin.currentVideo = playlistPlugin.findVideo();
-                //Is there a better way to relaunch buildContent?
-                var container = playlistPlugin.containerManager.containers[playlistPlugin.getName()];
-                if(container && container.element)
-                    playlistPlugin.buildContent(container.element);
-                }
-            );
-        paella.events.bind(
-            paella.events.endVideo,
-            function(event){
-                playlistPlugin.goToNextVideo();
-                }
-            );
-        },
-
-    buildContent:function(domElement) {
-        //Removes every element.
-        while(domElement.hasChildNodes()){
-            domElement.removeChild(domElement.lastChild);
-            }
-        var playlistPlugin = this;
-        this.playlistVideos.forEach(function(item){
-            var elem = document.createElement('div');
-            elem.className = "videobutton"+ (item == playlistPlugin.currentVideo  ?' playing':'');
-            elem.innerHTML = item.name;
-            $(elem).click(function(event) {
-                window.location.href=item.url;
-                });
-            domElement.appendChild(elem);
-            });
-        },
-
-    goToNextVideo:function(){
-        var playlistPlugin = this;
-        var index = this.playlistVideos.findIndex(
-            function(elem){
-                return elem == playlistPlugin.currentVideo;
-                }
-            );
-        var length = this.playlistVideos.length;
-        var next = this.playlistVideos[(index + 1) % length];
-        window.location.href = next.url;
-        }
-});
-
-paella.plugins.playlistPlugin = new paella.plugins.playlistPlugin();
-
 paella.addPlugin(function() {
   return class xAPISaverPlugin extends paella.userTracking.SaverPlugIn {
     getName() {return "es.teltek.paella.usertracking.xAPISaverPlugin";}
@@ -12715,15 +12575,10 @@ paella.addPlugin(() => {
 			let breakMessage = "";
 			if (this.breaks.some((breakItem) => {
 				if (breakItem.s<=currentTime && breakItem.e>=currentTime) {
-
-					this.skipTo(breakItem.e);
-
-					breakMessage = breakItem.text;
-
-					if(paella.player.config.plugins.list[this.getName()].neverShow) {
-						return false;
+					if (eventType==paella.events.timeUpdate && !this.status) {
+						this.skipTo(breakItem.e);
 					}
-
+					breakMessage = breakItem.text;
 					return true;
 				}
 			})) {
@@ -12737,30 +12592,15 @@ paella.addPlugin(() => {
 		}
 
 		skipTo(time) {
-			var areBreaksClickable = paella.player.config.plugins.list[this.getName()].neverShow;
-			var newTime = time + (areBreaksClickable ? .5 : 0);
-
 			paella.player.videoContainer.trimming()
 				.then((trimming) => {
 					if (trimming.enabled) {
-						if (time >= trimming.end) {
-							newTime = 0;
-							paella.player.videoContainer.pause();
-						} else {
-							newTime = time + (areBreaksClickable ? .5 : 0) - trimming.start;
-						}
-						paella.player.videoContainer.seekToTime(newTime);
+						paella.player.videoContainer.seekToTime(time - trimming.start);
 					}
 					else {
-						return paella.player.videoContainer.duration(true);
+						paella.player.videoContainer.seekToTime(time);
 					}
-				}).then((duration) => {
-					if (time >= duration) {
-					  newTime = 0;
-					  paella.player.videoContainer.pause();
-					}
-					paella.player.videoContainer.seekToTime(newTime);
-				});
+				})
 		}
 
 		showMessage(text) {
@@ -15192,17 +15032,15 @@ paella.addPlugin(function() {
 				defaultAudioCodec: undefined,
 				initialLiveManifestSize: 1,
 				initialQualityLevel: 1,
-				maxBufferLength: 30,
-				maxMaxBufferLength: 600,
-				maxBufferSize: 60*1000*1000,
+				maxBufferLength: 6,
+				maxMaxBufferLength: 6,
+				maxBufferSize: 600*1000*1000,
 				maxBufferHole: 0.5,
 				lowBufferWatchdogPeriod: 0.5,
 				highBufferWatchdogPeriod: 3,
 				nudgeOffset: 0.1,
 				nudgeMaxRetry : 3,
 				maxFragLookUpTolerance: 0.2,
-				liveSyncDurationCount: 3,
-				liveMaxLatencyDurationCount: 10,
 				enableWorker: true,
 				enableSoftwareAES: true,
 				manifestLoadingTimeOut: 10000,
@@ -15220,15 +15058,6 @@ paella.addPlugin(function() {
 				fragLoadingMaxRetryTimeout: 64000,
 				startFragPrefetch: false,
 				appendErrorMaxRetry: 3,
-				
-				// loader: customLoader,
-				// fLoader: customFragmentLoader,
-				// pLoader: customPlaylistLoader,
-				// xhrSetup: XMLHttpRequestSetupCallback,
-				// fetchSetup: FetchSetupCallback,
-				// abrController: customAbrController,
-				// timelineController: TimelineController,
-
 				enableWebVTT: true,
 				enableCEA708Captions: true,
 				stretchShortVideoTrack: false,
@@ -15331,7 +15160,6 @@ paella.addPlugin(function() {
 		}
 
 		setupHls(video,url) {
-			let initialQualityLevel = this.config.initialQualityLevel !== undefined ? this.config.initialQualityLevel : 1;
 			return new Promise((resolve,reject) => {
 				this._loadDeps()
 					.then((Hls) => {
@@ -15382,24 +15210,22 @@ paella.addPlugin(function() {
 									this._hls.startLoad();
 								}
 
-								// Fixes hls.js problems when loading the initial quality level
-								this._hls.currentLevel = this._hls.levels.length>=initialQualityLevel ? initialQualityLevel : -1;
-								setTimeout(() => this._hls.currentLevel = -1, 1000);
-
 								// Fixes hls.js problems loading some live videos
 								if (isLiveStreaming) {
 									try {
 										//video.play();
 									} catch (e) {}
 								}
-
-								resolve(video);
 							});
 
 							const rand = Math.floor(Math.random() * 100000000000);
 							url += /\?/.test(url) ? `&cache=${ rand }` : `?cache=${ rand }`;
 							this._hls.loadSource(url);
 							this._hls.attachMedia(video);
+
+							video.addEventListener("canplay", () => {
+								resolve(video);
+							})
 						}
 						else {
 							reject(new Error("HLS not supported"));
@@ -16410,7 +16236,7 @@ paella.addPlugin(function() {
 					this.showIcon = this.showOnEnd;
 					this.checkStatus();
 				} else {
-					base.log.debug(`BTN ON SCREEN: The player is no longer in ended state.`);
+					paella.log.debug(`BTN ON SCREEN: The player is no longer in ended state.`);
 				}
 			});
 		}
