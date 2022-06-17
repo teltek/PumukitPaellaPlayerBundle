@@ -392,8 +392,6 @@ class PaellaDataService
         $dataStream['content'] = 'presenter';
         $dataStream['audioTag'] = 'es';
 
-
-
         return $dataStream;
     }
 
