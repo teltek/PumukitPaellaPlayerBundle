@@ -5,6 +5,7 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 use PHPUnit\Util\Json;
 use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
 use Pumukit\CoreBundle\Services\SerializerService;
+use Pumukit\PaellaPlayerBundle\Services\LiveManifest;
 use Pumukit\PaellaPlayerBundle\Services\PaellaDataService;
 use Pumukit\PaellaPlayerBundle\Services\VoDManifest;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
@@ -20,15 +21,18 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
     private $serializer;
     private $paellaDataService;
     private $voDManifest;
+    private $liveManifest;
 
     public function __construct(
         SerializerService $serializer,
         PaellaDataService $paellaDataService,
-        VoDManifest $voDManifest
+        VoDManifest $voDManifest,
+        LiveManifest $liveManifest
     ) {
         $this->serializer = $serializer;
         $this->paellaDataService = $paellaDataService;
         $this->voDManifest = $voDManifest;
+        $this->liveManifest = $liveManifest;
     }
 
     /**
@@ -37,7 +41,11 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
      */
     public function indexAction(Request $request, MultimediaObject $multimediaObject): Response
     {
-        $data = $this->voDManifest->create($multimediaObject, $request->query->get('track_id'));
+        if ($multimediaObject->isLive()) {
+            $data = $this->liveManifest->create($multimediaObject);
+        } else {
+            $data = $this->voDManifest->create($multimediaObject, $request->query->get('track_id'));
+        }
         $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);

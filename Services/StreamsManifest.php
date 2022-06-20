@@ -4,25 +4,33 @@ declare(strict_types=1);
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Pumukit\BaseLivePlayerBundle\Services\LiveService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Services\PicService;
 
 class StreamsManifest
 {
+    private $documentManager;
     private $picService;
     private $trackUrlService;
+    private $liveService;
     private $requestContextScheme;
     private $requestContextHost;
 
     public function __construct(
+        DocumentManager $documentManager,
         PicService $picService,
         TrackUrlService $trackUrlService,
+        LiveService $liveService,
         string $requestContextScheme,
         string $requestContextHost
     ) {
+        $this->documentManager = $documentManager;
         $this->picService = $picService;
         $this->trackUrlService = $trackUrlService;
+        $this->liveService = $liveService;
         $this->requestContextScheme = $requestContextScheme;
         $this->requestContextHost = $requestContextHost;
     }
@@ -50,21 +58,12 @@ class StreamsManifest
 
         $tracks = $this->getMmobjTracks($multimediaObject, $trackId);
 
-        if ($tracks['display']) {
-            $dataStream = $this->buildDataStream($tracks['display']);
-            $pic = $this->getPreview($multimediaObject);
-            $dataStream['preview'] = $pic;
-            $dataStream['language'] = $tracks['display'][0]->getLanguage();
-
-            $dataStream['content'] = 'presenter';
-            $dataStream['audioTag'] = $tracks['display'][0]->getLanguage();
-
-            $data['streams'][] = $dataStream;
-        }
         if ($tracks['presentation']) {
             $dataStream = $this->buildDataStream($tracks['presentation']);
             $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
             $data['streams'][] = $dataStream;
+//            $dataStream['content'] = 'presenter';
+//            $dataStream['audioTag'] = $tracks['presentation'][0]->getLanguage();
         }
 
         return $data;
@@ -72,6 +71,44 @@ class StreamsManifest
 
     public function createStreamsForLive(MultimediaObject $multimediaObject): array
     {
+        $live = $multimediaObject->getEmbeddedEvent()->getLive();
+
+        $url = $this->liveService->generateHlsUrl($live);
+        if (false === strpos($url, 'https')) {
+            $url = 'https:'.$url;
+        }
+
+        $dataStream = $this->buildDataLive([$url], 'video/mp4');
+        $dataStream['preview'] = '';
+        $dataStream['content'] = 'presenter';
+        $dataStream['role'] = 'mainAudio';
+        $data['streams'][] = $dataStream;
+
+        return $data;
+    }
+
+    public function buildDataLive(array $urls, string $mimeType): array
+    {
+        $sources = [];
+        foreach ($urls as $url) {
+            $src = $url;
+            $dataStreamTrack = [
+                'src' => $src,
+                'mimetype' => $mimeType,
+            ];
+
+//            if ($track->getWidth() && $track->getHeight()) {
+//                $dataStreamTrack['res'] = ['w' => $track->getWidth(), 'h' => $track->getHeight()];
+//            }
+
+            if (!isset($sources['hlsLive'])) {
+                $sources['hlsLive'] = [];
+            }
+            $sources['hlsLive'][] = $dataStreamTrack;
+        }
+        $dataStream['sources'] = $sources;
+
+        return $dataStream;
     }
 
     private function getMmobjTracks(MultimediaObject $multimediaObject, ?string $trackId): array

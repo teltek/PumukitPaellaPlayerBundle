@@ -89,10 +89,10 @@ window.onload = async () => {
 
     // try {
     //     await paella.loadManifest()
-    //     console.log("Load done");
+    //     // console.log("Load done");
     //
     //     await utils.loadStyle('style.css');
-    //     console.log("Style loaded using Paella Core API");
+    //     // console.log("Style loaded using Paella Core API");
     // } catch (e) {
     //     console.error(e);
     // }
