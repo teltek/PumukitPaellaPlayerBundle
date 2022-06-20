@@ -8,7 +8,6 @@ use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ConfController extends AbstractController
@@ -37,39 +36,13 @@ class ConfController extends AbstractController
         $this->paellaFootPrints = $paellaFootPrints;
     }
 
-//    /**
-//     * @Route("/paella5/config.json", name="paella_player5_config")
-//     */
-//    public function confAction(Request $request)
-//    {
-//        $id = $request->get('id');
-//        if (!$id || !preg_match('/^[0-9a-z]{24}$/', $id)) {
-//            throw new NotFoundHttpException('Multimedia Object not found with id '.$id);
-//        }
-//
-//        $folders_profiles = $this->getPaellaProfileFolder($request);
-//
-//        $jsonData = $this->renderView(
-//            '@PumukitPaellaPlayer/Conf/conf.json.twig',
-//            [
-//                'xapi_endpoint' => $this->paellaXAPIEndpoint,
-//                'xapi_auth' => $this->paellaXAPIAuth,
-//                'access_control_class' => $this->paellaAccessControlClass,
-//                'footprints' => $this->paellaFootPrints,
-//                'folders_profiles' => $folders_profiles,
-//            ]
-//        );
-//
-//        return new Response($jsonData, 200, ['Content-Type' => 'application/json']);
-//    }
-
     /**
      * @Route("/paella/config.json", name="paella_player_config")
      */
-    public function conf7Action(Request $request)
+    public function confAction(Request $request)
     {
         $jsonData = $this->renderView(
-            '@PumukitPaellaPlayer/Conf/conf2.json.twig',
+            '@PumukitPaellaPlayer/Conf/conf.json.twig',
             [
                 'xapi_endpoint' => $this->paellaXAPIEndpoint,
                 'xapi_auth' => $this->paellaXAPIAuth,

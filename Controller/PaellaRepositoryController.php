@@ -6,6 +6,7 @@ use PHPUnit\Util\Json;
 use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
 use Pumukit\CoreBundle\Services\SerializerService;
 use Pumukit\PaellaPlayerBundle\Services\PaellaDataService;
+use Pumukit\PaellaPlayerBundle\Services\VoDManifest;
 use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
@@ -18,11 +19,16 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
 {
     private $serializer;
     private $paellaDataService;
+    private $voDManifest;
 
-    public function __construct(SerializerService $serializer, PaellaDataService $paellaDataService)
-    {
+    public function __construct(
+        SerializerService $serializer,
+        PaellaDataService $paellaDataService,
+        VoDManifest $voDManifest
+    ) {
         $this->serializer = $serializer;
         $this->paellaDataService = $paellaDataService;
+        $this->voDManifest = $voDManifest;
     }
 
     /**
@@ -31,7 +37,7 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
      */
     public function indexAction(Request $request, MultimediaObject $multimediaObject): Response
     {
-        $data = $this->paellaDataService->getPaellaMmobjData($multimediaObject, $request);
+        $data = $this->voDManifest->create($multimediaObject, $request->query->get('track_id'));
         $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
