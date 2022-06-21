@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block body_base %}
-    <div id="player-container" style="display:block;width:100%;height:600px">
+    <div id="player-container">
     </div>
     <style>
         #playerContainer_videoContainer {
@@ -93,7 +93,15 @@
         {% endif %}
     </style>
     <script>
-            {#loadPaellaPlayer('{{ multimediaObject.id }}');#}
+        function resizeFrame(elem) {
+            var width = $(elem).width();
+            var height = width / 16 * 9;
+            $(elem).height(height);
+        }
+        $(window).on('load resize', function () {
+            resizeFrame($('#player-container'));
+        });
+                {#loadPaellaPlayer('{{ multimediaObject.id }}');#}
     {#
         localStorage.setItem('opencast_host', "{{ opencast_host }}");
         var isOpencast = "{{ multimediaObject.getProperty('opencast') }}";

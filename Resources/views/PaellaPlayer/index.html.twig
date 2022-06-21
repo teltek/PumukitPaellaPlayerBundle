@@ -9,15 +9,14 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
+  {{ parent() }}
+  <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
-
-  {# <link rel="stylesheet" href="{{ asset('bundles/pumukitpaellaplayer/paella/player/resources/bootstrap/css/bootstrap.min.css') }}" type="text/css" media="screen" charset="utf-8"> #}
-
+  {{ parent() }}
   <style>
+
    {# Added while waiting for paella upstream #}
    video {
        background: black;
