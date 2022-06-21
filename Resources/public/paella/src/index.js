@@ -91,7 +91,7 @@ window.onload = async () => {
         await paella.loadManifest()
         // console.log("Load done");
 
-        await utils.loadStyle('style.css');
+        await utils.loadStyle('src/style.css');
         // console.log("Style loaded using Paella Core API");
     } catch (e) {
         console.error(e);
