@@ -2,3 +2,4 @@
 *.swp
 \#*\#
 .php-cs-fixer.cache
+node_modules
