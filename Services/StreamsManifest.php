@@ -58,12 +58,23 @@ class StreamsManifest
 
         $tracks = $this->getMmobjTracks($multimediaObject, $trackId);
 
+        // Camera tracks
+        if ($tracks['display']) {
+            $dataStream = $this->buildDataStream($tracks['display']);
+            $pic = $this->getPreview($multimediaObject);
+            $dataStream['preview'] = $pic;
+            $dataStream['language'] = $tracks['display'][0]->getLanguage();
+            $dataStream['content'] = 'presenter';
+            $dataStream['audioTag'] = $tracks['display'][0]->getLanguage();
+            $data['streams'][] = $dataStream;
+        }
+
+        // Presentation tracks
         if ($tracks['presentation']) {
             $dataStream = $this->buildDataStream($tracks['presentation']);
             $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
+            $dataStream['content'] = 'presentation';
             $data['streams'][] = $dataStream;
-//            $dataStream['content'] = 'presenter';
-//            $dataStream['audioTag'] = $tracks['presentation'][0]->getLanguage();
         }
 
         return $data;
