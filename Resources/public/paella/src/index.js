@@ -28,22 +28,19 @@ window.onload = async () => {
         // Esta función sirve para que devuelvas el identificador único del vídeo con el cual puedes obtener sus datos
         // desde tu portal.
         getVideoId: (config, player) => {
-            // console.log(config);
-            // console.log(player);
-            // console.log(window.location.href);
-            // console.log(location.origin);
-            // console.log(location.pathname);
-            // console.log(location.pathname.split('/').slice(-1)[0]);
             // En la implementación por defecto, se obtiene del parámetro `id` de la URL, en tu caso puedes personalizar
             // este parámetro para obtener el vídeo desde otro parámetro, desde una cookie o como consideres oportuno
-            // return getUrlParameter('id');
             return location.pathname.split('/').slice(-1)[0];
         },
         // Esta parte es para formar la URL complete de la carga del video. Recibe como parámetro la URL anterior
         // (respositoryUrl), así que en la práctica podrías implementar aquí la URL completa y prescindir de
         // la función anterior. El parámetro `videoId` se obtiene de la función `getVideoId`
         getManifestUrl: (repoUrl,videoId) => {
-            return `${repoUrl}${videoId}`;
+            if(window.location.href.search("secret") != -1) {
+                return '/secret' + `${repoUrl}${videoId}`;
+            } else {
+                return `${repoUrl}${videoId}`;
+            }
         },
 
         // Esta función devuelve la URL complete del archivo manifest del vídeo. En la implementación por defecto de
@@ -92,10 +89,10 @@ window.onload = async () => {
 
     // try {
     //     await paella.loadManifest()
-    //     console.log("Load done");
+    //     // console.log("Load done");
     //
     //     await utils.loadStyle('style.css');
-    //     console.log("Style loaded using Paella Core API");
+    //     // console.log("Style loaded using Paella Core API");
     // } catch (e) {
     //     console.error(e);
     // }

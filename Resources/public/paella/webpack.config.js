@@ -65,7 +65,6 @@ module.exports = {
             patterns: [
                 { from: './config', to: 'config' },
                 { from: './src/index.html', to: 'index.html' },
-                { from: './repository_test/repository', to: 'repository' },
                 { from: './src/style.css', to: 'style.css' }
             ]
         })

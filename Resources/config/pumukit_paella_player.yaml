@@ -31,3 +31,21 @@ services:
     class: Pumukit\PaellaPlayerBundle\Services\PaellaDataService
     arguments:
       $forceDual: '%pumukitpaella.force_dual%'
+
+  Pumukit\PaellaPlayerBundle\Services\CaptionsManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\CaptionsManifest
+
+  Pumukit\PaellaPlayerBundle\Services\FrameListManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\FrameListManifest
+
+  Pumukit\PaellaPlayerBundle\Services\LiveManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\LiveManifest
+
+  Pumukit\PaellaPlayerBundle\Services\MetadataManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\MetadataManifest
+
+  Pumukit\PaellaPlayerBundle\Services\StreamsManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\StreamsManifest
+
+  Pumukit\PaellaPlayerBundle\Services\VoDManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\VoDManifest

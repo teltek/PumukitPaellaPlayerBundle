@@ -62,7 +62,15 @@ class BasePlayerController extends BasePlayerAbstractController
     public function magicAction(Request $request, MultimediaObject $multimediaObject)
     {
         if (!$request->query->has('secret')) {
-            return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', ['id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret()]).'&secret='.$multimediaObject->getSecret());
+            return $this->redirect(
+                $this->generateUrl(
+                    'pumukit_videoplayer_magicindex',
+                    [
+                        'id' => $multimediaObject->getId(),
+                        'secret' => $multimediaObject->getSecret(),
+                    ]
+                ).'&secret='.$multimediaObject->getSecret()
+            );
         }
 
         return $this->doRender($request, $multimediaObject);

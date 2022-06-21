@@ -6,12 +6,18 @@
   {# THIS IS WHAT MAKES PAELLA WORK #}
   <base href="/bundles/pumukitpaellaplayer/paella/">
   {{ parent() }}
-
 {% endblock %}
+
 {% block javascripts %}
+<<<<<<< HEAD
   {{ parent() }}
   <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
+=======
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
+>>>>>>> test_paella_7_II
 {% endblock %}
+
 {% block stylesheets %}
   {{ parent() }}
   <style>
