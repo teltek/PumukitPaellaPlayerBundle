@@ -83,17 +83,17 @@ window.onload = async () => {
     }
 
     const paella = new PaellaPlayer('player-container', initParams);
-    paella.loadManifest()
-        .then(() => console.log("done"))
-        .catch(e => console.error(e));
+    // paella.loadManifest()
+    //     .then(() => console.log("done"))
+    //     .catch(e => console.error(e));
 
-    // try {
-    //     await paella.loadManifest()
-    //     // console.log("Load done");
-    //
-    //     await utils.loadStyle('style.css');
-    //     // console.log("Style loaded using Paella Core API");
-    // } catch (e) {
-    //     console.error(e);
-    // }
+    try {
+        await paella.loadManifest()
+        // console.log("Load done");
+
+        await utils.loadStyle('style.css');
+        // console.log("Style loaded using Paella Core API");
+    } catch (e) {
+        console.error(e);
+    }
 }
