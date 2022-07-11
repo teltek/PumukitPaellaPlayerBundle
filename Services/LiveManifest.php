@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
-use Pumukit\SchemaBundle\Document\Live;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 
 class LiveManifest

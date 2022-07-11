@@ -2,8 +2,8 @@
 
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
-use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Live;
+use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

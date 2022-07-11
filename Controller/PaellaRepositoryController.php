@@ -52,10 +52,10 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
     public function indexAction(Request $request, string $id): Response
     {
         $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy([
-           '_id' => new ObjectId($id)
+            '_id' => new ObjectId($id),
         ]);
 
-        if($multimediaObject instanceof MultimediaObject) {
+        if ($multimediaObject instanceof MultimediaObject) {
             if ($multimediaObject->isLive()) {
                 $data = $this->liveManifest->create($multimediaObject);
             } else {
@@ -67,10 +67,10 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
         }
 
         $live = $this->documentManager->getRepository(Live::class)->findOneBy([
-            '_id' => new ObjectId($id)
+            '_id' => new ObjectId($id),
         ]);
 
-        if($live instanceof Live) {
+        if ($live instanceof Live) {
             $data = $this->channelManifest->create($live);
             dump($data);
             $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());

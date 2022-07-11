@@ -6,7 +6,6 @@ namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Pumukit\BaseLivePlayerBundle\Services\LiveService;
 use Pumukit\SchemaBundle\Document\Live;
-use Pumukit\SchemaBundle\Document\MultimediaObject;
 
 class ChannelManifest
 {
