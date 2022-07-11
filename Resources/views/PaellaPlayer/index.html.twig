@@ -10,53 +10,54 @@
 
 {% block javascripts %}
   {{ parent() }}
+  <script src="{{ asset('bundles/pumukitwebtv/js/jquery.countdown.js') }}" type="text/javascript"></script>
   <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
 {% endblock %}
 
-{% block stylesheets %}
-  {{ parent() }}
-  <style>
+{#{% block stylesheets %}#}
+{#  {{ parent() }}#}
+{#  <style>#}
 
-   {# Added while waiting for paella upstream #}
-   video {
-       background: black;
-       box-shadow: 0 0 6px #000;
-   }
+{#   #}{# Added while waiting for paella upstream #}
+{#   video {#}
+{#       background: black;#}
+{#       box-shadow: 0 0 6px #000;#}
+{#   }#}
 
-   {# Added while waiting for paella fix TTK-16366 #}
-   .captionsBar .editorButton {
-       display: none !important;
-   }
-   .captionsBar select {
-       width: 49% !important;
-   }
+{#   #}{# Added while waiting for paella fix TTK-16366 #}
+{#   .captionsBar .editorButton {#}
+{#       display: none !important;#}
+{#   }#}
+{#   .captionsBar select {#}
+{#       width: 49% !important;#}
+{#   }#}
 
-   {# Teltek custom design #}
-   .footPrintsContainer {
-     height: 60px !important;
-   }
+{#   #}{# Teltek custom design #}
+{#   .footPrintsContainer {#}
+{#     height: 60px !important;#}
+{#   }#}
 
-   {# Added while waiting for paella fix TTK-16763 #}
-   .captionsPluginContainer {
-     max-width: 400px;
-     min-width: 200px;
-     width: 30vw !important;
-   }
+{#   #}{# Added while waiting for paella fix TTK-16763 #}
+{#   .captionsPluginContainer {#}
+{#     max-width: 400px;#}
+{#     min-width: 200px;#}
+{#     width: 30vw !important;#}
+{#   }#}
 
-  {# touch scroll #305 and TTK-16059#}
-  body {
-    touch-action: auto !important;
-  }
+{#  #}{# touch scroll #305 and TTK-16059#}
+{#  body {#}
+{#    touch-action: auto !important;#}
+{#  }#}
 
-   {% if app.request.query.has('advanced') %}
-       {% include('PumukitPaellaPlayerBundle:PaellaPlayer:advance.css.twig') %}
-   {% endif %}
+{#   {% if app.request.query.has('advanced') %}#}
+{#       {% include('PumukitPaellaPlayerBundle:PaellaPlayer:advance.css.twig') %}#}
+{#   {% endif %}#}
 
-  </style>
-{% endblock %}
+{#  </style>#}
+{#{% endblock %}#}
 
-{% block title %}{{ parent() }} - {{ object.title }}{% endblock %}
-{% block keywords %}{{ parent() }} - {{ object.keywords|join(',') }}{% endblock %}
+{% block title %}{{ parent() }} {% endblock %}
+{% block keywords %}{{ parent() }} }}{% endblock %}
 
 {% block body_base %}
 {% endblock %}

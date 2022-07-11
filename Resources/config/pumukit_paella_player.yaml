@@ -49,3 +49,6 @@ services:
 
   Pumukit\PaellaPlayerBundle\Services\VoDManifest:
     class: Pumukit\PaellaPlayerBundle\Services\VoDManifest
+
+  Pumukit\PaellaPlayerBundle\Services\ChannelManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\ChannelManifest
