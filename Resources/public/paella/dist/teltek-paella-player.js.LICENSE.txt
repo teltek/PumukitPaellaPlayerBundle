@@ -210,8 +210,6 @@
 
 /*! ./webvtt-parser */
 
-/*! For license information please see paella-core.js.LICENSE.txt */
-
 /*! eventemitter3 */
 
 /*! exports provided: AttrList */
