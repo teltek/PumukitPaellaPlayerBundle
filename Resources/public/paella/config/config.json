@@ -59,37 +59,34 @@
             "description": "Play and pause button"
         },
 
-        "es.upv.paella.frameControlButtonPlugin": {
-            "enabled": true,
-            "side": "right",
-            "order": 102
-        },
-
-        "es.upv.paella.fullscreenButton": {
-            "enabled": true,
-            "side": "right",
-            "order": 103
-        },
-
         "es.upv.paella.layoutSelector": {
             "enabled": true,
             "side": "right",
-            "order": 101,
-            "parentContainer": "videoContainer"
+            "order": 101
         },
 
         "es.upv.paella.playbackRateButton": {
             "enabled": true,
             "side": "right",
             "order": 102,
-            "parentContainer": "videoContainer",
             "rates": [0.75, 1, 1.5, 2]
         },
 
-        "es.upv.paella.volumeButtonPlugin": {
+        "es.upv.paella.frameControlButtonPlugin": {
             "enabled": true,
+            "side": "right",
+            "order": 103
+        },
+        "es.upv.paella.fullscreenButton": {
+            "enabled": true,
+            "side": "right",
+            "order": 104
+        },
+
+        "es.upv.paella.volumeButtonPlugin": {
+            "enabled": false,
             "side": "left",
-            "order": 3
+            "order": 6
         },
 
         "es.upv.paella.forwardButtonPlugin": {
@@ -196,7 +193,7 @@
         },
 
         "es.upv.paella.debug.userTrackingDataPlugin": {
-            "enabled": true,
+            "enabled": false,
             "context": [
                 "userTracking"
             ]
@@ -237,3 +234,4 @@
         }
     }
 }
+
