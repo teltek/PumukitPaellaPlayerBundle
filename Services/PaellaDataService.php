@@ -78,7 +78,7 @@ class PaellaDataService
                     'videoPos' => $pos,
                     'autostart' => 'true',
                 ],
-                UrlGeneratorInterface::ABSOLUTE_URL  //Makes the url absolute.
+                UrlGeneratorInterface::ABSOLUTE_URL  // Makes the url absolute.
             );
             $data[] = [
                 'name' => $mmobj->getTitle(),
@@ -302,14 +302,14 @@ class PaellaDataService
             try {
                 $mediaPackage = $this->opencastClient->getFullMediaPackage($opencastId);
             } catch (\Exception $e) {
-                //TODO: Inject logger and log a warning.
+                // TODO: Inject logger and log a warning.
             }
 
             if (!isset($mediaPackage['segments']['segment'])) {
                 return [];
             }
 
-            //Fix Opencast one-result behavior
+            // Fix Opencast one-result behavior
             if (isset($mediaPackage['segments']['segment']['time'])) {
                 $segments = [$mediaPackage['segments']['segment']];
             } else {

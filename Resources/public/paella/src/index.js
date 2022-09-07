@@ -36,11 +36,26 @@ window.onload = async () => {
         // (respositoryUrl), así que en la práctica podrías implementar aquí la URL completa y prescindir de
         // la función anterior. El parámetro `videoId` se obtiene de la función `getVideoId`
         getManifestUrl: (repoUrl,videoId) => {
-            if(window.location.href.search("secret") != -1) {
-                return '/secret' + `${repoUrl}${videoId}`;
-            } else {
-                return `${repoUrl}${videoId}`;
+            let location = window.location.href;
+            const params = new URLSearchParams(window.location.search);
+
+            if(location.search('playlist') !== -1 && location.search('secret') !== -1) {
+                let playlistId = params.get('playlistId');
+                let pos = params.get('videoPos');
+                return '/secret/paellaplaylist/' + playlistId + '?videoPos=' + pos;
             }
+
+            if(location.search('playlist') !== -1) {
+                let playlistId = params.get('playlistId');
+                let pos = params.get('videoPos');
+                return '/paellaplaylist/' + playlistId + '?videoPos=' + pos;
+            }
+
+            if(location.search("secret") != -1) {
+                return '/secret' + `${repoUrl}${videoId}`;
+            }
+
+            return `${repoUrl}${videoId}`;
         },
 
         // Esta función devuelve la URL complete del archivo manifest del vídeo. En la implementación por defecto de

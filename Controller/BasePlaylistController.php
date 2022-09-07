@@ -62,7 +62,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
         }
 
         if (!$mmobjId) {
-            //If the player has no mmobjId, we should provide it ourselves.
+            // If the player has no mmobjId, we should provide it ourselves.
             return $this->redirectWithMmobj($series, $request);
         }
 

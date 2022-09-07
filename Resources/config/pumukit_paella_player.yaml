@@ -52,3 +52,6 @@ services:
 
   Pumukit\PaellaPlayerBundle\Services\ChannelManifest:
     class: Pumukit\PaellaPlayerBundle\Services\ChannelManifest
+
+  Pumukit\PaellaPlayerBundle\Services\PlaylistManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\PlaylistManifest

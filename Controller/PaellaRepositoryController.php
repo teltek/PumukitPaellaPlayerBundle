@@ -9,9 +9,8 @@ use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
 use Pumukit\CoreBundle\Services\SerializerService;
 use Pumukit\PaellaPlayerBundle\Services\ChannelManifest;
 use Pumukit\PaellaPlayerBundle\Services\LiveManifest;
-use Pumukit\PaellaPlayerBundle\Services\PaellaDataService;
+use Pumukit\PaellaPlayerBundle\Services\PlaylistManifest;
 use Pumukit\PaellaPlayerBundle\Services\VoDManifest;
-use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
 use Pumukit\SchemaBundle\Document\Live;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
@@ -24,7 +23,7 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
 {
     private $documentManager;
     private $serializer;
-    private $paellaDataService;
+    private $playlistManifest;
     private $voDManifest;
     private $liveManifest;
     private $channelManifest;
@@ -32,14 +31,14 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
     public function __construct(
         DocumentManager $documentManager,
         SerializerService $serializer,
-        PaellaDataService $paellaDataService,
+        PlaylistManifest $playlistManifest,
         VoDManifest $voDManifest,
         LiveManifest $liveManifest,
         ChannelManifest $channelManifest
     ) {
         $this->documentManager = $documentManager;
         $this->serializer = $serializer;
-        $this->paellaDataService = $paellaDataService;
+        $this->playlistManifest = $playlistManifest;
         $this->voDManifest = $voDManifest;
         $this->liveManifest = $liveManifest;
         $this->channelManifest = $channelManifest;
@@ -72,7 +71,6 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
 
         if ($live instanceof Live) {
             $data = $this->channelManifest->create($live);
-            dump($data);
             $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
             return new Response($response);
@@ -87,11 +85,7 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
      */
     public function playlistAction(Request $request, Series $series): Response
     {
-        $criteria = [
-            'embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC],
-            'tracks' => ['$elemMatch' => ['tags' => 'display', 'hide' => false]],
-        ];
-        $data = $this->paellaDataService->getPaellaPlaylistData($series, $criteria);
+        $data = $this->playlistManifest->create($series, $request->query->getInt('videoPos') ?? 0, $request->getPathInfo());
         $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
