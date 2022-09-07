@@ -1,20 +1,20 @@
-
 import { Paella, utils } from 'paella-core';
 import getBasicPluginContext from 'paella-basic-plugins';
 import getSlidePluginContext from 'paella-slide-plugins';
 import getZoomPluginContext from 'paella-zoom-plugin';
 import getUserTrackingPluginContext from 'paella-user-tracking';
+import getTeltekPluginsContext from "paella-teltek-plugins";
 
 import packageData from "../package.json";
 
 window.onload = async () => {
     const initParams = {
         customPluginContext: [
-            require.context("./plugins", true, /\.js/),
             getBasicPluginContext(),
             getSlidePluginContext(),
             getZoomPluginContext(),
-            getUserTrackingPluginContext()
+            getUserTrackingPluginContext(),
+            getTeltekPluginsContext()
         ],
 
         // Aquí puedes personalizar las URLs de carga del fichero de configuración, en el caso de que no lo obtengas
@@ -83,16 +83,10 @@ window.onload = async () => {
     }
 
     const paella = new PaellaPlayer('player-container', initParams);
-    // paella.loadManifest()
-    //     .then(() => console.log("done"))
-    //     .catch(e => console.error(e));
 
     try {
-        await paella.loadManifest()
-        // console.log("Load done");
-
+        await paella.loadManifest();
         await utils.loadStyle('src/style.css');
-        // console.log("Style loaded using Paella Core API");
     } catch (e) {
         console.error(e);
     }

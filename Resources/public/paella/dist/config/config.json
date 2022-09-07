@@ -210,6 +210,30 @@
             "context": [
                 "userTracking"
             ]
+        },
+
+        "es.teltek.paella.integratedDurationButtonPlugin": {
+            "enabled": true,
+            "side": "left",
+            "order": 6
+        },
+
+        "es.teltek.paella.pipButtonPlugin": {
+            "enabled": true,
+            "side": "right",
+            "order": 105
+        },
+
+        "es.teltek.paella.playlistButtonPlugin": {
+            "enabled": true,
+            "side": "left",
+            "order": 4
+        },
+
+        "es.teltek.paella.volumeButtonPlugin": {
+            "enabled": true,
+            "side": "left",
+            "order": 5
         }
     }
 }
