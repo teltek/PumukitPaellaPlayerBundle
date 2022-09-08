@@ -7,7 +7,18 @@ import getTeltekPluginsContext from "paella-teltek-plugins";
 
 import packageData from "../package.json";
 
+
 window.onload = async () => {
+
+    const baseURL = window.location.href;
+    const params = new URLSearchParams(window.location.search);
+
+    if(baseURL.search('playlist') !== -1) {
+        var configID = params.get('videoId');
+    } else {
+        var configID = location.pathname.split('/').slice(-1)[0];
+    }
+
     const initParams = {
         customPluginContext: [
             getBasicPluginContext(),
@@ -20,7 +31,7 @@ window.onload = async () => {
         // Aquí puedes personalizar las URLs de carga del fichero de configuración, en el caso de que no lo obtengas
         // de la ubicación por defecto
         configResourcesUrl: '/paella/',
-        configUrl: '/paella/config.json',
+        configUrl: '/paella/config.json' + '?configID='+ configID,
 
         // Aquí puedes personalizar la URL de obtención de los datos del vídeo, en concreto, la parte estática de la URL
         repositoryUrl: '/paellarepository/',

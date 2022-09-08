@@ -17,7 +17,7 @@
             ]
         },
         "es.upv.paella.hlsVideoFormat": {
-            "enabled": true,
+            "enabled": {{ isLive ? 'true' : 'false' }},
             "order": 0,
             "hlsConfig": {
                 "maxBufferLength": 40
@@ -31,7 +31,7 @@
         },
 
         "es.upv.paella.hlsLiveVideoFormat": {
-            "enabled": true,
+            "enabled": {{ isLive  ? 'true' : 'false'}},
             "order": 0,
             "hlsConfig": {
                 "maxBufferLength": 40
@@ -60,13 +60,13 @@
         },
 
         "es.upv.paella.layoutSelector": {
-            "enabled": true,
+            "enabled": {{ isMultistream ? 'true' : 'false' }},
             "side": "right",
             "order": 101
         },
 
         "es.upv.paella.playbackRateButton": {
-            "enabled": true,
+            "enabled": {{ notLive ? 'true' : 'false' }},
             "side": "right",
             "order": 102,
             "rates": [0.75, 1, 1.5, 2]
@@ -90,19 +90,19 @@
         },
 
         "es.upv.paella.forwardButtonPlugin": {
-            "enabled": true,
+            "enabled": {{ notLive  ? 'true' : 'false'}},
             "side": "left",
             "order": 2
         },
 
         "es.upv.paella.backwardButtonPlugin": {
-            "enabled": true,
+            "enabled": {{ notLive ? 'true' : 'false' }},
             "side": "left",
             "order": 1
         },
 
         "es.upv.paella.zoomPlugin": {
-            "enabled": true,
+            "enabled": false,
             "order": 0,
             "maxZoom": 400,
             "showButtons": true,
@@ -151,7 +151,7 @@
         },
 
         "es.upv.paella.defaultShortcuts": {
-            "enabled": true,
+            "enabled": {{ notLive ? 'true' : 'false' }},
             "validPlaybackRates": [0.75, 2, 1, 1.5]
         },
 
@@ -164,7 +164,7 @@
         },
 
         "es.upv.paella.keyboardShortcutsHelp": {
-            "enabled": true,
+            "enabled": false,
             "order": 80,
             "description": "Keyboard Shortcuts",
             "side": "right"
@@ -210,13 +210,13 @@
         },
 
         "es.teltek.paella.integratedDurationButtonPlugin": {
-            "enabled": true,
+            "enabled": {{ notLive ? 'true' : 'false' }},
             "side": "left",
             "order": 6
         },
 
         "es.teltek.paella.pipButtonPlugin": {
-            "enabled": true,
+            "enabled": {{ isMonostream ? 'true' : 'false' }},
             "side": "right",
             "order": 105
         },
@@ -234,7 +234,7 @@
         },
 
         "es.teltek.paella.liveIndicatorButtonPlugin": {
-            "enabled": true,
+            "enabled": {{ isLive ? 'true' : 'false' }},
             "side": "left",
             "order": 7
         }

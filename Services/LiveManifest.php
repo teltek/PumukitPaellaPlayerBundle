@@ -28,6 +28,8 @@ class LiveManifest
     public function create(MultimediaObject $multimediaObject): array
     {
         $data['metadata'] = $this->metadataManifest->create($multimediaObject);
+        $data['metadata']['duration'] = 1;
+        $data['metadata']['isStreaming'] = true;
         $data['streams'] = $this->streamsManifest->createStreamsForLive($multimediaObject)['streams'];
         $data['frameList'] = $this->frameListManifest->create($multimediaObject);
         $data['captions'] = $this->captionsManifest->create($multimediaObject);

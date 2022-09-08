@@ -41,6 +41,11 @@ class ConfController extends AbstractController
      */
     public function confAction(Request $request)
     {
+        $objectID = $request->query->get('configID');
+        $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy([
+            '_id' => new ObjectId($objectID),
+        ]);
+
         $jsonData = $this->renderView(
             '@PumukitPaellaPlayer/Conf/conf.json.twig',
             [
@@ -48,6 +53,10 @@ class ConfController extends AbstractController
                 'xapi_auth' => $this->paellaXAPIAuth,
                 'access_control_class' => $this->paellaAccessControlClass,
                 'footprints' => $this->paellaFootPrints,
+                'isMonostream' => !$multimediaObject->isMultistream(),
+                'isMultistream' => $multimediaObject->isMultistream(),
+                'isLive' => $multimediaObject->isLive(),
+                'notLive' => !$multimediaObject->isLive(),
             ]
         );
 
