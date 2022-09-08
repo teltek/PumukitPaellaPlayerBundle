@@ -1,6 +1,6 @@
 {
-	"name": "@polimediaupv/paella-player",
-	"version": "7.0.8",
+	"name": "@teltek/paella-player",
+	"version": "1.0.0",
 	"description": "Multistream HTML video player.",
 	"main": "src/index.js",
 	"scripts": {
@@ -9,14 +9,13 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/polimediaupv/paella-player.git"
+		"url": "git+https://github.com/teltek/PumukitPaellaPlayerBundle.git"
 	},
-	"author": "Fernando Serrano Carpena <ferserc1@gmail.com>",
+	"author": "Pablo Ogando Ferreira <pablo.ogando@teltek.es>",
 	"license": "SEE LICENSE IN license.txt",
 	"bugs": {
-		"url": "https://github.com/polimediaupv/paella-player/issues"
+		"url": "https://github.com/teltek/PumukitPaellaPlayerBundle/issues"
 	},
-	"homepage": "https://paellaplayer.upv.es",
 	"devDependencies": {
 		"@babel/core": "^7.12.16",
 		"@babel/preset-env": "^7.12.16",
