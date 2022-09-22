@@ -1,4 +1,4 @@
-import { Paella, utils } from 'paella-core';
+import { Paella,defaultLoadVideoManifestFunction, utils } from 'paella-core';
 import getBasicPluginContext from 'paella-basic-plugins';
 import getSlidePluginContext from 'paella-slide-plugins';
 import getZoomPluginContext from 'paella-zoom-plugin';
@@ -6,7 +6,6 @@ import getUserTrackingPluginContext from 'paella-user-tracking';
 import getTeltekPluginsContext from "paella-teltek-plugins";
 
 import packageData from "../package.json";
-
 
 window.onload = async () => {
 
@@ -18,6 +17,8 @@ window.onload = async () => {
     } else {
         var configID = location.pathname.split('/').slice(-1)[0];
     }
+
+    let introLoaded = false;
 
     const initParams = {
         customPluginContext: [
@@ -87,6 +88,16 @@ window.onload = async () => {
             // documentación:
             // https://github.com/polimediaupv/paella-core/blob/main/doc/video_manifest.md
             // Esto es un código de ejemplo, aquí tendrías que modificar lo que haga falta para adaptarlo a tu portal
+
+            // Obtener los streams de la intro, vienen dados en el manifest.
+            const result = await loadVideoManifest(videoManifestUrl, config, player);
+            if (introLoaded) {
+                return result;
+            }
+            else {
+                result.streams = result.intro;
+            }
+
             const response = await fetch(url);
             const pumukitVideoData = await response.json();
 

@@ -1,0 +1,7 @@
+{% if 'on_play' == when_dispatch_view_event|default('') %}
+{#$(document).bind(paella.events.play, function (event, params) {#}
+{#    if (!window.notifyVideoPlayedReq) {#}
+{#        window.notifyVideoPlayedReq = $.post('{{ path('pumukit_trackplayed_index', {id: tracks[0].id}) }}');#}
+{#    }#}
+{#});#}
+{% endif %}
