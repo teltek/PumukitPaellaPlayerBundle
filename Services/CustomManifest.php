@@ -11,14 +11,13 @@ class CustomManifest
 {
     public function completeManifestData(MultimediaObject $multimediaObject, array $data): array
     {
-        if(!$this->checkManifestData($data)) {
+        if (!$this->checkManifestData($data)) {
             throw new \Exception('Malformed manifest to add custom properties');
         }
 
         $data = $this->addIntroManifestURL($multimediaObject, $data);
-        $data = $this->addTailManifestURL($multimediaObject, $data);
 
-        return $data;
+        return $this->addTailManifestURL($multimediaObject, $data);
     }
 
     private function checkManifestData(array $data): bool
@@ -29,7 +28,7 @@ class CustomManifest
     private function addIntroManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
         $head = $multimediaObject->getVideoHead();
-        if(!$head) {
+        if (!$head) {
             return $data;
         }
 
@@ -41,7 +40,7 @@ class CustomManifest
     private function addTailManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
         $tail = $multimediaObject->getVideoTail();
-        if(!$tail) {
+        if (!$tail) {
             return $data;
         }
 
@@ -54,6 +53,4 @@ class CustomManifest
     {
         return '/'.PumukitPaellaPlayerBundle::paellaRepositoryPath().'/'.$videoID;
     }
-
-
 }
