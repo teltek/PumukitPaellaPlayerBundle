@@ -87,10 +87,6 @@ class BasePlayerController extends BasePlayerAbstractController
             return $track;
         }
 
-        if ($request->query->has('raw')) {
-            return $this->generateBasePlayerRaw($request, $multimediaObject, $track);
-        }
-
         $tracks = $this->getMultimediaObjectMultiStreamTracks($multimediaObject, $track);
 
         return $this->getParametersForPlayer($request, $multimediaObject, $tracks);

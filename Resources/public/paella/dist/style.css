@@ -6,3 +6,8 @@
     --highlight-bg-color: #aadd00;
     --highlight-bg-color-hover: #80a701;
 }
+
+.progress-indicator {
+    width: 100%;
+    margin-left: 0 !important;
+}

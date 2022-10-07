@@ -9,39 +9,11 @@
 
 {% block body_base %}
 
-    <div id="players">
-        <div id="player-container-intro"></div>
-        <div id="player-container"></div>
-        <div id="player-container-tail"></div>
-    </div>
-
-    <style>
-        {% include('@PumukitPaellaPlayer/PaellaPlayer/css.css.twig') %}
-    </style>
+    <div id="player-container"></div>
 
     <script>
-
         {% include('@PumukitPaellaPlayer/PaellaPlayer/resize_video.js.twig') %}
-        {% include('@PumukitPaellaPlayer/PaellaPlayer/intro.js.twig') %}
-        {#
-
-        loadPaellaPlayer('{{ multimediaObject.id }}');
-
-        localStorage.setItem('opencast_host', "{{ opencast_host }}");
-        var isOpencast = "{{ multimediaObject.getProperty('opencast') }}";
-        if(isOpencast) {
-            localStorage.setItem('opencastId',"{{ multimediaObject.getProperty('opencast') }}");
-        } else {
-            localStorage.removeItem('opencastId');
-        }
-
-        var username = "{{ app.user.username|default('anonymous') }}";
-        var useremail = "{{ app.user.email|default('anonymous@pumukit.org') }}";
-
-
-
-        #}
-
+        {% include('@PumukitPaellaPlayer/PaellaPlayer/multistream.js.twig') %}
         {% include('@PumukitPaellaPlayer/PaellaPlayer/dispatch_view_event.js.twig') %}
     </script>
 {% endblock %}
