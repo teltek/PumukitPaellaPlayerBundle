@@ -241,6 +241,9 @@
             "enabled": true,
             "side": "left",
             "order": 7
+        },
+        "es.teltek.paella.breaksButtonPlugin": {
+            "enabled": true
         }
     }
 }
