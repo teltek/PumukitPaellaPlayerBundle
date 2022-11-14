@@ -50,6 +50,9 @@ services:
   Pumukit\PaellaPlayerBundle\Services\CustomManifest:
     class: Pumukit\PaellaPlayerBundle\Services\CustomManifest
 
+  Pumukit\PaellaPlayerBundle\Services\AnnotationsManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\AnnotationsManifest
+
   Pumukit\PaellaPlayerBundle\Services\VoDManifest:
     class: Pumukit\PaellaPlayerBundle\Services\VoDManifest
 

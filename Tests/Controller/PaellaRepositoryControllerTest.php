@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PaellaRepositoryControllerTest extends PumukitTestCase
