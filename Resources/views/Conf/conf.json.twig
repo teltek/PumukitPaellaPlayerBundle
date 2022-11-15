@@ -1,4 +1,10 @@
 {
+    "progressIndicator": {
+        "showTotal": false,
+        "parentContainer": "progressIndicator",
+        "side": "left",
+        "visible": false
+    },
     "plugins": {
         "es.upv.paella.singleVideo": {
             "enabled": true,
@@ -90,13 +96,13 @@
         },
 
         "es.upv.paella.forwardButtonPlugin": {
-            "enabled": {{ notLive  ? 'true' : 'false'}},
+            "enabled": false,
             "side": "left",
             "order": 2
         },
 
         "es.upv.paella.backwardButtonPlugin": {
-            "enabled": {{ notLive ? 'true' : 'false' }},
+            "enabled": false,
             "side": "left",
             "order": 1
         },

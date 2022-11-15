@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Tests\Controller;
 
 use Pumukit\CoreBundle\Tests\PumukitTestCase;
