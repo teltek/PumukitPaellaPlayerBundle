@@ -27,11 +27,6 @@ services:
     tags:
       - { name: "twig.extension" }
 
-  Pumukit\PaellaPlayerBundle\Services\PaellaDataService:
-    class: Pumukit\PaellaPlayerBundle\Services\PaellaDataService
-    arguments:
-      $forceDual: '%pumukitpaella.force_dual%'
-
   Pumukit\PaellaPlayerBundle\Services\CaptionsManifest:
     class: Pumukit\PaellaPlayerBundle\Services\CaptionsManifest
 
