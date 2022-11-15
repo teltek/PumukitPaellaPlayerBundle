@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerAbstractController;
@@ -85,10 +87,6 @@ class BasePlayerController extends BasePlayerAbstractController
         $track = $this->checkMultimediaObjectTracks($request, $multimediaObject);
         if ($track instanceof RedirectResponse) {
             return $track;
-        }
-
-        if ($request->query->has('raw')) {
-            return $this->generateBasePlayerRaw($request, $multimediaObject, $track);
         }
 
         $tracks = $this->getMultimediaObjectMultiStreamTracks($multimediaObject, $track);

@@ -241,6 +241,10 @@
             "enabled": true,
             "side": "left",
             "order": 7
+        },
+
+        "org.opencast.paella.breaksPlugin": {
+            "enabled": true
         }
     }
 }

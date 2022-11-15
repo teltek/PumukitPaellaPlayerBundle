@@ -1,9 +1,37 @@
-
 .video-container {
     background-color: #000000;
 }
 
 :root {
+    --main-fg-color: white;
     --highlight-bg-color: #aadd00;
     --highlight-bg-color-hover: #80a701;
+    --progress-bar-height: 3px;
+    --button-fixed-width: 40px;
+    --button-fixed-height: 40px;
+}
+
+.progress-indicator-container .progress-indicator-content {
+    height: var(--progress-bar-height);
+}
+
+.progress-indicator-container .progress-indicator-remaining {
+    height: var(--progress-bar-height);
+}
+
+.progress-indicator {
+    width: 100%;
+    margin-left: 0 !important;
+}
+
+.button-plugin:hover {
+    background-color: transparent !important;
+}
+
+.playback-bar .button-plugins .button-plugin-container button {
+    margin-left: 0.25rem;
+}
+
+.progress-indicator .progress-indicator-container, .progress-canvas .canvas-layer-1 {
+    height: 5px;
 }

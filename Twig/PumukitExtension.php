@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Twig;
 
 use Pumukit\SchemaBundle\Document\MultimediaObject;
