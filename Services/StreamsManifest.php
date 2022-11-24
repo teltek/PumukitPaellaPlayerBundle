@@ -37,6 +37,7 @@ class StreamsManifest
 
     public function createStreamsForVoD(MultimediaObject $multimediaObject, ?string $trackId): array
     {
+        $data = [];
         $data['streams'] = [];
 
         if (!$multimediaObject->isMultistream()) {
@@ -82,6 +83,7 @@ class StreamsManifest
 
     public function createStreamsForLive(MultimediaObject $multimediaObject): array
     {
+        $data = [];
         $live = $multimediaObject->getEmbeddedEvent()->getLive();
 
         $url = $this->liveService->generateHlsUrl($live);
@@ -100,6 +102,7 @@ class StreamsManifest
 
     public function buildDataLive(array $urls, string $mimeType): array
     {
+        $dataStream = [];
         $sources = [];
         foreach ($urls as $url) {
             $src = $url;
@@ -176,6 +179,7 @@ class StreamsManifest
 
     private function buildDataStream(array $tracks)
     {
+        $dataStream = [];
         $sources = [];
         foreach ($tracks as $track) {
             $mimeType = $track->getMimetype();

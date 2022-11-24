@@ -26,6 +26,7 @@ class MetadataManifest
 
     public function addMandatoryManifestMetadata(MultimediaObject $multimediaObject): array
     {
+        $data = [];
         $data['id'] = $multimediaObject->getId();
         $data['title'] = $multimediaObject->getTitle();
         $data['preview'] = $this->getPreview($multimediaObject);

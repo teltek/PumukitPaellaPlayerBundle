@@ -36,7 +36,7 @@ class CaptionsManifest
             function ($material) {
                 return [
                     'lang' => $material->getLanguage(),
-                    'text' => $material->getName() ? $material->getName() : $material->getLanguage(),
+                    'text' => $material->getName() ?: $material->getLanguage(),
                     'format' => $material->getMimeType(),
                     'url' => $this->getAbsoluteUrl($material->getUrl()),
                 ];

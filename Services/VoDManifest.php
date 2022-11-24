@@ -30,6 +30,7 @@ class VoDManifest
 
     public function create(MultimediaObject $multimediaObject, ?string $trackId): array
     {
+        $data = [];
         $data['metadata'] = $this->metadataManifest->create($multimediaObject);
         $data = $this->customManifest->completeManifestData($multimediaObject, $data);
         $data['streams'] = $this->streamsManifest->createStreamsForVoD($multimediaObject, $trackId)['streams'];

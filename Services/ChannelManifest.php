@@ -22,6 +22,7 @@ class ChannelManifest
 
     public function create(Live $live): array
     {
+        $data = [];
         $data['metadata'] = $this->addMandatoryManifestMetadata($live);
         $data['metadata'] = $this->addCustomManifestMetadata($live, $data['metadata']);
 
@@ -32,6 +33,7 @@ class ChannelManifest
 
     private function addMandatoryManifestMetadata(Live $live)
     {
+        $data = [];
         $data['id'] = $live->getId();
         $data['title'] = $live->getName();
         $data['preview'] = '';
@@ -51,6 +53,7 @@ class ChannelManifest
 
     private function createStreamsForChannel(Live $live): array
     {
+        $data = [];
         $url = $this->liveService->generateHlsUrl($live);
         if (false === strpos($url, 'https')) {
             $url = 'https:'.$url;

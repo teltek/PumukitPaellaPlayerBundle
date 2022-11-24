@@ -27,6 +27,7 @@ class LiveManifest
 
     public function create(MultimediaObject $multimediaObject): array
     {
+        $data = [];
         $data['metadata'] = $this->metadataManifest->create($multimediaObject);
         $data['metadata']['duration'] = 1;
         $data['metadata']['isStreaming'] = true;
