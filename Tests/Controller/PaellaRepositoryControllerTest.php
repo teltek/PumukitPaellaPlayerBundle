@@ -210,8 +210,8 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $response = $this->callRepo($mmobj);
         static::assertEquals(200, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        static::assertEquals(count($responseData['streams']), 1);
-        static::assertEquals(count($responseData['streams'][0]['sources']), 1);
+        static::assertEquals(is_countable($responseData['streams']) ? count($responseData['streams']) : 0, 1);
+        static::assertEquals(is_countable($responseData['streams'][0]['sources']) ? count($responseData['streams'][0]['sources']) : 0, 1);
 
         static::assertEquals(
             $this->trackUrlService->generateTrackFileUrl($track, UrlGeneratorInterface::ABSOLUTE_URL),
@@ -249,8 +249,9 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $response = $this->callRepo($mmobj, $track);
         static::assertEquals(200, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        static::assertEquals(count($responseData['streams']), 1);
-        static::assertEquals(count($responseData['streams'][0]['sources']), 1);
+        static::assertEquals(is_countable($responseData['streams']) ? count($responseData['streams']) : 0, 1);
+        static::assertEquals(is_countable($responseData['streams'][0]['sources']) ? count($responseData['streams'][0]['sources']) : 0, 1);
+
         static::assertEquals(
             $this->trackUrlService->generateTrackFileUrl($track, UrlGeneratorInterface::ABSOLUTE_URL),
             $responseData['streams'][0]['sources']['mp4'][0]['src']
@@ -259,8 +260,8 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $response = $this->callRepo($mmobj, $track2);
         static::assertEquals(200, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        static::assertEquals(count($responseData['streams']), 1);
-        static::assertEquals(count($responseData['streams'][0]['sources']), 1);
+        static::assertEquals(is_countable($responseData['streams']) ? count($responseData['streams']) : 0, 1);
+        static::assertEquals(is_countable($responseData['streams'][0]['sources']) ? count($responseData['streams'][0]['sources']) : 0, 1);
         static::assertEquals(
             $this->trackUrlService->generateTrackFileUrl($track2, UrlGeneratorInterface::ABSOLUTE_URL),
             $responseData['streams'][0]['sources']['mp4'][0]['src']
