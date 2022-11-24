@@ -67,7 +67,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         // Should return ok and empty
         $response = $this->callRepo($mmobj);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackPresenter->setVcodec('h264');
@@ -75,7 +75,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         // Should return presenter
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
@@ -99,17 +99,17 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         // Should return presenter
         $response = $this->callRepo($mmobj, $trackPresenter);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
         // Should return presentation & presenter
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
 
         // Should return empty
         $response = $this->callRepo($mmobj, $trackSBS);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackSBS->addTag('display');
@@ -118,7 +118,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         // Should return empty
         $response = $this->callRepo($mmobj, $trackSBS);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackSBS->setVcodec('h264');
@@ -127,12 +127,12 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         // Should return sbs
         $response = $this->callRepo($mmobj, $trackSBS);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackSBS]), $responseData);
 
         // Should return presentation & presenter
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
 
         $trackPresenter2 = new Track();
@@ -156,17 +156,17 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         // Should return presentation & presenter (not Dup)
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [[$trackPresenter, $trackPresenter2, $trackPresenter3], $trackPresentation]), $responseData);
 
         // Should return presenterDup
         $response = $this->callRepo($mmobj, $trackPresenter3);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter3]), $responseData);
 
         // Should return presenter
         $response = $this->callRepo($mmobj, $trackPresenter);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
         $trackAudio = new Track();
@@ -182,7 +182,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         // Should return presenter
         $response = $this->callRepo($mmobj, $trackAudio);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackAudio]), $responseData);
     }
 
@@ -209,7 +209,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         // Should return ok and empty
         $response = $this->callRepo($mmobj);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals(count($responseData['streams']), 1);
         static::assertEquals(count($responseData['streams'][0]['sources']), 1);
 
@@ -248,7 +248,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         // Should return ok and empty
         $response = $this->callRepo($mmobj, $track);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals(count($responseData['streams']), 1);
         static::assertEquals(count($responseData['streams'][0]['sources']), 1);
         static::assertEquals(
@@ -258,7 +258,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         $response = $this->callRepo($mmobj, $track2);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals(count($responseData['streams']), 1);
         static::assertEquals(count($responseData['streams'][0]['sources']), 1);
         static::assertEquals(
