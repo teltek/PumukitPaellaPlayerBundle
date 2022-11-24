@@ -60,7 +60,7 @@ class MetadataManifest
     private function getPreview(MultimediaObject $multimediaObject)
     {
         $image = $this->picService->getPosterUrl($multimediaObject, true);
-        if (!$image || empty($image)) {
+        if (!$image) {
             $image = $this->picService->getFirstUrlPic($multimediaObject, true, true);
         }
 
