@@ -31,11 +31,11 @@ class BasePlayerController extends BasePlayerAbstractController
         EmbeddedBroadcastService $embeddedBroadcastService,
         MultimediaObjectService $multimediaObjectService,
         IntroService $basePlayerIntroService,
-        $pumukitOpencastHost,
-        $paellaCustomCssUrl,
-        $paellaLogo,
-        $pumukitIntro,
-        $paellaAutoPlay,
+                                 $pumukitOpencastHost,
+                                 $paellaCustomCssUrl,
+                                 $paellaLogo,
+                                 $pumukitIntro,
+                                 $paellaAutoPlay,
         string $pumukitPlayerWhenDispatchViewEvent
     ) {
         parent::__construct($eventDispatcher, $embeddedBroadcastService, $multimediaObjectService, $basePlayerIntroService);
@@ -50,6 +50,7 @@ class BasePlayerController extends BasePlayerAbstractController
     /**
      * @Route("/videoplayer/{id}", name="pumukit_videoplayer_index")
      * @Route("/videoplayer/opencast/{id}", name="pumukit_videoplayer_opencast")
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function indexAction(Request $request, MultimediaObject $multimediaObject)
@@ -59,6 +60,7 @@ class BasePlayerController extends BasePlayerAbstractController
 
     /**
      * @Route("/videoplayer/magic/{secret}", name="pumukit_videoplayer_magicindex")
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function magicAction(Request $request, MultimediaObject $multimediaObject)

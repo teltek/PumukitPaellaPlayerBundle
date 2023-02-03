@@ -15,6 +15,7 @@ class BaseLivePlayerController extends AbstractController
 {
     /**
      * @Route("/livevideoplayer/{id}", name="pumukit_livevideoplayer_index")
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function indexAction(Request $request, MultimediaObject $multimediaObject)
@@ -28,6 +29,7 @@ class BaseLivePlayerController extends AbstractController
 
     /**
      * @Route("/live/channel/videoplayer/{id}", name="pumukit_live_channel_videoplayer")
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function fromLiveAction(Request $request, Live $live)

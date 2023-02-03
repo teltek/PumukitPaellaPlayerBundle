@@ -52,6 +52,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
 
     /**
      * @Route("/playlist", name="pumukit_playlistplayer_paellaindex", defaults={"no_channels": true} )
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function paellaIndexAction(Request $request)
