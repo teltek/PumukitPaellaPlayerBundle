@@ -31,11 +31,11 @@ class BasePlayerController extends BasePlayerAbstractController
         EmbeddedBroadcastService $embeddedBroadcastService,
         MultimediaObjectService $multimediaObjectService,
         IntroService $basePlayerIntroService,
-                                 $pumukitOpencastHost,
-                                 $paellaCustomCssUrl,
-                                 $paellaLogo,
-                                 $pumukitIntro,
-                                 $paellaAutoPlay,
+        $pumukitOpencastHost,
+        $paellaCustomCssUrl,
+        $paellaLogo,
+        $pumukitIntro,
+        $paellaAutoPlay,
         string $pumukitPlayerWhenDispatchViewEvent
     ) {
         parent::__construct($eventDispatcher, $embeddedBroadcastService, $multimediaObjectService, $basePlayerIntroService);
