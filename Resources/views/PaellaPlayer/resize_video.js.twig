@@ -1,3 +1,4 @@
+{#
 function resizeFrame(elem) {
     var width = $(elem).width();
     var height = width / 16 * 9;
@@ -7,3 +8,4 @@ function resizeFrame(elem) {
 $(window).on('load', function () {
     resizeFrame($('#player-container'));
 });
+#}
