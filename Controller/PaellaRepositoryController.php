@@ -48,13 +48,11 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
 
     /**
      * @Route("/paellarepository/{id}.{_format}", methods={"GET"}, defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
-     * @Route("/secret/paellarepository/{secret}.{_format}", methods={"GET"}, defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
+     * @Route("/secret/paellarepository/{id}.{_format}", methods={"GET"}, defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      */
     public function indexAction(Request $request, string $id): Response
     {
-        $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy([
-            '_id' => new ObjectId($id),
-        ]);
+        $multimediaObject = $this->getMultimediaObject($id);
 
         if ($multimediaObject instanceof MultimediaObject) {
             if ($multimediaObject->isLive()) {
@@ -91,5 +89,14 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
         $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
+    }
+
+    private function getMultimediaObject(string $objectId): MultimediaObject
+    {
+        try {
+            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['_id' => new ObjectId($objectId)]);
+        } catch (\Exception $exception) {
+            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['secret' => $objectId]);
+        }
     }
 }
