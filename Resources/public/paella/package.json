@@ -1,6 +1,6 @@
 {
 	"name": "@teltek/paella-player",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Multistream HTML video player.",
 	"main": "src/index.js",
 	"scripts": {
@@ -35,7 +35,7 @@
 		"paella-basic-plugins": "^1.2.0",
 		"paella-slide-plugins": "^1.2.1",
 		"paella-user-tracking": "^1.5.0",
-		"paella-teltek-plugins": "^1.0.7",
+		"paella-teltek-plugins": "^1.0",
 		"paella-zoom-plugin": "^1.2.0"
 	}
 }

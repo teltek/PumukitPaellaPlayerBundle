@@ -1,9 +1,0 @@
-function resizeFrame(elem) {
-    var width = $(elem).width();
-    var height = width / 16 * 9;
-    $(elem).height(height);
-}
-
-$(window).on('load', function () {
-    resizeFrame($('#player-container'));
-});

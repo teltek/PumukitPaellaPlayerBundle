@@ -3,7 +3,7 @@
 {% block stylesheets %}
     {{ parent() }}
     {% if custom_css_url is defined and custom_css_url %}
-        <link rel="stylesheet" href="{{ custom_css_url }}" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="{{ custom_css_url }}" type="text/css" media="screen">
     {% endif %}
 {% endblock %}
 
@@ -12,8 +12,6 @@
     <div id="player-container"></div>
 
     <script>
-        {% include('@PumukitPaellaPlayer/PaellaPlayer/resize_video.js.twig') %}
         {% include('@PumukitPaellaPlayer/PaellaPlayer/multistream.js.twig') %}
-        {% include('@PumukitPaellaPlayer/PaellaPlayer/dispatch_view_event.js.twig') %}
     </script>
 {% endblock %}

@@ -1,9 +1,12 @@
 {
     "progressIndicator": {
-        "showTotal": false,
-        "parentContainer": "progressIndicator",
+        "showTotal": true,
+        "parentContainer": "buttonArea",
         "side": "left",
-        "visible": false
+        "visible": true,
+        "showHandler": true,
+        "hideHandlerOnMouseOut": true,
+        "showRemainingProgress": true
     },
     "plugins": {
         "es.upv.paella.singleVideo": {
@@ -75,7 +78,8 @@
             "enabled": {{ notLive ? 'true' : 'false' }},
             "side": "right",
             "order": 102,
-            "rates": [0.75, 1, 1.5, 2]
+            "rates": [0.75, 1, 1.5, 2],
+            "showIcon": false
         },
 
         "es.upv.paella.frameControlButtonPlugin": {
@@ -90,7 +94,7 @@
         },
 
         "es.upv.paella.volumeButtonPlugin": {
-            "enabled": false,
+            "enabled": true,
             "side": "left",
             "order": 6
         },
@@ -108,7 +112,7 @@
         },
 
         "es.upv.paella.zoomPlugin": {
-            "enabled": false,
+            "enabled": true,
             "order": 0,
             "maxZoom": 400,
             "showButtons": true,
@@ -141,8 +145,7 @@
 
         "es.upv.paella.captionsSelectorPlugin": {
             "enabled": true,
-            "side": "right",
-            "parentContainer": "videoContainer"
+            "side": "right"
         },
 
         "es.upv.paella.qualitySelector": {
@@ -215,12 +218,6 @@
             ]
         },
 
-        "es.teltek.paella.integratedDurationButtonPlugin": {
-            "enabled": {{ notLive ? 'true' : 'false' }},
-            "side": "left",
-            "order": 6
-        },
-
         "es.teltek.paella.pipButtonPlugin": {
             "enabled": {{ isMonostream ? 'true' : 'false' }},
             "side": "right",
@@ -233,20 +230,58 @@
             "order": 4
         },
 
-        "es.teltek.paella.volumeButtonPlugin": {
-            "enabled": true,
-            "side": "left",
-            "order": 5
-        },
-
         "es.teltek.paella.liveIndicatorButtonPlugin": {
             "enabled": {{ isLive ? 'true' : 'false' }},
             "side": "left",
             "order": 7
         },
 
+        "es.teltek.paella.viewsPlugin": {
+            "enabled": true
+        },
+
         "org.opencast.paella.breaksPlugin": {
             "enabled": {{ notLive ? 'true' : 'false' }}
+        },
+
+        "es.upv.paella.findCaptionsPlugin": {
+            "enabled": true,
+            "side": "right",
+            "description": "Search in captions"
+        },
+
+        "es.upv.paella.slideMapProgressBarPlugin": {
+            "enabled": true,
+            "markColor": {
+                "mouseOut": "#0A0A0A",
+                "mouseHover": "#A9A9A9"
+            },
+            "markWidth": 3,
+            "drawBackground": false
+        },
+
+        "es.upv.paella.customTimeProgressIndicator": {
+            "enabled": false,
+            "textSize": "large",
+            "showTotal": false
+        },
+
+        "es.upv.paella.nextSlideNavigatorButton": {
+            "enabled": true,
+            "content": [
+                "presentation"
+            ],
+            "side": "left",
+            "order": 1
+        },
+
+        "es.upv.paella.prevSlideNavigatorButton": {
+            "enabled": true,
+            "content": [
+                "presentation"
+            ],
+            "side": "left",
+            "order": 0
         }
     }
 }

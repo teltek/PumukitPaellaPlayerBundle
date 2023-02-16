@@ -41,12 +41,9 @@ class ConfController extends AbstractController
     /**
      * @Route("/paella/config.json", name="paella_player_config")
      */
-    public function confAction(Request $request)
+    public function confAction(Request $request): Response
     {
-        $objectID = $request->query->get('configID');
-        $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy([
-            '_id' => new ObjectId($objectID),
-        ]);
+        $multimediaObject = $this->getMultimediaObject($request->query->get('configID'));
 
         $jsonData = $this->renderView(
             '@PumukitPaellaPlayer/Conf/conf.json.twig',
@@ -67,9 +64,7 @@ class ConfController extends AbstractController
 
     private function getPaellaProfileFolder(Request $request): string
     {
-        $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(
-            ['_id' => new ObjectId($request->get('id'))]
-        );
+        $multimediaObject = $this->getMultimediaObject($request->get('id'));
 
         if (strpos($request->headers->get('referer'), 'advanced')) {
             return self::PAELLA_ADVANCE_CONFIG_FOLDER;
@@ -80,5 +75,14 @@ class ConfController extends AbstractController
         }
 
         return self::PAELLA_DEFAULT_CONFIG_FOLDER;
+    }
+
+    private function getMultimediaObject(string $objectId): MultimediaObject
+    {
+        try {
+            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['_id' => new ObjectId($objectId)]);
+        } catch (\Exception $exception) {
+            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['secret' => $objectId]);
+        }
     }
 }
