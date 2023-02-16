@@ -57,23 +57,8 @@
     width: 35px;
 }
 
-@media (max-width: 1020px) {
-    .video-canvas .button-area button {
-        width: 30px;
-    }
-}
-
-@media (max-width: 800px) {
-    .video-canvas .button-area button {
-        width: 25px;
-    }
-}
-
 #player-container {
-    width: 86vw;
-    height: 90vh;
-    left: 7vw;
-    top: 5vh;
+    height: 85vh;
     position: relative;
     font-family: helvetica, arial, sans-serif;
 }

@@ -238,6 +238,11 @@
             "side": "left",
             "order": 7
         },
+
+        "es.teltek.paella.viewsPlugin": {
+            "enabled": true
+        },
+
         "org.opencast.paella.breaksPlugin": {
             "enabled": true
         },
