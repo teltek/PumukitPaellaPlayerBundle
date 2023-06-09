@@ -7,6 +7,21 @@
     {% endif %}
 {% endblock %}
 
+{% block javascripts %}
+  {{ parent() }}
+    <script>
+        function resizeFrame(elem) {
+            var width = $(elem).width();
+            var height = width / 16 * 9;
+            $(elem).height(height);
+        }
+
+        $(window).resize(function () {
+            resizeFrame($('#player-container'));
+        });
+    </script>
+{% endblock %}
+
 {% block body_base %}
 
     <div id="player-container"></div>
