@@ -7,6 +7,7 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use MongoDB\BSON\ObjectId;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
+use Pumukit\SchemaBundle\Services\CaptionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,15 +24,18 @@ class ConfController extends AbstractController
     private $paellaXAPIAuth;
     private $paellaAccessControlClass;
     private $paellaFootPrints;
+    private $captionService;
 
     public function __construct(
         DocumentManager $documentManager,
+        CaptionService $captionService,
         $paellaXAPIEndpoint,
         $paellaXAPIAuth,
         $paellaAccessControlClass,
         $paellaFootPrints
     ) {
         $this->documentManager = $documentManager;
+        $this->captionService = $captionService;
         $this->paellaXAPIEndpoint = $paellaXAPIEndpoint;
         $this->paellaXAPIAuth = $paellaXAPIAuth;
         $this->paellaAccessControlClass = $paellaAccessControlClass;
@@ -56,6 +60,7 @@ class ConfController extends AbstractController
                 'isMultistream' => $multimediaObject->isMultistream(),
                 'isLive' => $multimediaObject->isLive(),
                 'notLive' => !$multimediaObject->isLive(),
+                'hasCaptions' => count($this->captionService->getCaptions($multimediaObject)),
             ]
         );
 

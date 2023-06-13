@@ -144,7 +144,7 @@
         },
 
         "es.upv.paella.captionsSelectorPlugin": {
-            "enabled": true,
+            "enabled": {{ hasCaptions ? 'true' : 'false' }},
             "side": "right"
         },
 
@@ -245,7 +245,7 @@
         },
 
         "es.upv.paella.findCaptionsPlugin": {
-            "enabled": true,
+            "enabled":  {{ hasCaptions ? 'true' : 'false' }},
             "side": "right",
             "description": "Search in captions"
         },
