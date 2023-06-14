@@ -60,7 +60,7 @@ class ConfController extends AbstractController
                 'isMultistream' => $multimediaObject->isMultistream(),
                 'isLive' => $multimediaObject->isLive(),
                 'notLive' => !$multimediaObject->isLive(),
-                'hasCaptions' => count($this->captionService->getCaptions($multimediaObject)),
+                'hasCaptions' => $this->captionService->hasCaptions($multimediaObject),
             ]
         );
 
