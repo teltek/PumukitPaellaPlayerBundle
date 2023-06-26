@@ -63,6 +63,9 @@
     font-family: helvetica, arial, sans-serif;
 }
 
+.video-player{
+    pointer-events: none !important;
+}
 
 .volume-slider {
     height: 2px !important;
