@@ -63,7 +63,7 @@
     font-family: helvetica, arial, sans-serif;
 }
 
-.video-player{
+.video-player, video{
     pointer-events: none !important;
 }
 
