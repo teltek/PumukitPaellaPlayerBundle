@@ -24,7 +24,7 @@ class TrimmingManifest
 
     private function processTrimmingData(MultimediaObject $multimediaObject): array
     {
-        $trimmingData = $this->documentManager->getRepository(Annotation::class)->findBy([
+        $trimmingData = $this->documentManager->getRepository(Annotation::class)->findOneBy([
             'multimediaObject' => $multimediaObject->getId(),
             'type' => 'paella/trimming',
         ]);
@@ -37,8 +37,8 @@ class TrimmingManifest
 
         return [
             'start' => $trimmingAnnotation['trimming']['start'],
-            'end' => $trimmingAnnotation['trimming']['ends'],
-            'enabled' => $trimmingAnnotation['trimming']['start'] < $trimmingAnnotation['trimming']['ends'],
+            'end' => $trimmingAnnotation['trimming']['end'],
+            'enabled' => $trimmingAnnotation['trimming']['start'] < $trimmingAnnotation['trimming']['end'],
         ];
     }
 }
