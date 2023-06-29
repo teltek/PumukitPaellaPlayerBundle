@@ -13,19 +13,22 @@ class VoDManifest
     protected $frameListManifest;
     protected $captionsManifest;
     protected $customManifest;
+    protected $trimmingManifest;
 
     public function __construct(
         MetadataManifest $metadataManifest,
         StreamsManifest $streamsManifest,
         FrameListManifest $frameListManifest,
         CaptionsManifest $captionsManifest,
-        CustomManifest $customManifest
+        CustomManifest $customManifest,
+        TrimmingManifest $trimmingManifest
     ) {
         $this->metadataManifest = $metadataManifest;
         $this->streamsManifest = $streamsManifest;
         $this->frameListManifest = $frameListManifest;
         $this->captionsManifest = $captionsManifest;
         $this->customManifest = $customManifest;
+        $this->trimmingManifest = $trimmingManifest;
     }
 
     public function create(MultimediaObject $multimediaObject, ?string $trackId): array
@@ -36,6 +39,10 @@ class VoDManifest
         $data['streams'] = $this->streamsManifest->createStreamsForVoD($multimediaObject, $trackId)['streams'];
         $data['frameList'] = $this->frameListManifest->create($multimediaObject);
         $data['captions'] = $this->captionsManifest->create($multimediaObject);
+        $trimmingData = $this->trimmingManifest->create($multimediaObject);
+        if (!empty($trimmingData)) {
+            $data['trimming'] = $trimmingData;
+        }
 
         return $data;
     }

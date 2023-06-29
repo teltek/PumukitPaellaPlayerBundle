@@ -53,3 +53,6 @@ services:
 
   Pumukit\PaellaPlayerBundle\Services\PlaylistManifest:
     class: Pumukit\PaellaPlayerBundle\Services\PlaylistManifest
+
+  Pumukit\PaellaPlayerBundle\Services\TrimmingManifest:
+    class: Pumukit\PaellaPlayerBundle\Services\TrimmingManifest
