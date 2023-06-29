@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Pumukit\SchemaBundle\Document\Annotation;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 
