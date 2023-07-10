@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pumukit\PaellaPlayerBundle\Services;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Pumukit\BaseLivePlayerBundle\Services\LiveService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
@@ -12,7 +11,6 @@ use Pumukit\SchemaBundle\Services\PicService;
 
 class StreamsManifest
 {
-    private $documentManager;
     private $picService;
     private $trackUrlService;
     private $liveService;
@@ -20,14 +18,12 @@ class StreamsManifest
     private $requestContextHost;
 
     public function __construct(
-        DocumentManager $documentManager,
         PicService $picService,
         TrackUrlService $trackUrlService,
         LiveService $liveService,
         string $requestContextScheme,
         string $requestContextHost
     ) {
-        $this->documentManager = $documentManager;
         $this->picService = $picService;
         $this->trackUrlService = $trackUrlService;
         $this->liveService = $liveService;
@@ -177,7 +173,7 @@ class StreamsManifest
         return $tracks;
     }
 
-    private function buildDataStream(array $tracks)
+    private function buildDataStream(array $tracks): array
     {
         $dataStream = [];
         $sources = [];
@@ -197,9 +193,8 @@ class StreamsManifest
 
             $format = explode('/', $mimeType)[1] ?? 'mp4';
 
-            // Hotfix use mp4 when mp3. See https://github.com/polimediaupv/paella/pull/347
             if (in_array($format, ['mpeg', 'x-m4a']) && $track->isOnlyAudio()) {
-                $format = 'mp4';
+                $format = 'audio';
             }
 
             if (!isset($sources[$format])) {
