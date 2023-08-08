@@ -28,30 +28,35 @@ window.onload = async () => {
         var configID = location.pathname.split('/').slice(-1)[0];
     }
 
-    let hasIntro = false;
-    let hasTail = false;
-    let introLoaded = false;
-    let tailLoaded = false;
-    let originalVideoLoaded = false;
+    let loadIntro = false;
+    let loadTail = false;
+    let loadVideo = false;
+    let intro = false;
+    let tail = false;
+    let video = false;
 
     const initParams = {
         loadVideoManifest: async (videoManifestUrl, config, player) => {
             const result = await defaultLoadVideoManifestFunction(videoManifestUrl, config, player);
 
-            hasIntro = (typeof result.intro !== 'undefined');
-            hasTail = (typeof result.tail !== 'undefined');
+            intro = (typeof result.intro !== 'undefined');
+            tail = (typeof result.tail !== 'undefined');
+            video = result;
 
-            if (hasIntro && !introLoaded) {
+            if(intro && !loadVideo && !loadTail) {
                 videoManifestUrl = result.intro;
+                loadIntro = true;
+
                 return await defaultLoadVideoManifestFunction(videoManifestUrl, config, player);
             }
 
-            if(originalVideoLoaded && hasTail && !tailLoaded) {
+            if(tail && loadTail) {
                 videoManifestUrl = result.tail;
-                tailLoaded = true;
+
                 return await defaultLoadVideoManifestFunction(videoManifestUrl, config, player);
             }
 
+            loadVideo = true;
             return result;
         },
         customPluginContext: [
@@ -127,16 +132,35 @@ window.onload = async () => {
     }
 
     paella.bindEvent(Events.ENDED, async () => {
-        if (hasIntro && !introLoaded) {
-            introLoaded = true;
+        if(loadIntro) {
+            loadIntro = false;
+            loadVideo = true;
+            loadTail = false;
             await paella.reload();
+            await paella.play();
+            return;
         }
 
-        if(originalVideoLoaded && hasTail && !tailLoaded) {
+        if(loadVideo) {
+            loadIntro = (!tail);
+            loadTail = (tail);
+            loadVideo = false;
+
             await paella.reload();
+            if(loadTail) {
+                await paella.play();
+            }
+
+            return;
         }
 
-        originalVideoLoaded = true;
+        if(loadTail) {
+            loadIntro = (intro);
+            loadVideo = (!intro);
+            loadTail = false;
+
+            await paella.reload();
+        }
 
     }, false);
 
