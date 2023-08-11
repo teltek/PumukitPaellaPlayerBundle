@@ -20,10 +20,9 @@ import packageData from "../package.json";
 window.onload = async () => {
 
     const baseURL = window.location.href;
-    const params = new URLSearchParams(window.location.search);
 
     if(baseURL.search('playlist') !== -1) {
-        var configID = params.get('videoId');
+        var configID = utils.getUrlParameter('videoId');
     } else {
         var configID = location.pathname.split('/').slice(-1)[0];
     }
@@ -74,24 +73,27 @@ window.onload = async () => {
         },
         getManifestUrl: (repoUrl,videoId) => {
             let location = window.location.href;
-            const params = new URLSearchParams(window.location.search);
 
             if(location.search('playlist') !== -1 && location.search('secret') !== -1) {
-                let playlistId = params.get('playlistId');
-                let pos = params.get('videoPos');
+                console.log('is secret playlist');
+                let playlistId = utils.getUrlParameter('playlistId');
+                let pos = utils.getUrlParameter('videoPos');
                 return '/secret/paellaplaylist/' + playlistId + '?videoPos=' + pos;
             }
 
             if(location.search('playlist') !== -1) {
-                let playlistId = params.get('playlistId');
-                let pos = params.get('videoPos');
+                console.log('is playlist');
+                let playlistId = utils.getUrlParameter('playlistId');
+                let pos = utils.getUrlParameter('videoPos');
                 return '/paellaplaylist/' + playlistId + '?videoPos=' + pos;
             }
 
             if(location.search("secret") !== -1) {
+                console.log('is secret');
                 return '/secret' + `${repoUrl}${videoId}`;
             }
 
+            console.log('no secret, no playlist');
             return `${repoUrl}${videoId}`;
         },
         getManifestFileUrl: (manifestUrl) => {
