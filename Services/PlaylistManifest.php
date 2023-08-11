@@ -65,7 +65,9 @@ class PlaylistManifest
 
     private function generateBasicMetadataForVideos(Series $series, string $pathInfo): array
     {
-        $multimediaObjects = $series->getPlaylist()->getMultimediaObjectsIdList();
+        $multimediaObjects = $this->getMultimediaObjectsPlayable(
+            $series->getPlaylist()->getMultimediaObjectsIdList()
+        );
 
         $data = [];
 
@@ -110,8 +112,8 @@ class PlaylistManifest
                 '_id' => $multimediaObject,
             ]);
 
-            if ($this->multimediaObjectService->isPlayableOnPlaylist($element)) {
-                $elements[] = $element;
+            if ($element instanceof MultimediaObject && $this->multimediaObjectService->isPlayableOnPlaylist($element)) {
+                $elements[] = $multimediaObject;
             }
         }
 
