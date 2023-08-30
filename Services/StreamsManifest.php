@@ -82,9 +82,9 @@ class StreamsManifest
         $data = [];
         $live = $multimediaObject->getEmbeddedEvent()->getLive();
 
-        if ($live) {
+        if ($live && empty($multimediaObject->getEmbeddedEvent()->getUrl())) {
             $url = $this->liveService->generateHlsUrl($live);
-        } elseif (null === $multimediaObject->getEmbeddedEvent()->getLive() && (false !== strpos($multimediaObject->getEmbeddedEvent()->getUrl(), 'rtmp://')
+        } elseif ($multimediaObject->getEmbeddedEvent()->getUrl() && (false !== strpos($multimediaObject->getEmbeddedEvent()->getUrl(), 'rtmp://')
             || false !== strpos($multimediaObject->getEmbeddedEvent()->getUrl(), 'rtmpt://'))) {
             $url = $this->liveService->genHlsUrlEvent($multimediaObject->getEmbeddedEvent()->getUrl());
         }
