@@ -85,7 +85,7 @@ class StreamsManifest
         if ($live && empty($multimediaObject->getEmbeddedEvent()->getUrl())) {
             $url = $this->liveService->generateHlsUrl($live);
         } elseif ($multimediaObject->getEmbeddedEvent()->getUrl() && (false !== strpos($multimediaObject->getEmbeddedEvent()->getUrl(), 'rtmp://')
-            || false !== strpos($multimediaObject->getEmbeddedEvent()->getUrl(), 'rtmpt://'))) {
+                || false !== strpos($multimediaObject->getEmbeddedEvent()->getUrl(), 'rtmpt://'))) {
             $url = $this->liveService->genHlsUrlEvent($multimediaObject->getEmbeddedEvent()->getUrl());
         }
 
@@ -113,9 +113,9 @@ class StreamsManifest
                 'mimetype' => $mimeType,
             ];
 
-//            if ($track->getWidth() && $track->getHeight()) {
-//                $dataStreamTrack['res'] = ['w' => $track->getWidth(), 'h' => $track->getHeight()];
-//            }
+            //            if ($track->getWidth() && $track->getHeight()) {
+            //                $dataStreamTrack['res'] = ['w' => $track->getWidth(), 'h' => $track->getHeight()];
+            //            }
 
             if (!isset($sources['hlsLive'])) {
                 $sources['hlsLive'] = [];
