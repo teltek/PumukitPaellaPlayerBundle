@@ -80,6 +80,7 @@ class StreamsManifest
     public function createStreamsForLive(MultimediaObject $multimediaObject): array
     {
         $data = [];
+        $url = '';
         $live = $multimediaObject->getEmbeddedEvent()->getLive();
 
         if ($live && empty($multimediaObject->getEmbeddedEvent()->getUrl())) {
