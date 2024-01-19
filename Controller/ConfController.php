@@ -74,8 +74,7 @@ class ConfController extends AbstractController
             $jsonData = $this->renderView(
                 '@PumukitPaellaPlayer/Conf/conf.json.twig',
                 [
-                    'isLive' => true,
-                    'notLive' => false,'xapi_endpoint' => $this->paellaXAPIEndpoint,
+                    'xapi_endpoint' => $this->paellaXAPIEndpoint,
                     'xapi_auth' => $this->paellaXAPIAuth,
                     'access_control_class' => $this->paellaAccessControlClass,
                     'footprints' => $this->paellaFootPrints,
