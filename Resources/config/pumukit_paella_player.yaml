@@ -50,6 +50,8 @@ services:
 
   Pumukit\PaellaPlayerBundle\Services\ChannelManifest:
     class: Pumukit\PaellaPlayerBundle\Services\ChannelManifest
+    arguments:
+      $eventDefaultPic: "%pumukit_new_admin.advance_live_event_create_default_pic%"
 
   Pumukit\PaellaPlayerBundle\Services\PlaylistManifest:
     class: Pumukit\PaellaPlayerBundle\Services\PlaylistManifest
