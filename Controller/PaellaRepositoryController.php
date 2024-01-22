@@ -91,7 +91,7 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
         return new Response($response);
     }
 
-    private function getMultimediaObject(string $objectId): MultimediaObject
+    private function getMultimediaObject(string $objectId)
     {
         try {
             return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['_id' => new ObjectId($objectId)]);

@@ -11,13 +11,16 @@ class ChannelManifest
 {
     protected $liveService;
     protected $streamsManifest;
+    protected $eventDefaultPic;
 
     public function __construct(
         LiveService $liveService,
-        StreamsManifest $streamsManifest
+        StreamsManifest $streamsManifest,
+        string $eventDefaultPic
     ) {
         $this->liveService = $liveService;
         $this->streamsManifest = $streamsManifest;
+        $this->eventDefaultPic = $eventDefaultPic;
     }
 
     public function create(Live $live): array
@@ -36,7 +39,7 @@ class ChannelManifest
         $data = [];
         $data['id'] = $live->getId();
         $data['title'] = $live->getName();
-        $data['preview'] = '';
+        $data['preview'] = $this->eventDefaultPic;
         $data['duration'] = 0;
 
         return $data;

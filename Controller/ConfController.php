@@ -49,20 +49,43 @@ class ConfController extends AbstractController
     {
         $multimediaObject = $this->getMultimediaObject($request->query->get('configID'));
 
-        $jsonData = $this->renderView(
-            '@PumukitPaellaPlayer/Conf/conf.json.twig',
-            [
-                'xapi_endpoint' => $this->paellaXAPIEndpoint,
-                'xapi_auth' => $this->paellaXAPIAuth,
-                'access_control_class' => $this->paellaAccessControlClass,
-                'footprints' => $this->paellaFootPrints,
-                'isMonostream' => !$multimediaObject->isMultistream(),
-                'isMultistream' => $multimediaObject->isMultistream(),
-                'isLive' => $multimediaObject->isLive(),
-                'notLive' => !$multimediaObject->isLive(),
-                'hasCaptions' => $this->captionService->hasCaptions($multimediaObject),
-            ]
-        );
+        if ($multimediaObject instanceof MultimediaObject) {
+            $jsonData = $this->renderView(
+                '@PumukitPaellaPlayer/Conf/conf.json.twig',
+                [
+                    'xapi_endpoint' => $this->paellaXAPIEndpoint,
+                    'xapi_auth' => $this->paellaXAPIAuth,
+                    'access_control_class' => $this->paellaAccessControlClass,
+                    'footprints' => $this->paellaFootPrints,
+                    'isMonostream' => !$multimediaObject->isMultistream(),
+                    'isMultistream' => $multimediaObject->isMultistream(),
+                    'isLive' => $multimediaObject->isLive(),
+                    'notLive' => !$multimediaObject->isLive(),
+                    'hasCaptions' => $this->captionService->hasCaptions($multimediaObject),
+                ]
+            );
+        }
+
+        $live = $this->documentManager->getRepository(Live::class)->findOneBy([
+            '_id' => new ObjectId($request->query->get('configID')),
+        ]);
+
+        if ($live instanceof Live) {
+            $jsonData = $this->renderView(
+                '@PumukitPaellaPlayer/Conf/conf.json.twig',
+                [
+                    'xapi_endpoint' => $this->paellaXAPIEndpoint,
+                    'xapi_auth' => $this->paellaXAPIAuth,
+                    'access_control_class' => $this->paellaAccessControlClass,
+                    'footprints' => $this->paellaFootPrints,
+                    'isMonostream' => true,
+                    'isMultistream' => false,
+                    'isLive' => true,
+                    'notLive' => false,
+                    'hasCaptions' => false,
+                ]
+            );
+        }
 
         return new Response($jsonData, 200, ['Content-Type' => 'application/json']);
     }
@@ -82,7 +105,7 @@ class ConfController extends AbstractController
         return self::PAELLA_DEFAULT_CONFIG_FOLDER;
     }
 
-    private function getMultimediaObject(string $objectId): MultimediaObject
+    private function getMultimediaObject(string $objectId)
     {
         try {
             return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['_id' => new ObjectId($objectId)]);
