@@ -49,7 +49,7 @@ class ConfController extends AbstractController
     public function confAction(Request $request): Response
     {
         $multimediaObject = $this->getMultimediaObject($request->query->get('configID'));
-        $jsonData = "";
+        $jsonData = '';
 
         if ($multimediaObject instanceof MultimediaObject) {
             $jsonData = $this->renderView(
