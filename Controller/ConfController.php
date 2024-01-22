@@ -6,8 +6,8 @@ namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use MongoDB\BSON\ObjectId;
-use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Live;
+use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Services\CaptionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
