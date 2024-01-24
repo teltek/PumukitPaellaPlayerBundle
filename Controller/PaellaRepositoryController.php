@@ -58,7 +58,7 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
             if ($multimediaObject->isLive()) {
                 $data = $this->liveManifest->create($multimediaObject);
             } else {
-                $data = $this->voDManifest->create($multimediaObject, $request->query->get('track_id'));
+                $data = $this->voDManifest->create($multimediaObject, $request->query->get('track_id'), $request->getHost());
             }
             $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 

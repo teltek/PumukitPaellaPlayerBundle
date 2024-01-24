@@ -16,6 +16,7 @@ class StreamsManifest
     private $liveService;
     private $requestContextScheme;
     private $requestContextHost;
+    private $refererContext;
 
     public function __construct(
         PicService $picService,
@@ -31,8 +32,11 @@ class StreamsManifest
         $this->requestContextHost = $requestContextHost;
     }
 
-    public function createStreamsForVoD(MultimediaObject $multimediaObject, ?string $trackId): array
+    public function createStreamsForVoD(MultimediaObject $multimediaObject, ?string $trackId, string $referer): array
     {
+        // This sentence set the domain to create the absolute url of the track
+        $this->refererContext = $referer;
+
         $data = [];
         $data['streams'] = [];
 
@@ -220,7 +224,7 @@ class StreamsManifest
             return $url;
         }
 
-        return $this->requestContextScheme.'://'.$this->requestContextHost.$url;
+        return $this->requestContextScheme.'://'.$this->refererContext.$url;
     }
 
     private function getPreview(MultimediaObject $multimediaObject)

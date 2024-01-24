@@ -31,12 +31,12 @@ class VoDManifest
         $this->trimmingManifest = $trimmingManifest;
     }
 
-    public function create(MultimediaObject $multimediaObject, ?string $trackId): array
+    public function create(MultimediaObject $multimediaObject, ?string $trackId, string $referer): array
     {
         $data = [];
         $data['metadata'] = $this->metadataManifest->create($multimediaObject);
         $data = $this->customManifest->completeManifestData($multimediaObject, $data);
-        $data['streams'] = $this->streamsManifest->createStreamsForVoD($multimediaObject, $trackId)['streams'];
+        $data['streams'] = $this->streamsManifest->createStreamsForVoD($multimediaObject, $trackId, $referer)['streams'];
         $data['frameList'] = $this->frameListManifest->create($multimediaObject);
         $data['captions'] = $this->captionsManifest->create($multimediaObject);
         $trimmingData = $this->trimmingManifest->create($multimediaObject);
