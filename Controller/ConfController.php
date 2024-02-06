@@ -66,6 +66,8 @@ class ConfController extends AbstractController
                     'hasCaptions' => $this->captionService->hasCaptions($multimediaObject),
                 ]
             );
+
+            return new Response($jsonData, 200, ['Content-Type' => 'application/json']);
         }
 
         $live = $this->documentManager->getRepository(Live::class)->findOneBy([
