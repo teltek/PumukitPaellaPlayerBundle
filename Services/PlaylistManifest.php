@@ -10,7 +10,6 @@ use MongoDB\BSON\ObjectIdInterface;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Pumukit\SchemaBundle\Services\MultimediaObjectService;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PlaylistManifest
@@ -32,7 +31,7 @@ class PlaylistManifest
         $this->multimediaObjectService = $multimediaObjectService;
     }
 
-    public function create(Request $request, Series $series, int $videoPosition, string $pathInfo): array
+    public function create(string $host, Series $series, int $videoPosition, string $pathInfo): array
     {
         if (!$series->isPlaylist()) {
             $criteria['series'] = new ObjectId($series->getId());
@@ -53,7 +52,7 @@ class PlaylistManifest
             '_id' => (!$series->isPlaylist()) ? $multimediaObjects[$videoPosition]->getId() : $multimediaObjects[$videoPosition],
         ]);
 
-        $generatedVodManifest = $this->VoDManifest->create($multimediaObject, null, $request->getHost());
+        $generatedVodManifest = $this->VoDManifest->create($multimediaObject, null, $host);
 
         $generatedVodManifest['playlist'] = $this->generatePlaylistMetadata($series, $videoPosition, $pathInfo);
 

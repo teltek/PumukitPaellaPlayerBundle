@@ -85,7 +85,7 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
      */
     public function playlistAction(Request $request, Series $series): Response
     {
-        $data = $this->playlistManifest->create($request, $series, $request->query->getInt('videoPos') ?? 0, $request->getPathInfo());
+        $data = $this->playlistManifest->create($request->getHost(), $series, $request->query->getInt('videoPos') ?? 0, $request->getPathInfo());
         $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
