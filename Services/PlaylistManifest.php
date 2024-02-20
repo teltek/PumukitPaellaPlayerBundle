@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\ObjectIdInterface;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
@@ -30,25 +31,28 @@ class PlaylistManifest
         $this->multimediaObjectService = $multimediaObjectService;
     }
 
-    public function create(Series $series, int $videoPosition, string $pathInfo): array
+    public function create(string $host, Series $series, int $videoPosition, string $pathInfo): array
     {
         if (!$series->isPlaylist()) {
-            throw new \Exception('It isnt playlist.');
+            $criteria['series'] = new ObjectId($series->getId());
+            $criteria['type'] = ['$ne' => MultimediaObject::TYPE_LIVE];
+            $criteria['status'] = ['$ne' => MultimediaObject::STATUS_PROTOTYPE];
+            $multimediaObjects = $this->documentManager->getRepository(MultimediaObject::class)->findBy($criteria, ['rank' => 'asc']);
+        } else {
+            $multimediaObjects = $this->getMultimediaObjectsPlayable(
+                $series->getPlaylist()->getMultimediaObjectsIdList()
+            );
         }
-
-        $multimediaObjects = $this->getMultimediaObjectsPlayable(
-            $series->getPlaylist()->getMultimediaObjectsIdList()
-        );
 
         if ($videoPosition > count($multimediaObjects)) {
             $videoPosition = 0;
         }
 
-        $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findoneBy([
-            '_id' => $multimediaObjects[$videoPosition],
+        $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy([
+            '_id' => (!$series->isPlaylist()) ? $multimediaObjects[$videoPosition]->getId() : $multimediaObjects[$videoPosition],
         ]);
 
-        $generatedVodManifest = $this->VoDManifest->create($multimediaObject, null);
+        $generatedVodManifest = $this->VoDManifest->create($multimediaObject, null, $host);
 
         $generatedVodManifest['playlist'] = $this->generatePlaylistMetadata($series, $videoPosition, $pathInfo);
 
@@ -65,19 +69,27 @@ class PlaylistManifest
 
     private function generateBasicMetadataForVideos(Series $series, string $pathInfo): array
     {
-        $multimediaObjects = $this->getMultimediaObjectsPlayable(
-            $series->getPlaylist()->getMultimediaObjectsIdList()
-        );
+        if (!$series->isPlaylist()) {
+            $criteria['series'] = new ObjectId($series->getId());
+            $criteria['type'] = ['$ne' => MultimediaObject::TYPE_LIVE];
+            $criteria['status'] = ['$ne' => MultimediaObject::STATUS_PROTOTYPE];
+            $multimediaObjects = $this->documentManager->getRepository(MultimediaObject::class)->findBy($criteria, ['rank' => 'asc']);
+        } else {
+            $multimediaObjects = $this->getMultimediaObjectsPlayable(
+                $series->getPlaylist()->getMultimediaObjectsIdList()
+            );
+        }
 
         $data = [];
 
         $i = 0;
         foreach ($multimediaObjects as $multimediaObjectId) {
+            $omId = (!$series->isPlaylist()) ? new ObjectId($multimediaObjectId->getId()) : $multimediaObjectId;
             $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findoneBy([
-                '_id' => $multimediaObjectId,
+                '_id' => $omId,
             ]);
             $data[] = [
-                'videoURL' => $this->generateManifestURL($series, $multimediaObjectId, $i, $pathInfo),
+                'videoURL' => $this->generateManifestURL($series, $omId, $i, $pathInfo),
                 'title' => $multimediaObject->getTitle(),
                 'pos' => $i,
             ];
