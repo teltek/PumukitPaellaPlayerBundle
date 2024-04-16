@@ -8,6 +8,7 @@ use Pumukit\BaseLivePlayerBundle\Services\LiveService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Services\PicService;
+use Symfony\Component\Mime\MimeTypes;
 
 class StreamsManifest
 {
@@ -45,12 +46,12 @@ class StreamsManifest
             if ($track) {
                 $dataStream = $this->buildDataStream([$track]);
                 $dataStream['content'] = 'presenter';
-                $dataStream['audioTag'] = $track->getLanguage();
+                $dataStream['audioTag'] = $track->language();
 
                 $pic = $this->getPreview($multimediaObject);
 
                 $dataStream['preview'] = $pic;
-                $dataStream['language'] = $track->getLanguage();
+                $dataStream['language'] = $track->language();
                 $data['streams'][] = $dataStream;
             }
 
@@ -144,10 +145,10 @@ class StreamsManifest
         if ($trackId) {
             $track = $multimediaObject->getTrackById($trackId);
             if ($track) {
-                if ($track->containsAnyTag(['display', 'presenter/delivery', 'presentation/delivery']) && in_array($track->getVcodec(), $availableCodecs)) {
+                if ($track->containsAnyTag(['display', 'presenter/delivery', 'presentation/delivery']) && in_array($track->metadata()->codecName(), $availableCodecs)) {
                     $tracks['display'][] = $track;
                 }
-                if ($track->isOnlyAudio()) {
+                if ($track->metadata()->isOnlyAudio()) {
                     $tracks['display'][] = $track;
                 }
 
@@ -160,12 +161,12 @@ class StreamsManifest
         $sbsTrack = $multimediaObject->getTrackWithTag('sbs');
 
         foreach ($presenterTracks as $track) {
-            if (in_array($track->getVcodec(), $availableCodecs)) {
+            if (in_array($track->metadata()->codecName(), $availableCodecs)) {
                 $tracks['display'][] = $track;
             }
         }
         foreach ($presentationTracks as $track) {
-            if (in_array($track->getVcodec(), $availableCodecs)) {
+            if (in_array($track->metadata()->codecName(), $availableCodecs)) {
                 $tracks['presentation'][] = $track;
             }
         }
@@ -176,7 +177,7 @@ class StreamsManifest
 
         if (!$tracks['display'] && !$tracks['presentation']) {
             $track = $multimediaObject->getDisplayTrack();
-            if ($track && in_array($track->getVcodec(), $availableCodecs)) {
+            if ($track && in_array($track->metadata()->codecName(), $availableCodecs)) {
                 $tracks['display'][] = $track;
             }
         }
@@ -189,7 +190,9 @@ class StreamsManifest
         $dataStream = [];
         $sources = [];
         foreach ($tracks as $track) {
-            $mimeType = $track->getMimetype();
+            //            $mimeType = $track->metadata()->mimetype();
+            $mimeTypes = new MimeTypes();
+            $mimeType = $mimeTypes->guessMimeType($track->storage()->path()->path());
             $src = $this->getAbsoluteUrl($this->trackUrlService->generateTrackFileUrl($track));
 
             $dataStreamTrack = [
@@ -198,13 +201,13 @@ class StreamsManifest
             ];
 
             // If pumukit doesn't know the resolution, paella can guess it.
-            if ($track->getWidth() && $track->getHeight()) {
-                $dataStreamTrack['res'] = ['w' => $track->getWidth(), 'h' => $track->getHeight()];
+            if ($track->metadata()->width() && $track->metadata()->height()) {
+                $dataStreamTrack['res'] = ['w' => $track->metadata()->width(), 'h' => $track->metadata()->height()];
             }
 
             $format = explode('/', $mimeType)[1] ?? 'mp4';
 
-            if (in_array($format, ['mpeg', 'x-m4a']) && $track->isOnlyAudio()) {
+            if (in_array($format, ['mpeg', 'x-m4a']) && $track->metadata()->isOnlyAudio()) {
                 $format = 'audio';
             }
 
