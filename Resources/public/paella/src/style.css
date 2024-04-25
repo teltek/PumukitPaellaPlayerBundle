@@ -30,3 +30,7 @@
 .playback-bar .button-plugins button:hover {
     background-color: transparent;
 }
+
+.center-container div.captions-search-container input {
+    color: #000;
+}
