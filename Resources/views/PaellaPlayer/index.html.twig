@@ -9,8 +9,9 @@
 {% endblock %}
 
 {% block javascripts %}
-  {{ parent() }}
-  <script src="{{ asset('bundles/pumukitwebtv/js/jquery.countdown.js') }}" type="text/javascript"></script>
+  {% if live is not defined and event is not defined %}
+    {{ parent() }}
+  {% endif %}
   <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
 {% endblock %}
 
