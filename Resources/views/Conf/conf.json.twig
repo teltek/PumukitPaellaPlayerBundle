@@ -79,7 +79,8 @@
             "side": "right",
             "order": 102,
             "rates": [0.75, 1, 1.5, 2],
-            "showIcon": false
+            "showIcon": false,
+            "minContainerSize": 500
         },
 
         "es.upv.paella.frameControlButtonPlugin": {
@@ -176,7 +177,8 @@
             "enabled": true,
             "order": 80,
             "description": "Keyboard Shortcuts",
-            "side": "right"
+            "side": "right",
+            "minContainerSize": 500
         },
 
         "es.upv.paella.userEventTracker": {
@@ -221,7 +223,8 @@
         "es.teltek.paella.pipButtonPlugin": {
             "enabled": {{ isMonostream ? 'true' : 'false' }},
             "side": "right",
-            "order": 105
+            "order": 105,
+            "minContainerSize": 500
         },
 
         "es.teltek.paella.playlistButtonPlugin": {
@@ -247,7 +250,8 @@
         "es.upv.paella.findCaptionsPlugin": {
             "enabled":  {{ hasCaptions ? 'true' : 'false' }},
             "side": "right",
-            "description": "Search in captions"
+            "description": "Search in captions",
+            "minContainerSize": 500
         },
 
         "es.upv.paella.slideMapProgressBarPlugin": {
