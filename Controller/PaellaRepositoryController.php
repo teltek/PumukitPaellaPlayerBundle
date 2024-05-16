@@ -52,7 +52,13 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
      */
     public function indexAction(Request $request, string $id): Response
     {
+        if ($this->documentManager->getFilterCollection()->isEnabled('personal')) {
+            $this->documentManager->getFilterCollection()->disable('personal');
+        }
+
         $multimediaObject = $this->getMultimediaObject($id);
+
+        $this->documentManager->getFilterCollection()->enable('personal');
 
         if ($multimediaObject instanceof MultimediaObject) {
             if ($multimediaObject->isLive()) {
