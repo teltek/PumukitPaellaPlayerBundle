@@ -35,7 +35,7 @@ class CustomManifest
 
     private function addIntroManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
-        $head = $this->headAndTailService->getHeadToPlay();
+        $head = $this->headAndTailService->getHeadToPlay($multimediaObject);
         if (!$head) {
             return $data;
         }
@@ -47,7 +47,7 @@ class CustomManifest
 
     private function addTailManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
-        $tail = $this->headAndTailService->getTailToPlay();
+        $tail = $this->headAndTailService->getTailToPlay($multimediaObject);
         if (!$tail) {
             return $data;
         }
