@@ -27,7 +27,7 @@ class CustomManifest
 
     private function addIntroManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
-        $head = $multimediaObject->getVideoHead();
+        $head = $multimediaObject->getVideoHead() ?? $multimediaObject->getSeries()->getVideoHead();
         if (!$head) {
             return $data;
         }
@@ -39,7 +39,7 @@ class CustomManifest
 
     private function addTailManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
-        $tail = $multimediaObject->getVideoTail();
+        $tail = $multimediaObject->getVideoTail() ?? $multimediaObject->getSeries()->getVideoTail();
         if (!$tail) {
             return $data;
         }
