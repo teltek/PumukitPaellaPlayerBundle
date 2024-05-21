@@ -6,9 +6,17 @@ namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Pumukit\PaellaPlayerBundle\PumukitPaellaPlayerBundle;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
+use Pumukit\SchemaBundle\Services\HeadAndTailService;
 
 class CustomManifest
 {
+    private HeadAndTailService $headAndTailService;
+
+    public function __construct(HeadAndTailService $headAndTailService)
+    {
+        $this->headAndTailService = $headAndTailService;
+    }
+
     public function completeManifestData(MultimediaObject $multimediaObject, array $data): array
     {
         if (!$this->checkManifestData($data)) {
@@ -27,7 +35,7 @@ class CustomManifest
 
     private function addIntroManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
-        $head = $multimediaObject->getVideoHead() ?? $multimediaObject->getSeries()->getVideoHead();
+        $head = $this->headAndTailService->getHeadToPlay();
         if (!$head) {
             return $data;
         }
@@ -39,7 +47,7 @@ class CustomManifest
 
     private function addTailManifestURL(MultimediaObject $multimediaObject, array $data): array
     {
-        $tail = $multimediaObject->getVideoTail() ?? $multimediaObject->getSeries()->getVideoTail();
+        $tail = $this->headAndTailService->getTailToPlay();
         if (!$tail) {
             return $data;
         }
