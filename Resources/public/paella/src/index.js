@@ -23,6 +23,8 @@ window.onload = async () => {
 
     if(baseURL.search('playlist') !== -1) {
         var configID = utils.getUrlParameter('videoId');
+    } else if (baseURL.search('embed') > 0) {
+        var configID = utils.getUrlParameter('id');
     } else {
         var configID = location.pathname.split('/').slice(-1)[0];
     }
@@ -69,7 +71,13 @@ window.onload = async () => {
         configUrl: '/paella/config.json' + '?configID='+ configID,
         repositoryUrl: '/paellarepository/',
         getVideoId: (config, player) => {
-            return location.pathname.split('/').slice(-1)[0];
+            let baseURL = window.location.href;
+
+            if (baseURL.search('embed') !== -1) {
+                return utils.getUrlParameter('id');
+            } else {
+                return location.pathname.split('/').slice(-1)[0];
+            }
         },
         getManifestUrl: (repoUrl,videoId) => {
             let location = window.location.href;
