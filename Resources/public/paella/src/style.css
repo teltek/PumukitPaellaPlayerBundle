@@ -34,3 +34,7 @@
 .center-container div.captions-search-container input {
     color: #000;
 }
+
+.image-container, .image-container img {
+    width: 100%;
+}
