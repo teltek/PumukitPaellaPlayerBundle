@@ -2,70 +2,21 @@
 {% set hide_slidebar = true %}
 
 {% block meta %}
-  <meta name = "viewport" content = "user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
   {# THIS IS WHAT MAKES PAELLA WORK #}
-  <base href="/bundles/pumukitpaellaplayer/paella/player/">
+  <base href="/bundles/pumukitpaellaplayer/paella/">
   {{ parent() }}
-
 {% endblock %}
+
 {% block javascripts %}
-  <script type="text/javascript" src="javascript/swfobject.js"></script>
-  <script type="text/javascript" src="javascript/base.js"></script>
-  <script type="text/javascript" src="javascript/traceur-runtime.min.js"></script>
-  <script type="text/javascript" src="javascript/jquery.js"></script>
-  <script type="text/javascript" src="javascript/lunr.min.js"></script>
-  <script type="text/javascript" src="javascript/require.js"></script>
-  <script type="text/javascript" src="javascript/paella_player.js"></script>
-  <script type="text/javascript" src="../../assets/paella_start.js"></script>
-  <script type="text/javascript" src="../../assets/datadelegates.js"></script>
-  <script type="text/javascript" src="resources/bootstrap/js/bootstrap.min.js"></script>
-
-{% endblock%}
-{% block stylesheets %}
-
-  <link rel="stylesheet" href="{{ asset('bundles/pumukitpaellaplayer/paella/player/resources/bootstrap/css/bootstrap.min.css') }}" type="text/css" media="screen" charset="utf-8">
-
-  <style>
-   {# Added while waiting for paella upstream #}
-   video {
-       background: black;
-       box-shadow: 0 0 6px #000;
-   }
-
-   {# Added while waiting for paella fix TTK-16366 #}
-   .captionsBar .editorButton {
-       display: none !important;
-   }
-   .captionsBar select {
-       width: 49% !important;
-   }
-
-   {# Teltek custom design #}
-   .footPrintsContainer {
-     height: 60px !important;
-   }
-
-   {# Added while waiting for paella fix TTK-16763 #}
-   .captionsPluginContainer {
-     max-width: 400px;
-     min-width: 200px;
-     width: 30vw !important;
-   }
-
-  {# touch scroll #305 and TTK-16059#}
-  body {
-    touch-action: auto !important;
-  }
-
-   {% if app.request.query.has('advanced') %}
-       {% include('PumukitPaellaPlayerBundle:PaellaPlayer:advance.css.twig') %}
-   {% endif %}
-
-  </style>
+  {% if live is not defined and event is not defined %}
+    {{ parent() }}
+  {% endif %}
+  <script type="text/javascript" src="{{ asset('bundles/pumukitpaellaplayer/paella/dist/teltek-paella-player.js') }}"></script>
 {% endblock %}
 
-{% block title %}{{ parent() }} - {{ object.title }}{% endblock %}
-{% block keywords %}{{ parent() }} - {{ object.keywords|join(',') }}{% endblock %}
+{% block title %}{{ parent() }} {% endblock %}
+{% block keywords %}{{ parent() }} }}{% endblock %}
 
 {% block body_base %}
 {% endblock %}

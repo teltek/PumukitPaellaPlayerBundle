@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -50,6 +52,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
 
     /**
      * @Route("/playlist", name="pumukit_playlistplayer_paellaindex", defaults={"no_channels": true} )
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function paellaIndexAction(Request $request)
@@ -62,7 +65,7 @@ class BasePlaylistController extends BasePlaylistAbstractController
         }
 
         if (!$mmobjId) {
-            //If the player has no mmobjId, we should provide it ourselves.
+            // If the player has no mmobjId, we should provide it ourselves.
             return $this->redirectWithMmobj($series, $request);
         }
 

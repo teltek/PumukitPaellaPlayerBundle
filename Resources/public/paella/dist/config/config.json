@@ -1,4 +1,7 @@
 {
+    "repositoryUrl": "repository",
+    "manifestFileName": "data.json",
+    "defaultLayout": "presenter-presentation",
     "progressIndicator": {
         "showTotal": true,
         "parentContainer": "buttonArea",
@@ -12,21 +15,21 @@
         "es.upv.paella.singleVideo": {
             "enabled": true,
             "validContent": [
-                { "id": "presenter", "content": ["presenter"], "icon": "{{ asset('../bundles/pumukitpaellaplayer/images/present-mode-2.svg')}}", "title": "Presenter" },
-                { "id": "presentation", "content": ["presentation"], "icon": "{{ asset('../bundles/pumukitpaellaplayer/images/present-mode-1.svg')}}", "title": "Presentation" },
-                { "id": "presenter-2", "content": ["presenter-2"], "icon": "{{ asset('../bundles/pumukitpaellaplayer/images/present-mode-1.svg')}}", "title": "Presentation" }
+                { "id": "presenter", "content": ["presenter"], "icon": "present-mode-2.svg", "title": "Presenter" },
+                { "id": "presentation", "content": ["presentation"], "icon": "present-mode-1.svg", "title": "Presentation" },
+                { "id": "presenter-2", "content": ["presenter-2"], "icon": "present-mode-1.svg", "title": "Presentation" }
             ]
         },
         "es.upv.paella.dualVideo": {
             "enabled": true,
             "validContent": [
-                { "id": "presenter-presentation", "content": ["presenter","presentation"], "icon": "{{ asset('../bundles/pumukitpaellaplayer/images/present-mode-3.svg')}}", "title": "Presenter and presentation" },
-                { "id": "presenter-2-presentation", "content": ["presenter-2","presentation"], "icon": "{{ asset('../bundles/pumukitpaellaplayer/images/present-mode-3.svg')}}", "title": "Presenter and presentation" },
-                { "id": "presenter-presenter-2", "content": ["presenter","presenter-2"], "icon": "{{ asset('../bundles/pumukitpaellaplayer/images/present-mode-3.svg')}}", "title": "Presenter and presentation" }
+                { "id": "presenter-presentation", "content": ["presenter","presentation"], "icon": "present-mode-3.svg", "title": "Presenter and presentation" },
+                { "id": "presenter-2-presentation", "content": ["presenter-2","presentation"], "icon": "present-mode-3.svg", "title": "Presenter and presentation" },
+                { "id": "presenter-presenter-2", "content": ["presenter","presenter-2"], "icon": "present-mode-3.svg", "title": "Presenter and presentation" }
             ]
         },
         "es.upv.paella.hlsVideoFormat": {
-            "enabled": {{ isLive ? 'true' : 'false' }},
+            "enabled": true,
             "order": 0,
             "hlsConfig": {
                 "maxBufferLength": 40
@@ -40,7 +43,7 @@
         },
 
         "es.upv.paella.hlsLiveVideoFormat": {
-            "enabled": {{ isLive  ? 'true' : 'false'}},
+            "enabled": true,
             "order": 0,
             "hlsConfig": {
                 "maxBufferLength": 40
@@ -69,18 +72,17 @@
         },
 
         "es.upv.paella.layoutSelector": {
-            "enabled": {{ isMultistream ? 'true' : 'false' }},
+            "enabled": true,
             "side": "right",
             "order": 101
         },
 
         "es.upv.paella.playbackRateButton": {
-            "enabled": {{ notLive ? 'true' : 'false' }},
+            "enabled": true,
             "side": "right",
             "order": 102,
             "rates": [0.75, 1, 1.5, 2],
-            "showIcon": false,
-            "minContainerSize": 500
+            "showIcon": false
         },
 
         "es.upv.paella.frameControlButtonPlugin": {
@@ -95,19 +97,19 @@
         },
 
         "es.upv.paella.volumeButtonPlugin": {
-            "enabled": true,
+            "enabled": true ,
             "side": "left",
             "order": 6
         },
 
         "es.upv.paella.forwardButtonPlugin": {
-            "enabled": false,
+            "enabled": true,
             "side": "left",
             "order": 2
         },
 
         "es.upv.paella.backwardButtonPlugin": {
-            "enabled": false,
+            "enabled": true,
             "side": "left",
             "order": 1
         },
@@ -145,7 +147,7 @@
         },
 
         "es.upv.paella.captionsSelectorPlugin": {
-            "enabled": {{ hasCaptions ? 'true' : 'false' }},
+            "enabled": true,
             "side": "right"
         },
 
@@ -161,7 +163,7 @@
         },
 
         "es.upv.paella.defaultShortcuts": {
-            "enabled": {{ notLive ? 'true' : 'false' }},
+            "enabled": true,
             "validPlaybackRates": [0.75, 2, 1, 1.5]
         },
 
@@ -177,8 +179,7 @@
             "enabled": true,
             "order": 80,
             "description": "Keyboard Shortcuts",
-            "side": "right",
-            "minContainerSize": 500
+            "side": "right"
         },
 
         "es.upv.paella.userEventTracker": {
@@ -221,10 +222,9 @@
         },
 
         "es.teltek.paella.pipButtonPlugin": {
-            "enabled": {{ isMonostream ? 'true' : 'false' }},
+            "enabled": true,
             "side": "right",
-            "order": 105,
-            "minContainerSize": 500
+            "order": 105
         },
 
         "es.teltek.paella.playlistButtonPlugin": {
@@ -234,7 +234,7 @@
         },
 
         "es.teltek.paella.liveIndicatorButtonPlugin": {
-            "enabled": {{ isLive ? 'true' : 'false' }},
+            "enabled": true,
             "side": "left",
             "order": 7
         },
@@ -244,14 +244,12 @@
         },
 
         "org.opencast.paella.breaksPlugin": {
-            "enabled": {{ notLive ? 'true' : 'false' }}
+            "enabled": true
         },
-
         "es.upv.paella.findCaptionsPlugin": {
-            "enabled":  {{ hasCaptions ? 'true' : 'false' }},
+            "enabled": true,
             "side": "right",
-            "description": "Search in captions",
-            "minContainerSize": 500
+            "description": "Search in captions"
         },
 
         "es.upv.paella.slideMapProgressBarPlugin": {

@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
+use MongoDB\BSON\ObjectId;
+use PHPUnit\Util\Json;
 use Pumukit\CoreBundle\Controller\PersonalControllerInterface;
 use Pumukit\CoreBundle\Services\SerializerService;
-use Pumukit\PaellaPlayerBundle\Services\PaellaDataService;
-use Pumukit\SchemaBundle\Document\EmbeddedBroadcast;
+use Pumukit\PaellaPlayerBundle\Services\ChannelManifest;
+use Pumukit\PaellaPlayerBundle\Services\LiveManifest;
+use Pumukit\PaellaPlayerBundle\Services\PlaylistManifest;
+use Pumukit\PaellaPlayerBundle\Services\VoDManifest;
+use Pumukit\SchemaBundle\Document\Live;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Document\Series;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,25 +23,66 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PaellaRepositoryController extends AbstractController implements PersonalControllerInterface
 {
+    private $documentManager;
     private $serializer;
-    private $paellaDataService;
+    private $playlistManifest;
+    private $voDManifest;
+    private $liveManifest;
+    private $channelManifest;
 
-    public function __construct(SerializerService $serializer, PaellaDataService $paellaDataService)
-    {
+    public function __construct(
+        DocumentManager $documentManager,
+        SerializerService $serializer,
+        PlaylistManifest $playlistManifest,
+        VoDManifest $voDManifest,
+        LiveManifest $liveManifest,
+        ChannelManifest $channelManifest
+    ) {
+        $this->documentManager = $documentManager;
         $this->serializer = $serializer;
-        $this->paellaDataService = $paellaDataService;
+        $this->playlistManifest = $playlistManifest;
+        $this->voDManifest = $voDManifest;
+        $this->liveManifest = $liveManifest;
+        $this->channelManifest = $channelManifest;
     }
 
     /**
      * @Route("/paellarepository/{id}.{_format}", methods={"GET"}, defaults={"_format"="json", "no_channels":true}, requirements={"_format": "json|xml"})
-     * @Route("/secret/paellarepository/{secret}.{_format}", methods={"GET"}, defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
+     * @Route("/secret/paellarepository/{id}.{_format}", methods={"GET"}, defaults={"_format":"json", "show_hide":true, "no_channels":true}, requirements={"_format": "json|xml"})
      */
-    public function indexAction(Request $request, MultimediaObject $multimediaObject): Response
+    public function indexAction(Request $request, string $id): Response
     {
-        $data = $this->paellaDataService->getPaellaMmobjData($multimediaObject, $request);
-        $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
+        if ($this->documentManager->getFilterCollection()->isEnabled('personal')) {
+            $this->documentManager->getFilterCollection()->disable('personal');
+        }
 
-        return new Response($response);
+        $multimediaObject = $this->getMultimediaObject($id);
+
+        $this->documentManager->getFilterCollection()->enable('personal');
+
+        if ($multimediaObject instanceof MultimediaObject) {
+            if ($multimediaObject->isLive()) {
+                $data = $this->liveManifest->create($multimediaObject);
+            } else {
+                $data = $this->voDManifest->create($multimediaObject, $request->query->get('track_id'), $request->getHost());
+            }
+            $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
+
+            return new Response($response);
+        }
+
+        $live = $this->documentManager->getRepository(Live::class)->findOneBy([
+            '_id' => new ObjectId($id),
+        ]);
+
+        if ($live instanceof Live) {
+            $data = $this->channelManifest->create($live);
+            $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
+
+            return new Response($response);
+        }
+
+        throw new \Exception('Element not found');
     }
 
     /**
@@ -42,13 +91,18 @@ class PaellaRepositoryController extends AbstractController implements PersonalC
      */
     public function playlistAction(Request $request, Series $series): Response
     {
-        $criteria = [
-            'embeddedBroadcast.type' => ['$eq' => EmbeddedBroadcast::TYPE_PUBLIC],
-            'tracks' => ['$elemMatch' => ['tags' => 'display', 'hide' => false]],
-        ];
-        $data = $this->paellaDataService->getPaellaPlaylistData($series, $criteria);
+        $data = $this->playlistManifest->create($request->getHost(), $series, $request->query->getInt('videoPos') ?? 0, $request->getPathInfo());
         $response = $this->serializer->dataSerialize($data, $request->getRequestFormat());
 
         return new Response($response);
+    }
+
+    private function getMultimediaObject(string $objectId)
+    {
+        try {
+            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['_id' => new ObjectId($objectId)]);
+        } catch (\Exception $exception) {
+            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['secret' => $objectId]);
+        }
     }
 }

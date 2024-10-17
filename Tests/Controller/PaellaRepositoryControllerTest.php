@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Tests\Controller;
 
 use Pumukit\CoreBundle\Tests\PumukitTestCase;
@@ -10,6 +12,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PaellaRepositoryControllerTest extends PumukitTestCase
@@ -61,18 +64,18 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $mmobj->setStatus(MultimediaObject::STATUS_PUBLISHED);
         $this->dm->flush();
 
-        //Should return ok and empty
+        // Should return ok and empty
         $response = $this->callRepo($mmobj);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackPresenter->setVcodec('h264');
         $this->dm->flush();
 
-        //Should return presenter
+        // Should return presenter
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
@@ -94,42 +97,42 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return presenter
+        // Should return presenter
         $response = $this->callRepo($mmobj, $trackPresenter);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
-        //Should return presentation & presenter
+        // Should return presentation & presenter
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
 
-        //Should return empty
+        // Should return empty
         $response = $this->callRepo($mmobj, $trackSBS);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackSBS->addTag('display');
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return empty
+        // Should return empty
         $response = $this->callRepo($mmobj, $trackSBS);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj), $responseData);
 
         $trackSBS->setVcodec('h264');
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return sbs
+        // Should return sbs
         $response = $this->callRepo($mmobj, $trackSBS);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackSBS]), $responseData);
 
-        //Should return presentation & presenter
+        // Should return presentation & presenter
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter, $trackPresentation]), $responseData);
 
         $trackPresenter2 = new Track();
@@ -151,19 +154,19 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return presentation & presenter (not Dup)
+        // Should return presentation & presenter (not Dup)
         $response = $this->callRepo($mmobj);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [[$trackPresenter, $trackPresenter2, $trackPresenter3], $trackPresentation]), $responseData);
 
-        //Should return presenterDup
+        // Should return presenterDup
         $response = $this->callRepo($mmobj, $trackPresenter3);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter3]), $responseData);
 
-        //Should return presenter
+        // Should return presenter
         $response = $this->callRepo($mmobj, $trackPresenter);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackPresenter]), $responseData);
 
         $trackAudio = new Track();
@@ -177,15 +180,15 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return presenter
+        // Should return presenter
         $response = $this->callRepo($mmobj, $trackAudio);
-        $responseData = json_decode($response->getContent(), true);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
         static::assertEquals($this->makePaellaData($mmobj, [$trackAudio]), $responseData);
     }
 
     public function testAudioPaellaRepository(): void
     {
-        //Init Mmobj
+        // Init Mmobj
         $series = $this->factoryService->createSeries();
         $mmobj = $this->factoryService->createMultimediaObject($series);
         $mmobj->setStatus(MultimediaObject::STATUS_PUBLISHED);
@@ -203,12 +206,12 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return ok and empty
+        // Should return ok and empty
         $response = $this->callRepo($mmobj);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        static::assertEquals(count($responseData['streams']), 1);
-        static::assertEquals(count($responseData['streams'][0]['sources']), 1);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        static::assertEquals(is_countable($responseData['streams']) ? count($responseData['streams']) : 0, 1);
+        static::assertEquals(is_countable($responseData['streams'][0]['sources']) ? count($responseData['streams'][0]['sources']) : 0, 1);
 
         static::assertEquals(
             $this->trackUrlService->generateTrackFileUrl($track, UrlGeneratorInterface::ABSOLUTE_URL),
@@ -218,7 +221,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
     public function testMultipleAudioPaellaRepository(): void
     {
-        //Init Mmobj
+        // Init Mmobj
         $series = $this->factoryService->createSeries();
         $mmobj = $this->factoryService->createMultimediaObject($series);
         $mmobj->setStatus(MultimediaObject::STATUS_PUBLISHED);
@@ -242,12 +245,13 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
         $this->dm->persist($mmobj);
         $this->dm->flush();
 
-        //Should return ok and empty
+        // Should return ok and empty
         $response = $this->callRepo($mmobj, $track);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        static::assertEquals(count($responseData['streams']), 1);
-        static::assertEquals(count($responseData['streams'][0]['sources']), 1);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        static::assertEquals(is_countable($responseData['streams']) ? count($responseData['streams']) : 0, 1);
+        static::assertEquals(is_countable($responseData['streams'][0]['sources']) ? count($responseData['streams'][0]['sources']) : 0, 1);
+
         static::assertEquals(
             $this->trackUrlService->generateTrackFileUrl($track, UrlGeneratorInterface::ABSOLUTE_URL),
             $responseData['streams'][0]['sources']['mp4'][0]['src']
@@ -255,9 +259,9 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
 
         $response = $this->callRepo($mmobj, $track2);
         static::assertEquals(200, $response->getStatusCode());
-        $responseData = json_decode($response->getContent(), true);
-        static::assertEquals(count($responseData['streams']), 1);
-        static::assertEquals(count($responseData['streams'][0]['sources']), 1);
+        $responseData = json_decode($response->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        static::assertEquals(is_countable($responseData['streams']) ? count($responseData['streams']) : 0, 1);
+        static::assertEquals(is_countable($responseData['streams'][0]['sources']) ? count($responseData['streams'][0]['sources']) : 0, 1);
         static::assertEquals(
             $this->trackUrlService->generateTrackFileUrl($track2, UrlGeneratorInterface::ABSOLUTE_URL),
             $responseData['streams'][0]['sources']['mp4'][0]['src']
@@ -297,7 +301,7 @@ class PaellaRepositoryControllerTest extends PumukitTestCase
             foreach ($tracks as $track) {
                 $mimeType = $track->getMimetype();
                 $src = $this->trackUrlService->generateTrackFileUrl($track, UrlGeneratorInterface::ABSOLUTE_URL);
-                //$src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track));
+                // $src = $this->getAbsoluteUrl($request, $this->trackService->generateTrackFileUrl($track));
 
                 $dataStreamTrack = [
                     'src' => $src,

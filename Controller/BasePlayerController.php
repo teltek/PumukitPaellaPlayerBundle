@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pumukit\PaellaPlayerBundle\Controller;
 
 use Pumukit\BasePlayerBundle\Controller\BasePlayerController as BasePlayerAbstractController;
@@ -48,6 +50,7 @@ class BasePlayerController extends BasePlayerAbstractController
     /**
      * @Route("/videoplayer/{id}", name="pumukit_videoplayer_index")
      * @Route("/videoplayer/opencast/{id}", name="pumukit_videoplayer_opencast")
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function indexAction(Request $request, MultimediaObject $multimediaObject)
@@ -57,12 +60,21 @@ class BasePlayerController extends BasePlayerAbstractController
 
     /**
      * @Route("/videoplayer/magic/{secret}", name="pumukit_videoplayer_magicindex")
+     *
      * @Template("@PumukitPaellaPlayer/PaellaPlayer/player.html.twig")
      */
     public function magicAction(Request $request, MultimediaObject $multimediaObject)
     {
         if (!$request->query->has('secret')) {
-            return $this->redirect($this->generateUrl('pumukit_videoplayer_magicindex', ['id' => $multimediaObject->getId(), 'secret' => $multimediaObject->getSecret()]).'&secret='.$multimediaObject->getSecret());
+            return $this->redirect(
+                $this->generateUrl(
+                    'pumukit_videoplayer_magicindex',
+                    [
+                        'id' => $multimediaObject->getId(),
+                        'secret' => $multimediaObject->getSecret(),
+                    ]
+                ).'&secret='.$multimediaObject->getSecret()
+            );
         }
 
         return $this->doRender($request, $multimediaObject);
@@ -77,10 +89,6 @@ class BasePlayerController extends BasePlayerAbstractController
         $track = $this->checkMultimediaObjectTracks($request, $multimediaObject);
         if ($track instanceof RedirectResponse) {
             return $track;
-        }
-
-        if ($request->query->has('raw')) {
-            return $this->generateBasePlayerRaw($request, $multimediaObject, $track);
         }
 
         $tracks = $this->getMultimediaObjectMultiStreamTracks($multimediaObject, $track);
