@@ -1,13 +1,20 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const day = String(today.getDate()).padStart(2, '0');
+const dateString = `${year}-${month}-${day}`;
 
 module.exports = {
     entry: './src/index.js',
     output: {
         path: path.join(__dirname, "dist"),
-        filename: 'teltek-paella-player.js',
-        sourceMapFilename: 'teltek-paella-player.js.map'
+        filename: `teltek-paella-player-${dateString}.js`,
+        sourceMapFilename: `teltek-paella-player-${dateString}.js.map`
     },
     devtool: 'source-map',
     devServer: {
@@ -61,6 +68,7 @@ module.exports = {
     },
 
     plugins: [
+        new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
             patterns: [
                 { from: './config', to: 'config' },
