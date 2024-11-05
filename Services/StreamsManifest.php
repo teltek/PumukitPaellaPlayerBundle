@@ -193,6 +193,9 @@ class StreamsManifest
             //            $mimeType = $track->metadata()->mimetype();
             $mimeTypes = new MimeTypes();
             $mimeType = $mimeTypes->guessMimeType($track->storage()->path()->path());
+            if ('text/plain' === $mimeType && str_ends_with($track->storage()->path()->path(), '.m3u8')) {
+                $mimeType = 'video/mp4';
+            }
             $src = $this->getAbsoluteUrl($this->trackUrlService->generateTrackFileUrl($track));
 
             $dataStreamTrack = [
@@ -209,6 +212,8 @@ class StreamsManifest
 
             if (in_array($format, ['mpeg', 'x-m4a']) && $track->metadata()->isOnlyAudio()) {
                 $format = 'audio';
+            } elseif (str_ends_with($track->storage()->path()->path(), '.m3u8') && 'video/mp4' === $mimeType) {
+                $format = 'hls';
             }
 
             if (!isset($sources[$format])) {
