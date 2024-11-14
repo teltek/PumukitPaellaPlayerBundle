@@ -6,6 +6,7 @@ namespace Pumukit\PaellaPlayerBundle\Services;
 
 use Pumukit\BaseLivePlayerBundle\Services\LiveService;
 use Pumukit\BasePlayerBundle\Services\TrackUrlService;
+use Pumukit\SchemaBundle\Document\MediaType\Track;
 use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\SchemaBundle\Services\PicService;
 use Symfony\Component\Mime\MimeTypes;
@@ -42,7 +43,7 @@ class StreamsManifest
         $data['streams'] = [];
 
         if (!$multimediaObject->isMultistream()) {
-            $track = $multimediaObject->getTrackById($trackId) ?? $multimediaObject->getDisplayTrack();
+            $track = $multimediaObject->getTrackById($trackId) ?? $this->searchPriorityTrack($multimediaObject);
             if ($track) {
                 $dataStream = $this->buildDataStream([$track]);
                 $dataStream['content'] = 'presenter';
@@ -131,6 +132,20 @@ class StreamsManifest
         $dataStream['sources'] = $sources;
 
         return $dataStream;
+    }
+
+    public function searchPriorityTrack(MultimediaObject $multimediaObject): Track
+    {
+        $displayTracks = $multimediaObject->getTracksWithTag('display');
+        if (count($displayTracks) >= 2) {
+            foreach ($displayTracks as $track) {
+                if (str_ends_with($track->storage()->path()->path(), '.m3u8')) {
+                    return $track;
+                }
+            }
+        }
+
+        return $multimediaObject->getDisplayTrack();
     }
 
     private function getMmobjTracks(MultimediaObject $multimediaObject, ?string $trackId): array
