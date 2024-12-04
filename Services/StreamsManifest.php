@@ -66,16 +66,16 @@ class StreamsManifest
             $dataStream = $this->buildDataStream($tracks['display']);
             $pic = $this->getPreview($multimediaObject);
             $dataStream['preview'] = $pic;
-            $dataStream['language'] = $tracks['display'][0]->getLanguage();
+            $dataStream['language'] = $tracks['display'][0]->language();
             $dataStream['content'] = 'presenter';
-            $dataStream['audioTag'] = $tracks['display'][0]->getLanguage();
+            $dataStream['audioTag'] = $tracks['display'][0]->language();
             $data['streams'][] = $dataStream;
         }
 
         // Presentation tracks
         if ($tracks['presentation']) {
             $dataStream = $this->buildDataStream($tracks['presentation']);
-            $dataStream['language'] = $tracks['presentation'][0]->getLanguage();
+            $dataStream['language'] = $tracks['presentation'][0]->language();
             $dataStream['content'] = 'presentation';
             $data['streams'][] = $dataStream;
         }
