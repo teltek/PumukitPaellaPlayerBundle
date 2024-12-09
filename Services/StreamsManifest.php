@@ -186,7 +186,7 @@ class StreamsManifest
             }
         }
 
-        if ($sbsTrack && in_array($sbsTrack->getVcodec(), $availableCodecs)) {
+        if ($sbsTrack && in_array($sbsTrack->metadata()->codecName(), $availableCodecs)) {
             $tracks['sbs'][] = $sbsTrack;
         }
 
