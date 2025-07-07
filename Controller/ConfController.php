@@ -111,18 +111,29 @@ class ConfController extends AbstractController
 
     private function getMultimediaObject(string $objectId)
     {
+        $repository = $this->documentManager->getRepository(MultimediaObject::class);
+
         try {
-            $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['_id' => new ObjectId($objectId)]);
+            $objectIdObj = new ObjectId($objectId);
+
+            $multimediaObject = $repository->findOneBy(['_id' => $objectIdObj]);
+            if ($multimediaObject) {
+                return $multimediaObject;
+            }
+        } catch (\Exception $e) {
+            $multimediaObject = $repository->findOneBy(['numerical_id' => $objectId]);
             if (!$multimediaObject) {
-                $multimediaObject = $this->documentManager->getRepository(MultimediaObject::class)->createQueryBuilder()
+                $multimediaObject = $repository->createQueryBuilder()
                     ->field('properties.pumukit1id')->equals($objectId)
-                    ->getQuery()->getSingleResult()
+                    ->getQuery()->getSingleResult() ?? null
                 ;
             }
 
-            return $multimediaObject;
-        } catch (\Exception $exception) {
-            return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['secret' => $objectId]);
+            if ($multimediaObject) {
+                return $multimediaObject;
+            }
         }
+
+        return $this->documentManager->getRepository(MultimediaObject::class)->findOneBy(['secret' => $objectId]);
     }
 }
