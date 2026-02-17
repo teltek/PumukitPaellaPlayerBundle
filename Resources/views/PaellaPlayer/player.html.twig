@@ -33,4 +33,47 @@
     <script>
         {% include('@PumukitPaellaPlayer/PaellaPlayer/multistream.js.twig') %}
     </script>
+
+    <script>
+        (function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('autoplay_click') !== '1') return;
+
+            const selectors = [
+                '#playerContainerClickArea',
+                '.preview-container[role="button"]',
+                '.preview-container button[aria-label="Play video"]',
+                '.preview-container button[aria-label="Reproducir"]',
+                '#playerContainerClickArea button[aria-label="Play video"]',
+                '#playerContainerClickArea button[aria-label="Reproducir"]'
+            ];
+
+            function tryClick() {
+                for (const selector of selectors) {
+                    const el = document.querySelector(selector);
+                    if (el && typeof el.click === 'function') {
+                        el.click();
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            window.addEventListener('load', () => {
+                if (tryClick()) return;
+
+                const observer = new MutationObserver(() => {
+                    if (tryClick()) observer.disconnect();
+                });
+
+                const playerContainer = document.getElementById('player-container') || document.body;
+                observer.observe(playerContainer, {
+                    childList: true,
+                    subtree: true
+                });
+
+                setTimeout(() => observer.disconnect(), 10000);
+            });
+        })();
+    </script>
 {% endblock %}
