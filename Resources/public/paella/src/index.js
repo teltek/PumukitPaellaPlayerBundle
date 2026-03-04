@@ -20,11 +20,24 @@ import packageData from "../package.json";
 window.onload = async () => {
 
     const baseURL = window.location.href;
+    let configID = "";
 
-    if(baseURL.search('playlist') !== -1) {
-        var configID = utils.getUrlParameter('videoId');
-    } else {
-        var configID = location.pathname.split('/').slice(-1)[0];
+    if (baseURL.indexOf('id=') !== -1) {
+        configID = utils.getUrlParameter('id');
+    }
+    else if (baseURL.indexOf('playlist') !== -1) {
+        configID = utils.getUrlParameter('videoId');
+    }
+    else {
+        const path = window.location.pathname;
+        const segments = path.split('/');
+        const filtered = [];
+        for (let i = 0; i < segments.length; i++) {
+            if (segments[i]) {
+                filtered.push(segments[i]);
+            }
+        }
+        configID = filtered[filtered.length - 1];
     }
 
     let loadIntro = false;
