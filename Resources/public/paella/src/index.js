@@ -82,7 +82,7 @@ window.onload = async () => {
         configUrl: '/paella/config.json' + '?configID='+ configID,
         repositoryUrl: '/paellarepository/',
         getVideoId: (config, player) => {
-            return location.pathname.split('/').slice(-1)[0];
+            return configID;
         },
         getManifestUrl: (repoUrl,videoId) => {
             let location = window.location.href;
