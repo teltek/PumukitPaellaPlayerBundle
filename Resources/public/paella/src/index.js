@@ -22,22 +22,30 @@ window.onload = async () => {
     const baseURL = window.location.href;
     let configID = "";
 
-    if (baseURL.indexOf('id=') !== -1) {
-        configID = utils.getUrlParameter('id');
-    }
-    else if (baseURL.indexOf('playlist') !== -1) {
-        configID = utils.getUrlParameter('videoId');
-    }
-    else {
+    const params = new URLSearchParams(window.location.search);
+
+    function getIdFromPath() {
         const path = window.location.pathname;
         const segments = path.split('/');
         const filtered = [];
+
         for (let i = 0; i < segments.length; i++) {
             if (segments[i]) {
                 filtered.push(segments[i]);
             }
         }
-        configID = filtered[filtered.length - 1];
+
+        return filtered[filtered.length - 1];
+    }
+
+    if (params.has('track_id')) {
+        configID = getIdFromPath();
+    } else if (params.has('id')) {
+        configID = params.get('id');
+    } else if (baseURL.indexOf('playlist') !== -1) {
+        configID = utils.getUrlParameter('videoId');
+    } else {
+        configID = getIdFromPath();
     }
 
     let loadIntro = false;
