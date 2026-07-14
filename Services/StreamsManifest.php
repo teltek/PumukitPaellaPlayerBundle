@@ -205,13 +205,19 @@ class StreamsManifest
         $dataStream = [];
         $sources = [];
         foreach ($tracks as $track) {
-            //            $mimeType = $track->metadata()->mimetype();
             $mimeTypes = new MimeTypes();
             $mimeType = $mimeTypes->guessMimeType($track->storage()->path()->path());
             if ('text/plain' === $mimeType && str_ends_with($track->storage()->path()->path(), '.m3u8')) {
                 $mimeType = 'video/mp4';
             }
-            $src = $this->getAbsoluteUrl($this->trackUrlService->generateTrackFileUrl($track));
+
+            $path = $track->storage()->path()->path();
+            $vodUrl = $track->storage()->url() ? $track->storage()->url()->url() : '';
+            if ($vodUrl && !str_ends_with($path, '.m3u8')) {
+                $src = $this->trackUrlService->generateDirectTrackFileUrl($track);
+            } else {
+                $src = $this->getAbsoluteUrl($this->trackUrlService->generateTrackFileUrl($track));
+            }
 
             $dataStreamTrack = [
                 'src' => $src,
