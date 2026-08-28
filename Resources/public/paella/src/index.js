@@ -137,6 +137,48 @@ window.onload = async () => {
 
     const paella = new PaellaPlayer('player-container', initParams);
 
+    const playerContainer = document.getElementById('player-container');
+
+    if (playerContainer) {
+        // Paella generates positive tabindex values for some controls dynamically.
+        // Normalize them to 0 so keyboard focus follows DOM/accessibility order.
+        const normalizeTabIndex = (element) => {
+            if (!(element instanceof HTMLElement)) {
+                return;
+            }
+
+            if (element.tabIndex > 0) {
+                element.tabIndex = 0;
+            }
+
+            element.querySelectorAll('[tabindex]').forEach((child) => {
+                if (child.tabIndex > 0) {
+                    child.tabIndex = 0;
+                }
+            });
+        };
+
+        const tabIndexObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes') {
+                    normalizeTabIndex(mutation.target);
+                    return;
+                }
+
+                mutation.addedNodes.forEach(normalizeTabIndex);
+            });
+        });
+
+        normalizeTabIndex(playerContainer);
+
+        tabIndexObserver.observe(playerContainer, {
+            subtree: true,
+            childList: true,
+            attributes: true,
+            attributeFilter: ['tabindex'],
+        });
+    }
+
     try {
         await paella.loadManifest().then(() => {
             paella.addCustomPluginIcon("es.upv.paella.playPauseButton","play",playIcon);
@@ -148,7 +190,7 @@ window.onload = async () => {
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeLowIcon",volumeLowIcon);
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeMidIcon",volumeMidIcon);
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeMuteIcon",volumeMuteIcon);
-        });
+        });        
         await utils.loadStyle('src/style.css');
     } catch (e) {
         console.error(e);
