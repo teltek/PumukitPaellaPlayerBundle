@@ -140,6 +140,17 @@ window.onload = async () => {
     const playerContainer = document.getElementById('player-container');
 
     if (playerContainer) {
+        // Punto de entrada accesible cuando Paella oculta los controles
+        const accessibilityEntry = document.createElement('button');
+
+        accessibilityEntry.type = 'button';
+        accessibilityEntry.className = 'player-accessibility-entry';
+        accessibilityEntry.textContent = 'Mostrar controles del reproductor';
+        accessibilityEntry.tabIndex = -1;
+        accessibilityEntry.hidden = true;
+
+        playerContainer.prepend(accessibilityEntry);
+
         // Paella generates positive tabindex values for some controls dynamically.
         // Normalize them to 0 so keyboard focus follows DOM/accessibility order.
         const normalizeTabIndex = (element) => {
@@ -147,15 +158,33 @@ window.onload = async () => {
                 return;
             }
 
-            if (element.tabIndex > 0) {
+            if (element !== accessibilityEntry && element.tabIndex > 0) {
                 element.tabIndex = 0;
             }
 
             element.querySelectorAll('[tabindex]').forEach((child) => {
-                if (child.tabIndex > 0) {
+                if (child !== accessibilityEntry && child.tabIndex > 0) {
                     child.tabIndex = 0;
                 }
             });
+        };
+
+        const updateAccessibilityEntry = () => {
+            const playbackBar = playerContainer.querySelector('.playback-bar');
+
+            if (!playbackBar) {
+                return;
+            }
+
+            const hidden = playbackBar.style.display === 'none';
+
+            if (hidden && accessibilityEntry.hidden) {
+                accessibilityEntry.tabIndex = 0;
+                accessibilityEntry.hidden = false;
+            } else if (!hidden && !accessibilityEntry.hidden) {
+                accessibilityEntry.tabIndex = -1;
+                accessibilityEntry.hidden = true;
+            }
         };
 
         const tabIndexObserver = new MutationObserver((mutations) => {
@@ -167,6 +196,7 @@ window.onload = async () => {
 
                 mutation.addedNodes.forEach(normalizeTabIndex);
             });
+            updateAccessibilityEntry();
         });
 
         normalizeTabIndex(playerContainer);
@@ -175,8 +205,15 @@ window.onload = async () => {
             subtree: true,
             childList: true,
             attributes: true,
-            attributeFilter: ['tabindex'],
+            attributeFilter: ['tabindex', 'style'],
         });
+
+        const showControls = () => {
+            paella.showUserInterface();
+        };
+
+        accessibilityEntry.addEventListener('focus', showControls);
+        accessibilityEntry.addEventListener('click', showControls);
     }
 
     try {
