@@ -257,7 +257,7 @@ window.onload = async () => {
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeLowIcon",volumeLowIcon);
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeMidIcon",volumeMidIcon);
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeMuteIcon",volumeMuteIcon);
-        });        
+        });
         await utils.loadStyle('src/style.css');
         if (accessibilityEntry) {
             accessibilityEntry.textContent = paella.translate('Show player controls');
