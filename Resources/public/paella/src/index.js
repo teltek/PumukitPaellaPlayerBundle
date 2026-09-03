@@ -137,6 +137,115 @@ window.onload = async () => {
 
     const paella = new PaellaPlayer('player-container', initParams);
 
+    paella.addDictionary('es', {
+        'Show player controls': 'Mostrar controles del reproductor',
+        'Play video': 'Reproducir vídeo',
+    });
+
+    const playerContainer = document.getElementById('player-container');
+    let accessibilityEntry = null;
+
+    if (playerContainer) {
+        // Punto de entrada accesible cuando Paella oculta los controles
+        accessibilityEntry = document.createElement('button');
+
+        accessibilityEntry.type = 'button';
+        accessibilityEntry.className = 'player-accessibility-entry';
+        accessibilityEntry.textContent = 'Show player controls';
+        accessibilityEntry.tabIndex = -1;
+        accessibilityEntry.hidden = true;
+
+        playerContainer.prepend(accessibilityEntry);
+
+        // Paella generates positive tabindex values for some controls dynamically.
+        // Normalize them to 0 so keyboard focus follows DOM/accessibility order.
+        const normalizeTabIndex = (element) => {
+            if (!(element instanceof HTMLElement)) {
+                return;
+            }
+
+            if (element !== accessibilityEntry && element.tabIndex > 0) {
+                element.tabIndex = 0;
+            }
+
+            element.querySelectorAll('[tabindex]').forEach((child) => {
+                if (child !== accessibilityEntry && child.tabIndex > 0) {
+                    child.tabIndex = 0;
+                }
+            });
+        };
+
+        const translatePreview = (element) => {
+            if (!(element instanceof HTMLElement)) {
+                return;
+            }
+
+            if (element.getAttribute('aria-label') === 'Play video') {
+                element.setAttribute(
+                    'aria-label',
+                    paella.translate('Play video')
+                );
+            }
+
+            element.querySelectorAll('[aria-label="Play video"]').forEach((child) => {
+                child.setAttribute(
+                    'aria-label',
+                    paella.translate('Play video')
+                );
+            });
+        };
+
+        const updateAccessibilityEntry = () => {
+            const playbackBar = playerContainer.querySelector('.playback-bar');
+
+            if (!playbackBar) {
+                return;
+            }
+
+            const hidden = playbackBar.style.display === 'none';
+
+            if (hidden && accessibilityEntry.hidden) {
+                accessibilityEntry.tabIndex = 0;
+                accessibilityEntry.hidden = false;
+            } else if (!hidden && !accessibilityEntry.hidden) {
+                accessibilityEntry.tabIndex = -1;
+                accessibilityEntry.hidden = true;
+            }
+        };
+
+        const tabIndexObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.type === 'attributes') {
+                    normalizeTabIndex(mutation.target);
+                    return;
+                }
+
+                mutation.addedNodes.forEach((node) => {
+                    normalizeTabIndex(node);
+                    translatePreview(node);
+                });
+            });
+            updateAccessibilityEntry();
+        });
+
+        normalizeTabIndex(playerContainer);
+        translatePreview(playerContainer);
+
+        tabIndexObserver.observe(playerContainer, {
+            subtree: true,
+            childList: true,
+            attributes: true,
+            attributeFilter: ['tabindex', 'style'],
+        });
+
+        const showControls = () => {
+            paella.showUserInterface();
+        };
+
+        accessibilityEntry.addEventListener('focus', showControls);
+        accessibilityEntry.addEventListener('click', showControls);
+    }
+
     try {
         await paella.loadManifest().then(() => {
             paella.addCustomPluginIcon("es.upv.paella.playPauseButton","play",playIcon);
@@ -150,6 +259,9 @@ window.onload = async () => {
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeMuteIcon",volumeMuteIcon);
         });
         await utils.loadStyle('src/style.css');
+        if (accessibilityEntry) {
+            accessibilityEntry.textContent = paella.translate('Show player controls');
+        }
     } catch (e) {
         console.error(e);
     }
