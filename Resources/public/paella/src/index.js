@@ -137,15 +137,21 @@ window.onload = async () => {
 
     const paella = new PaellaPlayer('player-container', initParams);
 
+    paella.addDictionary('es', {
+        'Show player controls': 'Mostrar controles del reproductor',
+        'Play video': 'Reproducir vídeo',
+    });
+
     const playerContainer = document.getElementById('player-container');
+    let accessibilityEntry = null;
 
     if (playerContainer) {
         // Punto de entrada accesible cuando Paella oculta los controles
-        const accessibilityEntry = document.createElement('button');
+        accessibilityEntry = document.createElement('button');
 
         accessibilityEntry.type = 'button';
         accessibilityEntry.className = 'player-accessibility-entry';
-        accessibilityEntry.textContent = 'Mostrar controles del reproductor';
+        accessibilityEntry.textContent = 'Show player controls';
         accessibilityEntry.tabIndex = -1;
         accessibilityEntry.hidden = true;
 
@@ -166,6 +172,26 @@ window.onload = async () => {
                 if (child !== accessibilityEntry && child.tabIndex > 0) {
                     child.tabIndex = 0;
                 }
+            });
+        };
+
+        const translatePreview = (element) => {
+            if (!(element instanceof HTMLElement)) {
+                return;
+            }
+
+            if (element.getAttribute('aria-label') === 'Play video') {
+                element.setAttribute(
+                    'aria-label',
+                    paella.translate('Play video')
+                );
+            }
+
+            element.querySelectorAll('[aria-label="Play video"]').forEach((child) => {
+                child.setAttribute(
+                    'aria-label',
+                    paella.translate('Play video')
+                );
             });
         };
 
@@ -194,12 +220,16 @@ window.onload = async () => {
                     return;
                 }
 
-                mutation.addedNodes.forEach(normalizeTabIndex);
+                mutation.addedNodes.forEach((node) => {
+                    normalizeTabIndex(node);
+                    translatePreview(node);
+                });
             });
             updateAccessibilityEntry();
         });
 
         normalizeTabIndex(playerContainer);
+        translatePreview(playerContainer);
 
         tabIndexObserver.observe(playerContainer, {
             subtree: true,
@@ -229,6 +259,9 @@ window.onload = async () => {
             paella.addCustomPluginIcon("es.upv.paella.volumeButtonPlugin","volumeMuteIcon",volumeMuteIcon);
         });        
         await utils.loadStyle('src/style.css');
+        if (accessibilityEntry) {
+            accessibilityEntry.textContent = paella.translate('Show player controls');
+        }
     } catch (e) {
         console.error(e);
     }
