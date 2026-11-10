@@ -11,10 +11,21 @@
   {{ parent() }}
     <script>
         function resizeFrame(elem) {
-            var availableWidth = $(window).width();
-            var availableHeight = $(window).height();
+            var parent = $(elem).closest('.embed-responsive');
 
-            var width = Math.min(availableWidth, availableHeight * 16 / 9);
+            var availableWidth = parent.length
+                ? parent.width()
+                : $(window).width();
+
+            var availableHeight = parent.length
+                ? availableWidth * 9 / 16
+                : $(window).height();
+
+            var width = Math.min(
+                availableWidth,
+                availableHeight * 16 / 9
+            );
+
             var height = width * 9 / 16;
 
             $(elem).css({
